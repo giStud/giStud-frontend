@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 
 import groups from './groups'
 import schedule from './schedule'
-import {auth} from './auth.module'
+import auth from './auth'
 
 /*
  * If not building with SSR mode, you can

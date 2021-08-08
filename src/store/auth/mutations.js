@@ -1,18 +1,22 @@
-export function loginSuccess(state, user) {
-    state.status.loggedIn = true;
+export function loginSuccessMut(state, user) {
+    state.loggedIn = true;
     state.user = user;
-  }
-export function loginFailure(state) {
-    state.status.loggedIn = false;
+}
+
+export function loginFailureMut(state) {
+    state.loggedIn = false;
     state.user = null;
-  }
-export function logout(state) {
-    state.status.loggedIn = false;
+}
+
+export function logoutMut(state) {
+    state.loggedIn = false;
     state.user = null;
-  }
-export function registerSuccess(state) {
-    state.status.loggedIn = false;
-  }
-export function registerFailure(state) {
-    state.status.loggedIn = false;
-  }
+}
+
+export function registerSuccessMut(state) {
+    state.loggedIn = true;
+}
+
+export function registerFailureMut(state) {
+    state.loggedIn = false;
+}
