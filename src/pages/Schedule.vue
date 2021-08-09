@@ -78,7 +78,7 @@ export default {
         store.dispatch("schedule/getGroupByNameAndUnivAction", {
           groupName: selected.value,
         });
-        window.location.href = '/schedule';
+        //window.location.href = '/schedule';
       } else {
         console.log("debil");
       }

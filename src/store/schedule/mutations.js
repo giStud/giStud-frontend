@@ -1,3 +1,3 @@
 export function setSelectedGroup (state, group) {
-    state.group = group;
+    state.selectedGroup = group;
 }
