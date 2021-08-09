@@ -1,20 +1,17 @@
 import Home from "components/Home.vue";
 import Login from "components/Login.vue";
 import Register from "components/Register.vue";
-import BoardAdmin from "components/BoardAdmin";
-import BoardModerator from "components/BoardModer";
-import BoardUser from "components/BoardUser";
 import Profile from "components/Profile"
 
 
 const routes = [
-  // {
-  //   path: '/',
-  //   component: () => import('layouts/MainLayout.vue'),
-  //   children: [
-  //     { path: '', component: () => import('pages/Index.vue') }
-  //   ]
-  // },
+  {
+    path: '/',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Index.vue') }
+    ]
+  },
 
   {
     path: '/groupSelecting',
@@ -24,41 +21,23 @@ const routes = [
     ]
   },
   {
-    path: "/",
-    name: "home",
-    component: Home,
-  },
-  {
-    path: "/home",
-    component: Home,
-  },
-  {
     path: "/login",
-    component: Login,
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [
+      { path: '', component: () => import('components/Login') }
+    ]
   },
   {
-    path: "/register",
-    component: Register,
+    path: "/signup",
+    component: () => import('layouts/AuthLayout.vue'),
+    children: [
+      { path: '', component: () => import('components/Register') }
+    ]
   },
   {
     path: "/profile",
     // lazy-loaded
     component: Profile,
-  },
-  {
-    path: "/admin",
-    // lazy-loaded
-    component: BoardAdmin,
-  },
-  {
-    path: "/mod",
-    // lazy-loaded
-    component: BoardModerator,
-  },
-  {
-    path: "/user",
-    // lazy-loaded
-    component: BoardUser,
   },
 
   // Always leave this as last one,

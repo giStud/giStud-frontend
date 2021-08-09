@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <a href="/" class="navbar-brand">bezKoder</a>
+      <a href="/" class="navbar-brand"></a>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
           <router-link to="/home" class="nav-link">
@@ -54,6 +54,7 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
+import {mapActions, useStore} from "vuex";
 
 export default defineComponent({
   name: 'App',
@@ -62,24 +63,12 @@ export default defineComponent({
       console.log(this.$store);
       return this.$store.state.auth.user;
     },
-    showAdminBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_ADMIN');
-      }
-
-      return false;
-    },
-    showModeratorBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_MODERATOR');
-      }
-
-      return false;
-    }
   },
   methods: {
+    ...mapActions('auth',['logoutAction']),
     logOut() {
-      this.$store.dispatch('auth/logout');
+      console.log(this.$store)
+      this.logoutAction();
       this.$router.push('/login');
     }
   }

@@ -36,12 +36,13 @@
       </Form>
     </div>
   </div>
+  
 </template>
 
 <script>
+import {mapActions, useStore} from "vuex";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import { useStore } from "vuex";
 
 export default {
   name: "Login",
@@ -64,32 +65,31 @@ export default {
   },
   computed: {
     loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
+      console.log("logged in method")
+      return this.$store.state.auth.loggedIn;
     },
   },
   created() {
+    console.log("login created method")
     if (this.loggedIn) {
+      console.log("login redirect to profile")
       this.$router.push("/profile");
     }
   },
   methods: {
-    handleLogin(user) {
+    ...mapActions("auth", ["loginAction"]),
+    async handleLogin(user) {
       this.loading = true;
 
-      this.$store.dispatch("auth/login", user).then(
-        () => {
-          this.$router.push("/profile");
-        },
-        (error) => {
-          this.loading = false;
-          this.message =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-        }
-      );
+      try {
+        const data = await this.loginAction(user);
+        console.log(data)
+        console.log(localStorage.getItem('user'))
+        await this.$router.push("/profile");
+      } catch(e) {
+        this.loading = false;
+        this.message = e.response.data.message;
+      }
     },
   },
 };

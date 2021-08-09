@@ -25,16 +25,38 @@
 </template>
 
 <script>
+import {mapActions, useStore} from "vuex";
+import {computed, onMounted, ref} from "vue";
 export default {
   name: 'Profile',
-  computed: {
-    currentUser() {
-      return this.$store.state.auth.user;
-    }
-  },
-  mounted() {
-    if (!this.currentUser) {
-      this.$router.push('/login');
+  // computed: {
+  //   currentUser() {
+  //     console.log("current user method")
+  //     return this.$store.state.auth.user;
+  //   }
+  // },
+  // mounted() {
+  //   console.log("profile mounted method")
+  //   if (!this.currentUser) {
+  //     console.log("profile redirect to login")
+  //     this.$router.push('/login');
+  //   }
+  // },
+  setup() {
+    const store = useStore()
+    console.log("start setup method")
+    const currentUser = computed(()=>store.state.auth.user)
+    console.log(currentUser)
+
+    onMounted(()=> {
+      console.log("profile mounted method")
+      if (!currentUser.value) {
+        console.log("profile redirect to login")
+        this.$router.push('/login');
+      }
+    })
+    return {
+      currentUser
     }
   }
 };

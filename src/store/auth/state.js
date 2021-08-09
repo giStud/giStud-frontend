@@ -1,11 +1,15 @@
-const user = JSON.parse(localStorage.getItem('user'));
-const initialState = user
-  ? { status: { loggedIn: true }, user }
-  : { status: { loggedIn: false }, user: null };
+let user = JSON.parse(localStorage.getItem('user'));
+let loggedIn;
+if (user) {
+  loggedIn = true;
+} else {
+  loggedIn = false;
+  user = null;
+}
 
 export default function () {
   return {
-    state : initialState,
-    user : {}
+    user: user,
+    loggedIn
   }
 }

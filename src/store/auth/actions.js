@@ -1,30 +1,30 @@
-import AuthService from '../../services/auth-service';
+import AuthService from '../../services/authService';
 
-export function login({ commit }, user) {
-    return AuthService.login(user).then(
-      user => {
-        commit('loginSuccess', user);
-        return Promise.resolve(user);
-      },
-      error => {
-        commit('loginFailure');
-        return Promise.reject(error);
-      }
-    );
+export async function loginAction({ commit }, user) {
+  try {
+    const data = await AuthService.login(user);
+    commit('loginSuccessMutation', user);
+    return data;
+  } catch (e) {
+    commit('loginFailureMutation');
+    console.error(e);
+    throw e;
   }
-export function logout({ commit }) {
+}
+
+export function logoutAction({ commit }) {
     AuthService.logout();
-    commit('logout');
+    commit('logoutMutation');
+}
+
+export async function registerAction({ commit }, user) {
+  try {
+    const data = await AuthService.register(user);
+    commit('registerSuccessMutation');
+    return data;
+  } catch (e) {
+    commit('registerFailureMutation');
+    throw e;
   }
-export function register({ commit }, user) {
-    return AuthService.register(user).then(
-      response => {
-        commit('registerSuccess');
-        return Promise.resolve(response.data);
-      },
-      error => {
-        commit('registerFailure');
-        return Promise.reject(error);
-      }
-    );
-  }
+}
+
