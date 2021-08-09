@@ -54,7 +54,7 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
-import { useStore } from "vuex";
+import {mapActions, useStore} from "vuex";
 
 export default defineComponent({
   name: 'App',
@@ -63,25 +63,12 @@ export default defineComponent({
       console.log(this.$store);
       return this.$store.state.auth.user;
     },
-    showAdminBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_ADMIN');
-      }
-
-      return false;
-    },
-    showModeratorBoard() {
-      if (this.currentUser && this.currentUser['roles']) {
-        return this.currentUser['roles'].includes('ROLE_MODERATOR');
-      }
-
-      return false;
-    }
   },
   methods: {
+    ...mapActions('auth',['logoutAction']),
     logOut() {
       console.log(this.$store)
-      this.$store.dispatch('auth/logoutAction');
+      this.logoutAction();
       this.$router.push('/login');
     }
   }

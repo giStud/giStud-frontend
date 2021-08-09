@@ -1,127 +1,117 @@
 <template>
-  <div class="col-md-12">
-    <div class="card card-container">
-      <img
-        id="profile-img"
-        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-        class="profile-img-card"
+  <div class="q-pa-md" style="max-width: 400px">
+    <q-form
+      @submit="handleRegister({ username, email, password })"
+      @reset="onReset"
+      class="q-gutter-md"
+    >
+      <q-input
+        filled
+        v-model="username"
+        label="Имя пользователя *"
+        hint="Латинские символы и цифры"
+        lazy-rules
+        :rules="[
+          (val) =>
+            (val.length >= 6 && val.length <= 16) ||
+            'Имя пользователя должно быть в пределах от 6 до 16 символов',
+        ]"
       />
-      <Form @submit="handleRegister" :validation-schema="schema">
-        <div v-if="!successful">
-          <div class="form-group">
-            <label for="username">Username</label>
-            <Field name="username" type="text" class="form-control" />
-            <ErrorMessage name="username" class="error-feedback" />
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <Field name="email" type="email" class="form-control" />
-            <ErrorMessage name="email" class="error-feedback" />
-          </div>
-          <div class="form-group">
-            <label for="password">Password</label>
-            <Field name="password" type="password" class="form-control" />
-            <ErrorMessage name="password" class="error-feedback" />
-          </div>
 
-          <div class="form-group">
-            <button class="btn btn-primary btn-block" :disabled="loading">
-              <span
-                v-show="loading"
-                class="spinner-border spinner-border-sm"
-              ></span>
-              Sign Up
-            </button>
-          </div>
-        </div>
-      </Form>
+      <q-input
+        filled
+        type="email"
+        v-model="email"
+        label="Email адрес *"
+        lazy-rules
+        :rules="[(val) => !!val || 'Поле не может быть пустым', isValidEmail]"
+      />
 
-      <div
-        v-if="message"
-        class="alert"
-        :class="successful ? 'alert-success' : 'alert-danger'"
-      >
-        {{ message }}
+      <q-input
+        filled
+        type="password"
+        v-model="password"
+        label="Пароль *"
+        lazy-rules
+        :rules="[
+          (val) =>
+            (val.length >= 6 && val.length <= 20) ||
+            'Пароль должен содержать от 6 до 20 символов',
+        ]"
+      />
+
+      <div>
+        <q-btn label="Зарегистрироваться" type="submit" color="primary" />
+        <q-btn
+          label="Очистить"
+          type="reset"
+          color="primary"
+          flat
+          class="q-ml-sm"
+        />
       </div>
-    </div>
+    </q-form>
   </div>
 </template>
 
 <script>
-import {ErrorMessage, Field, Form} from "vee-validate";
-import * as yup from "yup";
-import {mapActions, useStore} from "vuex";
-import {computed} from "@vue/reactivity";
+import { mapActions, useStore } from "vuex";
+import { ref } from "vue";
+import { computed } from "@vue/reactivity";
 
 export default {
   name: "Register",
-  components: {
-    Form,
-    Field,
-    ErrorMessage,
-  },
-  data: function() {
-    const schema = yup.object().shape({
-      username: yup
-        .string()
-        .required("Username is required!")
-        .min(3, "Must be at least 3 characters!")
-        .max(20, "Must be maximum 20 characters!"),
-      email: yup
-        .string()
-        .required("Email is required!")
-        .email("Email is invalid!")
-        .max(50, "Must be maximum 50 characters!"),
-      password: yup
-        .string()
-        .required("Password is required!")
-        .min(6, "Must be at least 6 characters!")
-        .max(40, "Must be maximum 40 characters!"),
-    });
-
+  components: {},
+  data: function () {
     return {
-      successful: false,
-      loading: false,
-      message: "",
-      schema
+      message: ""
     };
   },
   mounted() {
     if (this.loggedIn) {
-      this.$router.push("/profile");
+      this.$router.push("/");
     }
   },
   setup() {
     const store = useStore();
+    const username = ref(null);
+    const email = ref(null);
+    const password = ref(null);
     return {
-      loggedIn: computed(()=>store.getters['auth/isLogged'])
-    }
+      loggedIn: computed(() => store.getters["auth/isLogged"]),
+      username,
+      email,
+      password,
+
+      onReset() {
+        username.value = null;
+        email.value = null;
+        password.value = null;
+      },
+    };
   },
   methods: {
     ...mapActions("auth", ["registerAction"]),
+    
     async handleRegister(user) {
+      console.log(user);
       this.message = "";
-      this.successful = false;
-      this.loading = true;
 
       try {
-        const {message} = await this.registerAction(user);
+        const { message } = await this.registerAction(user);
         this.message = message;
-        this.successful = true;
-        this.loading = false;
+        this.$router.push('/')
       } catch (e) {
-        this.successful = false;
-        this.loading = false;
         this.message = e.response.data.message;
       }
     },
-  },
 
-  // computed: {
-  //   loggedIn() {
-  //     return this.$store.state.auth.loggedIn;
-  //   },
-  // },
+    isValidEmail(val) {
+      const emailPattern =
+        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+      return emailPattern.test(val) || "Недопустимый email";
+    },
+  },
 };
 </script>
 

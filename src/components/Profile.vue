@@ -1,21 +1,21 @@
 <template>
-  <div>
+  <div class="container">
     <header class="jumbotron">
       <h3>
-        <strong>{{user.username}}</strong> Profile
+        <strong>{{currentUser.username}}</strong> Profile
       </h3>
     </header>
     <p>
       <strong>Token:</strong>
-      {{user.accessToken.substring(0, 20)}} ... {{user.accessToken.substr(user.accessToken.length - 20)}}
+      {{currentUser.accessToken.substring(0, 20)}} ... {{currentUser.accessToken.substr(currentUser.accessToken.length - 20)}}
     </p>
     <p>
       <strong>Id:</strong>
-      {{user.id}}
+      {{currentUser.id}}
     </p>
     <p>
       <strong>Email:</strong>
-      {{user.email}}
+      {{currentUser.email}}
     </p>
     <strong>Authorities:</strong>
     <ul>
@@ -25,21 +25,38 @@
 </template>
 
 <script>
+import {mapActions, useStore} from "vuex";
+import {computed, onMounted, ref} from "vue";
 export default {
   name: 'Profile',
-  computed: {
-    currentUser() {
-      console.log(this.$store.state.auth.user)
-      return this.$store.state.auth.user;
-    }
-  },
-  mounted() {
-    console.log(this.user)
-    console.log(this.currentUser)
-    if (!this.user) {
-      this.$router.push('/login');
-    } else {
+  // computed: {
+  //   currentUser() {
+  //     console.log("current user method")
+  //     return this.$store.state.auth.user;
+  //   }
+  // },
+  // mounted() {
+  //   console.log("profile mounted method")
+  //   if (!this.currentUser) {
+  //     console.log("profile redirect to login")
+  //     this.$router.push('/login');
+  //   }
+  // },
+  setup() {
+    const store = useStore()
+    console.log("start setup method")
+    const currentUser = computed(()=>store.state.auth.user)
+    console.log(currentUser)
 
+    onMounted(()=> {
+      console.log("profile mounted method")
+      if (!currentUser.value) {
+        console.log("profile redirect to login")
+        this.$router.push('/login');
+      }
+    })
+    return {
+      currentUser
     }
   }
 };

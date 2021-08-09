@@ -15,7 +15,7 @@
                         <a class="nav-link" href="/groupSelecting">Расписание</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/registration">Регистрация</a>
+                        <a class="nav-link" href="/signup">Регистрация</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/login">Войти</a>
