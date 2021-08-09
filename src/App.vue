@@ -54,6 +54,7 @@
 </template>
 <script>
 import { defineComponent } from 'vue';
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: 'App',
@@ -79,7 +80,8 @@ export default defineComponent({
   },
   methods: {
     logOut() {
-      this.$store.dispatch('auth/logout');
+      console.log(this.$store)
+      this.$store.dispatch('auth/logoutAction');
       this.$router.push('/login');
     }
   }

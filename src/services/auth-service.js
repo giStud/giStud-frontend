@@ -19,11 +19,16 @@ class AuthService {
   }
 
   async register(user) {
-    return await api.post("/auth/signup", {
-      username: user.username,
-      email: user.email,
-      password: user.password,
-    }).data;
+    try {
+      const {data} = await api.post("/auth/signup", {
+        username: user.username,
+        email: user.email,
+        password: user.password,
+      })
+      return data;
+    } catch (e) {
+      throw e
+    }
   }
 }
 

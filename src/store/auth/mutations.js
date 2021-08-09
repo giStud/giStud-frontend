@@ -1,22 +1,22 @@
-export function loginSuccessMut(state, user) {
+export function loginSuccessMutation(state, user) {
     state.loggedIn = true;
     state.user = user;
 }
 
-export function loginFailureMut(state) {
+export function loginFailureMutation(state) {
     state.loggedIn = false;
     state.user = null;
 }
 
-export function logoutMut(state) {
+export function logoutMutation(state) {
     state.loggedIn = false;
     state.user = null;
 }
 
-export function registerSuccessMut(state) {
+export function registerSuccessMutation(state) {
     state.loggedIn = true;
 }
 
-export function registerFailureMut(state) {
+export function registerFailureMutation(state) {
     state.loggedIn = false;
 }

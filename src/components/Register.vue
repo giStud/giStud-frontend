@@ -48,9 +48,10 @@
 </template>
 
 <script>
-import { Form, Field, ErrorMessage } from "vee-validate";
+import {ErrorMessage, Field, Form} from "vee-validate";
 import * as yup from "yup";
-import { useStore } from "vuex";
+import {mapActions, useStore} from "vuex";
+import {computed} from "@vue/reactivity";
 
 export default {
   name: "Register",
@@ -91,36 +92,35 @@ export default {
     }
   },
   methods: {
-    handleRegister(user) {
+    ...mapActions("auth", ["registerAction"]),
+    async handleRegister(user) {
       this.message = "";
       this.successful = false;
       this.loading = true;
 
-      this.$store.dispatch("auth/register", user).then(
-        (data) => {
-          this.message = data.message;
-          this.successful = true;
-          this.loading = false;
-        },
-        (error) => {
-          console.log(this.message);
-          this.message =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          this.successful = false;
-          this.loading = false;
-        }
-      );
+      try {
+        const {message} = await this.registerAction(user);
+        this.message = message;
+        this.successful = true;
+        this.loading = false;
+      } catch (e) {
+        this.message = e.response.data.message;
+        this.successful = false;
+        this.loading = false;
+      }
     },
   },
-  computed: {
-    loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
-    },
+  setup() {
+    const store = useStore();
+    return {
+      loggedIn: computed(()=>store.getters['auth/isLogged'])
+    }
   },
+  // computed: {
+  //   loggedIn() {
+  //     return this.$store.state.auth.loggedIn;
+  //   },
+  // },
 };
 </script>
 
