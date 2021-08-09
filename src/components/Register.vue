@@ -56,75 +56,81 @@
 
 <script>
 import { mapActions, useStore } from "vuex";
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
 
 export default {
   name: "Register",
   components: {},
-  data: function () {
-    return {
-      message: "",
-    };
-  },
-  mounted() {
-    if (this.loggedIn) {
-      this.$router.push("/");
-    }
-  },
+  // mounted() {
+  //   if (this.loggedIn) {
+  //     this.$router.push("/");
+  //   }
+  // },
   setup() {
     const store = useStore();
+    const router = useRouter();
+    const $q = useQuasar();
 
     const username = ref(null);
     const email = ref(null);
     const password = ref(null);
-    
+    const message = ref(null);
+    const loggedIn = ref(store.state.auth.loggedIn);
+
+    onMounted(() => {
+      if (loggedIn.value) {
+        router.push("/");
+      }
+    });
+
     return {
-      loggedIn: computed(() => store.getters["auth/isLogged"]),
+      loggedIn,
       username,
       email,
       password,
+      message,
+
+      async handleRegister(user) {
+        message.value = "";
+        try {
+          const { data } = await store.dispatch("auth/registerAction", user);
+          message.value = data;
+          console.log(message);
+          $q.notify({
+            color: "green-4",
+            textColor: "white",
+            icon: "cloud_done",
+            message: "Успешная регистрация",
+          });
+          router.push("/");
+          console.log(user);
+        } catch (e) {
+          console.log(e);
+          console.log(e.response.data.message);
+          message.value = e.response.data.message;
+          $q.notify({
+            color: "red-5",
+            textColor: "white",
+            icon: "warning",
+            message,
+          });
+        }
+      },
 
       onReset() {
         username.value = null;
         email.value = null;
         password.value = null;
       },
+
+      isValidEmail(val) {
+        const emailPattern =
+          /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
+        return emailPattern.test(val) || "Недопустимый email";
+      },
     };
-  },
-  methods: {
-    ...mapActions("auth", ["registerAction"]),
-
-    async handleRegister(user) {
-      const $q = useQuasar();
-
-      this.message = "";
-      try {
-        const { message } = await this.registerAction(user);
-        this.message = message;
-        $q.notify({
-          color: "green-4",
-          textColor: "white",
-          icon: "cloud_done",
-          message: "Успешная регистрация",
-        });
-        this.$router.push("/");
-      } catch (e) {
-        this.message = e.response.data.message;
-        $q.notify({
-          color: "red-5",
-          textColor: "white",
-          icon: "warning",
-          message,
-        });
-      }
-    },
-
-    isValidEmail(val) {
-      const emailPattern =
-        /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-      return emailPattern.test(val) || "Недопустимый email";
-    },
   },
 };
 </script>
