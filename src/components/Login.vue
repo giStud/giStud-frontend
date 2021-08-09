@@ -41,7 +41,8 @@
 <script>
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import { useStore } from "vuex";
+import {mapActions, useStore} from "vuex";
+import {computed} from "@vue/reactivity";
 
 export default {
   name: "Login",
@@ -62,10 +63,11 @@ export default {
       schema
     };
   },
-  computed: {
-    loggedIn() {
-      return this.$store.state.auth.status.loggedIn;
-    },
+  setup() {
+    const store = useStore();
+    return {
+      loggedIn: computed(()=>store.getters['auth/isLogged'])
+    }
   },
   created() {
     if (this.loggedIn) {
@@ -73,23 +75,18 @@ export default {
     }
   },
   methods: {
-    handleLogin(user) {
+    ...mapActions("auth", ["loginAction"]),
+    async handleLogin(user) {
       this.loading = true;
 
-      this.$store.dispatch("auth/login", user).then(
-        () => {
-          this.$router.push("/profile");
-        },
-        (error) => {
-          this.loading = false;
-          this.message =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-        }
-      );
+      try {
+        const data = await this.loginAction(user);
+        await this.$router.push("/profile");
+        console.log(data)
+      } catch(e) {
+        this.loading = false;
+        this.message = e.response.data.message;
+      }
     },
   },
 };

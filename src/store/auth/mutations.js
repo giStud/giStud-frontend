@@ -14,7 +14,7 @@ export function logoutMutation(state) {
 }
 
 export function registerSuccessMutation(state) {
-    state.loggedIn = true;
+    state.loggedIn = false;
 }
 
 export function registerFailureMutation(state) {

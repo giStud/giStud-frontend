@@ -91,6 +91,12 @@ export default {
       this.$router.push("/profile");
     }
   },
+  setup() {
+    const store = useStore();
+    return {
+      loggedIn: computed(()=>store.getters['auth/isLogged'])
+    }
+  },
   methods: {
     ...mapActions("auth", ["registerAction"]),
     async handleRegister(user) {
@@ -104,18 +110,13 @@ export default {
         this.successful = true;
         this.loading = false;
       } catch (e) {
-        this.message = e.response.data.message;
         this.successful = false;
         this.loading = false;
+        this.message = e.response.data.message;
       }
     },
   },
-  setup() {
-    const store = useStore();
-    return {
-      loggedIn: computed(()=>store.getters['auth/isLogged'])
-    }
-  },
+
   // computed: {
   //   loggedIn() {
   //     return this.$store.state.auth.loggedIn;

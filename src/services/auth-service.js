@@ -2,16 +2,18 @@ import { api } from "boot/axios";
 
 class AuthService {
   async login(user) {
-    const response = await api.post('/auth/signin', {
-      username: user.username,
-      password: user.password
-    });
-    if (response.data.accessToken) {
-      console.log('auth-service-login:' + response.data)
-      console.log('auth-service-login:' + JSON.stringify(response.data))
-      localStorage.setItem('user', JSON.stringify(response.data));
+    try {
+      const {data} = await api.post('/auth/signin', {
+        username: user.username,
+        password: user.password
+      });
+      if (data.accessToken) {
+        localStorage.setItem('user', JSON.stringify(data));
+      }
+      return data;
+    } catch (e) {
+      throw e;
     }
-    return response.data;
   }
 
   logout() {
@@ -27,7 +29,7 @@ class AuthService {
       })
       return data;
     } catch (e) {
-      throw e
+      throw e;
     }
   }
 }

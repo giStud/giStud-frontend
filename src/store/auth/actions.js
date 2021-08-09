@@ -1,13 +1,14 @@
 import AuthService from '../../services/auth-service';
 
-export function loginAction({ commit }, user) {
+export async function loginAction({ commit }, user) {
   try {
-    const data = AuthService.login(user);
+    const data = await AuthService.login(user);
     commit('loginSuccessMutation', user);
     return data;
   } catch (e) {
     commit('loginFailureMutation');
-    console.error(e)
+    console.error(e);
+    throw e;
   }
 }
 
@@ -19,7 +20,6 @@ export function logoutAction({ commit }) {
 export async function registerAction({ commit }, user) {
   try {
     const data = await AuthService.register(user);
-    console.error('action success: ' + data)
     commit('registerSuccessMutation');
     return data;
   } catch (e) {

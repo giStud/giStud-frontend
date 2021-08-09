@@ -1,21 +1,21 @@
 <template>
-  <div class="container">
+  <div>
     <header class="jumbotron">
       <h3>
-        <strong>{{currentUser.username}}</strong> Profile
+        <strong>{{user.username}}</strong> Profile
       </h3>
     </header>
     <p>
       <strong>Token:</strong>
-      {{currentUser.accessToken.substring(0, 20)}} ... {{currentUser.accessToken.substr(currentUser.accessToken.length - 20)}}
+      {{user.accessToken.substring(0, 20)}} ... {{user.accessToken.substr(user.accessToken.length - 20)}}
     </p>
     <p>
       <strong>Id:</strong>
-      {{currentUser.id}}
+      {{user.id}}
     </p>
     <p>
       <strong>Email:</strong>
-      {{currentUser.email}}
+      {{user.email}}
     </p>
     <strong>Authorities:</strong>
     <ul>
@@ -29,12 +29,17 @@ export default {
   name: 'Profile',
   computed: {
     currentUser() {
+      console.log(this.$store.state.auth.user)
       return this.$store.state.auth.user;
     }
   },
   mounted() {
-    if (!this.currentUser) {
+    console.log(this.user)
+    console.log(this.currentUser)
+    if (!this.user) {
       this.$router.push('/login');
+    } else {
+
     }
   }
 };
