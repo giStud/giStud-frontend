@@ -14,11 +14,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/groupSelecting">Расписание</a>
                     </li>
-                    <li class="nav-item">
+                    <li :v-if="!loggedIn" class="nav-item">
                         <a class="nav-link" href="/signup">Регистрация</a>
                     </li>
-                    <li class="nav-item">
+                    <li :v-if="!loggedIn" class="nav-item">
                         <a class="nav-link" href="/login">Войти</a>
+                    </li>
+                    <li :v-if="loggedIn" @click="logout" class="nav-item">
+                        <a class="nav-link" href="/">Выйти</a>
+                    </li>
+                    <li :v-if="!!currentUser" class="nav-item">
+                        {{currentUser ? currentUser.username : ''}}
                     </li>
                 </ul>
             </div>
@@ -28,8 +34,28 @@
 </template>
 
 <script>
-export default {
+import { useStore } from "vuex";
+import { ref, computed, onMounted } from "vue";
+import { useRouter } from "vue-router";
 
+export default {
+    name: "Header",
+
+    setup() {
+        const store = useStore();
+        const router = useRouter();
+        const loggedIn = ref(store.state.auth.loggedIn)
+
+        return {
+            loggedIn,
+            currentUser : computed(()=>store.state.auth.user),
+
+            logout() {
+                store.dispatch("auth/logoutAction");
+                router.push('/');
+            }
+        }
+    }
 }
 </script>
 

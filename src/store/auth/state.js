@@ -9,7 +9,7 @@ if (user) {
 
 export default function () {
   return {
-    user: user,
+    user,
     loggedIn
   }
 }

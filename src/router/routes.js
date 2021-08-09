@@ -1,6 +1,3 @@
-import Home from "components/Home.vue";
-import Login from "components/Login.vue";
-import Register from "components/Register.vue";
 import Profile from "components/Profile"
 
 
@@ -31,7 +28,7 @@ const routes = [
     path: "/signup",
     component: () => import('layouts/AuthLayout.vue'),
     children: [
-      { path: '', component: () => import('components/Register') }
+      { path: '', component: () => import('components/Registration') }
     ]
   },
   {
