@@ -108,6 +108,9 @@ export default {
           const { data } = await store.dispatch("auth/registerAction", user);
           message.value = data;
           console.log(message);
+          const loginData = await store.dispatch("auth/loginAction", {username : user.username, password : user.password});
+          console.log("loginData" + loginData.data);
+
           $q.notify({
             color: "green-4",
             textColor: "white",
