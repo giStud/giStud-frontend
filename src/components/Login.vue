@@ -36,50 +36,7 @@
       </Form>
     </div>
   </div>
-  <!-- <div class="q-pa-md" style="max-width: 400px">
-
-    <q-form
-      @submit="onSubmit"
-      @reset="onReset"
-      class="q-gutter-md"
-    >
-      <q-input
-        filled
-        type="text"
-        v-model="username"
-        label="Имя пользователя *"
-        hint="Латинские символы и цифры"
-        lazy-rules
-        :rules="usernameRules"
-      />
-
-      <q-input
-        filled
-        type="email"
-        v-model="age"
-        label="Email адрес *"
-        lazy-rules
-        :rules="emailRules"
-      />
-
-       <q-input
-        filled
-        type="password"
-        v-model="password"
-        label="Пароль *"
-        lazy-rules
-        :rules="passwordRules"
-      />
-
-      <q-toggle v-model="accept" label="I accept the license and terms" />
-
-      <div>
-        <q-btn label="Зарегистрироваться" type="submit" color="primary"/>
-        <q-btn label="Очистить" type="reset" color="primary" flat class="q-ml-sm" />
-      </div>
-    </q-form>
-
-  </div> -->
+  
 </template>
 
 <script>

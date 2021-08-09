@@ -13,7 +13,7 @@
         lazy-rules
         :rules="[
           (val) =>
-            (val.length >= 6 && val.length <= 16) ||
+            (!!val && val.length >= 6 && val.length <= 16) ||
             'Имя пользователя должно быть в пределах от 6 до 16 символов',
         ]"
       />
@@ -35,7 +35,7 @@
         lazy-rules
         :rules="[
           (val) =>
-            (val.length >= 6 && val.length <= 20) ||
+            (!!val && val.length >= 6 && val.length <= 20) ||
             'Пароль должен содержать от 6 до 20 символов',
         ]"
       />
@@ -56,15 +56,15 @@
 
 <script>
 import { mapActions, useStore } from "vuex";
-import { ref } from "vue";
-import { computed } from "@vue/reactivity";
+import { ref, computed } from "vue";
+import { useQuasar } from "quasar";
 
 export default {
   name: "Register",
   components: {},
   data: function () {
     return {
-      message: ""
+      message: "",
     };
   },
   mounted() {
@@ -74,9 +74,11 @@ export default {
   },
   setup() {
     const store = useStore();
+
     const username = ref(null);
     const email = ref(null);
     const password = ref(null);
+    
     return {
       loggedIn: computed(() => store.getters["auth/isLogged"]),
       username,
@@ -92,17 +94,29 @@ export default {
   },
   methods: {
     ...mapActions("auth", ["registerAction"]),
-    
-    async handleRegister(user) {
-      console.log(user);
-      this.message = "";
 
+    async handleRegister(user) {
+      const $q = useQuasar();
+
+      this.message = "";
       try {
         const { message } = await this.registerAction(user);
         this.message = message;
-        this.$router.push('/')
+        $q.notify({
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Успешная регистрация",
+        });
+        this.$router.push("/");
       } catch (e) {
         this.message = e.response.data.message;
+        $q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message,
+        });
       }
     },
 
