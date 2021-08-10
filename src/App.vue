@@ -4,6 +4,7 @@
 <script>
 import { defineComponent } from "vue";
 import { mapActions, useStore } from "vuex";
+import setupInterceptors from "./services/setupInterceptors"
 
 export default defineComponent({
   name: "App",
@@ -12,6 +13,9 @@ export default defineComponent({
       console.log(this.$store);
       return this.$store.state.auth.user;
     },
+  },
+  mounted() {
+    setupInterceptors(this.$store);
   },
   methods: {
     ...mapActions("auth", ["logoutAction"]),
