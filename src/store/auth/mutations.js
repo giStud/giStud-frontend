@@ -20,3 +20,8 @@ export function registerSuccessMutation(state) {
 export function registerFailureMutation(state) {
     state.loggedIn = false;
 }
+
+export function refreshToken(state, accessToken) {
+    state.loggedIn = true
+    state.user = {...state.user, accessToken : accessToken}
+}

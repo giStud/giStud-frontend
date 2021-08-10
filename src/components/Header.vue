@@ -25,8 +25,9 @@
 
 <script>
 import { useStore } from "vuex";
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 import { useRouter } from "vue-router";
+import EventBus from "../common/eventBus";
 
 export default {
   name: "Header",
@@ -34,16 +35,30 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
-    const loggedIn = computed(() => store.state.auth.loggedIn)
+    const loggedIn = computed(() => store.state.auth.loggedIn);
+
+    const logout = () => {
+      store.dispatch("auth/logoutAction");
+      router.push("/");
+    };
+
+    onMounted(() => {
+      console.log("create event handler");
+      EventBus.on("logout", () => {
+        logout();
+      });
+    });
+
+    onBeforeUnmount(() => {
+      console.log("delete event handler");
+      EventBus.remove("logout");
+    });
 
     return {
       loggedIn,
       currentUser: computed(() => store.state.auth.user),
-
-      logout() {
-        store.dispatch("auth/logoutAction");
-        router.push("/");
-      },
+      logout
+      
     };
   },
 };

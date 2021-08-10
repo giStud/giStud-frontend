@@ -38,14 +38,13 @@
 <script>
 import { onMounted, ref } from "vue";
 import { useStore } from "vuex";
+import EventBus from "../common/eventBus"
 
 export default {
   name: "GroupSelectingLayout",
   components: {},
 
-  methods: {
-    
-  },
+  methods: {},
 
   setup() {
     const store = useStore();
@@ -73,19 +72,23 @@ export default {
           }
         });
       },
-      loadGroupSchedule() {
-      if (selected.value !== null) {
-        store.dispatch("schedule/getGroupByNameAndUnivAction", {
-          groupName: selected.value,
-        });
-        //window.location.href = '/schedule';
-      } else {
-        console.log("debil");
-      }
+      async loadGroupSchedule() {
+        if (selected.value !== null) {
+          try {
+              await store.dispatch("schedule/getGroupByNameAndUnivAction", {
+              groupName: selected.value,
+            });
+          } catch (e) {
+            // if (e.response && e.response.status === 403) {
+            //   EventBus.dispatch("logout");
+            // }
+          }
 
-      //console.log(store.getters["schedule/getSelectedGroup"]);
-      //this.$router.go("/schedule");
-    },
+          console.log(store.state.schedule.selectedGroup);
+        } else {
+          console.log("debil");
+        }
+      },
     };
   },
 };

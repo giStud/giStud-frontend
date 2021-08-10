@@ -1,4 +1,5 @@
 import { api } from "boot/axios";
+import TokenService from "./tokenService";
 
 class AuthService {
   async login(user) {
@@ -8,7 +9,7 @@ class AuthService {
         password: user.password
       });
       if (data.accessToken) {
-        localStorage.setItem('user', JSON.stringify(data));
+        TokenService.setUser(data)
       }
       return data;
     } catch (e) {
@@ -17,7 +18,7 @@ class AuthService {
   }
 
   logout() {
-    localStorage.removeItem("user");
+    TokenService.removeUser();
   }
 
   async register(user) {

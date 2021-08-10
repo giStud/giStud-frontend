@@ -81,8 +81,6 @@ export default {
       async handleLogin(user) {
         try {
           const data = await store.dispatch("auth/loginAction", user);
-          console.log(data);
-          console.log(localStorage.getItem("user"));
           $q.notify({
             color: "green-4",
             textColor: "white",

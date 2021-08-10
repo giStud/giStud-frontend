@@ -1,9 +1,8 @@
 import {api} from 'boot/axios'
-import authHeader from './authHeader'
 
 class UserService {
     getPublicContent() {
-      return api.get('/api/test/all');
+      //return api.get('/api/test/all', {headers: authHeader()});
     }
   }
 

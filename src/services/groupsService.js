@@ -12,8 +12,14 @@ class GroupService {
     }
 
     async getGroupByNameAndUniv (groupName) {
-        const {data} = await api.get("/groups/group?groupName=" + groupName)
-        return data;
+        try {
+            const {data} = await api.get("/groups/group?groupName=" + groupName)
+            return data;
+        } catch(e) {
+            console.log("Упали в груп сервисе");
+            throw e
+        }
+        
     }
 }
 

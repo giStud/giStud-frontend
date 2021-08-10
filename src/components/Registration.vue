@@ -107,9 +107,8 @@ export default {
         try {
           const { data } = await store.dispatch("auth/registerAction", user);
           message.value = data;
-          console.log(message);
           const loginData = await store.dispatch("auth/loginAction", {username : user.username, password : user.password});
-          console.log("loginData" + loginData.data);
+          console.log("loginData: " + loginData.data);
 
           $q.notify({
             color: "green-4",
@@ -118,10 +117,7 @@ export default {
             message: "Успешная регистрация",
           });
           router.push("/");
-          console.log(user);
         } catch (e) {
-          console.log(e);
-          console.log(e.response.data.message);
           message.value = e.response.data.message;
           $q.notify({
             color: "red-5",
