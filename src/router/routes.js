@@ -32,6 +32,10 @@ const routes = [
     ]
   },
   {
+    path: "/schedulesLoading",
+    component: () => import('pages/ScheduleLoading.vue'),
+  },
+  {
     path: "/profile",
     // lazy-loaded
     component: Profile,
