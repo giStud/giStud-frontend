@@ -1,5 +1,6 @@
 import {api} from 'boot/axios'
 import TokenService from "./tokenService";
+import EventBus from "src/common/eventBus";
 
 const setup = (store) => {
     api.interceptors.request.use(
@@ -21,6 +22,13 @@ const setup = (store) => {
     },
     async (err) => {
       const originalConfig = err.config;
+      if (originalConfig.url === "/auth/refreshtoken" && err.response) {
+        if (err.response.status === 403 && !originalConfig._retry) {
+          originalConfig._retry = true;
+          EventBus.dispatch("logout");
+          return api(originalConfig);
+        }
+      }
       if (originalConfig.url !== "/auth/signin" && err.response) {
         // Access Token was expired
         if (err.response.status === 401 && !originalConfig._retry) {
@@ -31,10 +39,10 @@ const setup = (store) => {
               refreshToken: TokenService.getLocalRefreshToken(),
             });
 
-            const { accessToken } = rs.data;
-            console.log(store);
-            store.dispatch('auth/refreshToken', accessToken);
+            const { accessToken, refreshToken } = rs.data;
+            store.dispatch('auth/refreshTokensAction', accessToken, refreshToken);
             TokenService.updateLocalAccessToken(accessToken);
+            TokenService.updateLocalRefreshToken(refreshToken);
 
             return api(originalConfig);
           } catch (_error) {

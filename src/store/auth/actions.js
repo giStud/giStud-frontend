@@ -28,7 +28,7 @@ export async function registerAction({ commit }, user) {
   }
 }
 
-export function refreshToken({commit}, accessToken) {
-  commit('refreshToken', accessToken)
+export function refreshTokensAction({commit}, accessToken, refreshToken) {
+  commit('refreshTokensMutation', accessToken, refreshToken)
 }
 
