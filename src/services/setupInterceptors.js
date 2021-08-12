@@ -1,21 +1,8 @@
 import {api} from 'boot/axios'
-import TokenService from "./tokenService";
 import EventBus from "src/common/eventBus";
+import TokenService from "./tokenService"
 
 const setup = (store) => {
-    api.interceptors.request.use(
-    (config) => {
-      const token = TokenService.getLocalAccessToken();
-      if (token) {
-        config.headers["Authorization"] = 'Bearer ' + token;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
-
   api.interceptors.response.use(
     (res) => {
       return res;

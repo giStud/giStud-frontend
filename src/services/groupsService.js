@@ -1,4 +1,5 @@
 import {api} from "boot/axios"
+import authHeader from "./authHeader";
 
 class GroupService {
     async getGroups () {
@@ -13,7 +14,7 @@ class GroupService {
 
     async getGroupByNameAndUniv (groupName) {
         try {
-            const {data} = await api.get("/groups/group?groupName=" + groupName)
+            const {data} = await api.get("/groups/group?groupName=" + groupName/*, {headers: authHeader()}*/)
             return data;
         } catch(e) {
             throw e
