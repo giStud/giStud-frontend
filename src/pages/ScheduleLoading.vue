@@ -8,6 +8,7 @@
         url="http://localhost:8080/schedulesLoading"
         label="Загрузка расписания"
         multiple
+        batch
         style="max-width: 300px"
       />
     </div>
