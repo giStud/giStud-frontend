@@ -1,18 +1,7 @@
 <template>
   <div class="q-pa-md">
     <div class="q-gutter-md row items-start">
-      <q-input
-        @update:model-value="
-          (val) => {
-            files = val;
-          }
-        "
-        ref="inputFiles"
-        multiple
-        filled
-        type="file"
-        hint="Native file (multiple)"
-      />
+      <input type="file" @change="setFiles" multiple="">
     </div>
     <div>
       <q-btn color="primary" style="width: 200px" @click="loadSchedules">
@@ -21,22 +10,33 @@
         </div>
       </q-btn>
     </div>
+    <div>
+      <q-uploader
+        field-name="files"
+        method="POST"
+        :headers="headers"
+        url="http://localhost:8080/schedulesLoading"
+        label="Загрузка расписания"
+        multiple
+        style="max-width: 300px"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-import {ref} from "vue";
+import authHeader from "../services/authHeader";
+
 export default {
   setup() {
-      const files = ref(null)
-      const loadSchedules = () => {
-          if(files.value) {
 
-          }
-      }
+    console.log(authHeader())
+    [{key : Auth, value : token}]
+    const headers = Object.entries(authHeader()).map(([key, value])=>{
+      return {name : key, value}
+    })
     return {
-      files,
-      loadSchedules
+      headers
     };
   },
 };

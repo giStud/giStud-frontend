@@ -10,6 +10,7 @@ const setup = (store) => {
     async (err) => {
       const originalConfig = err.config;
       if (originalConfig.url === "/auth/refreshtoken" && err.response) {
+        //How refresh token was expired, we need to logout user from system (maybe router push to login page)
         if (err.response.status === 403 && !originalConfig._retry) {
           originalConfig._retry = true;
           EventBus.dispatch("logout");
