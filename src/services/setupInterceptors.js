@@ -21,17 +21,10 @@ const setup = (store) => {
         // Access Token was expired
         if (err.response.status === 401 && !originalConfig._retry) {
           originalConfig._retry = true;
-
+          console.log("interceptor called")
           try {
-            const rs = await api.post("/auth/refreshtoken", {
-              refreshToken: TokenService.getLocalRefreshToken(),
-            });
-
-            const { accessToken, refreshToken } = rs.data;
+            const {accessToken, refreshToken} = TokenService.refreshTokens()
             store.dispatch('auth/refreshTokensAction', accessToken, refreshToken);
-            TokenService.updateLocalAccessToken(accessToken);
-            TokenService.updateLocalRefreshToken(refreshToken);
-
             return api(originalConfig);
           } catch (_error) {
             return Promise.reject(_error);

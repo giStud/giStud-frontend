@@ -1,3 +1,5 @@
+import {api} from "boot/axios";
+
 class TokenService {
   getLocalRefreshToken() {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -32,6 +34,17 @@ class TokenService {
 
   removeUser() {
     localStorage.removeItem("user");
+  }
+
+  async refreshTokens() {
+    const rs = await api.post("/auth/refreshtoken", {
+      refreshToken: this.getLocalRefreshToken(),
+    });
+
+    const {accessToken, refreshToken} = rs.data;
+    this.updateLocalAccessToken(accessToken);
+    this.updateLocalRefreshToken(refreshToken);
+    return rs.data
   }
 }
 

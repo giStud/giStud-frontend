@@ -10,6 +10,7 @@
         multiple
         batch
         style="max-width: 300px"
+        @failed="onFailed"
       />
     </div>
   </div>
@@ -17,14 +18,25 @@
 
 <script>
 import authHeader from "../services/authHeader";
+import TokenService from "src/services/tokenService";
+import {useStore} from "vuex";
 
 export default {
   setup() {
+    const store = useStore();
+    const onFailed = ((info) => {
+      if (info.xhr.status === 401) {
+        const {accessToken, refreshToken} = TokenService.refreshTokens()
+        store.dispatch('auth/refreshTokensAction', accessToken, refreshToken);
+      }
+    })
+
     const headers = Object.entries(authHeader()).map(([key, value])=>{
       return {name : key, value}
     })
     return {
-      headers
+      headers,
+      onFailed
     };
   },
 };
