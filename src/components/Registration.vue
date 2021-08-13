@@ -73,11 +73,6 @@ import { useRouter } from "vue-router";
 export default {
   name: "Register",
   components: {},
-  // mounted() {
-  //   if (this.loggedIn) {
-  //     this.$router.push("/");
-  //   }
-  // },
   setup() {
     const store = useStore();
     const router = useRouter();

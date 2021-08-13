@@ -1,6 +1,6 @@
 export default function () {
   return {
-    selectedGroup : {}
-
+    selectedGroup : {},
+    currentDate : new Date()
   }
 }

@@ -50,58 +50,58 @@
 <script>
 import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
-import createTableRows from "../composables/schedule/createTableRows"
+import {getTableRowsFromLessons, getTableColumns} from "../composables/schedule/ScheduleTable"
 
-const columns = [
-  {
-    name: 'time',
-    label: 'Время',
-    align: 'center',
-    field: 'time',
-  },
-  {
-    name: 'monday',
-    label: 'Понедельник',
-    align: 'center',
-    field: (row) => row.days.monday.name,
-    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-  },
-  {
-    name: 'tuesday',
-    label: 'Вторник',
-    align: 'center',
-    field: (row) => row.days.tuesday.name,
-    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
-  },
-  {
-    name: 'wednesday',
-    label: 'Среда',
-    align: 'center',
-    field: (row) => row.days.wednesday.name,
-    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-  },
-  {
-    name: 'thursday',
-    label: 'Четверг',
-    align: 'center',
-    field: (row) => row.days.thursday.name,
-    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-  },
-  {
-    name: 'friday',
-    label: 'Пятница',
-    align: 'center',
-    field: (row) => row.days.friday.name,
-    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-  },
-  {
-    name: 'saturday',
-    label: 'Суббота',
-    align: 'center',
-    field: (row) => row.days.saturday.name,
-    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-  },
-]
+// const columns = [
+//   {
+//     name: 'time',
+//     label: 'Время',
+//     align: 'center',
+//     field: 'time',
+//   },
+//   {
+//     name: 'monday',
+//     label: 'Понедельник',
+//     align: 'center',
+//     field: (row) => row.days.monday.name,
+//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+//   },
+//   {
+//     name: 'tuesday',
+//     label: 'Вторник',
+//     align: 'center',
+//     field: (row) => row.days.tuesday.name,
+//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
+//   },
+//   {
+//     name: 'wednesday',
+//     label: 'Среда',
+//     align: 'center',
+//     field: (row) => row.days.wednesday.name,
+//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+//   },
+//   {
+//     name: 'thursday',
+//     label: 'Четверг',
+//     align: 'center',
+//     field: (row) => row.days.thursday.name,
+//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+//   },
+//   {
+//     name: 'friday',
+//     label: 'Пятница',
+//     align: 'center',
+//     field: (row) => row.days.friday.name,
+//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+//   },
+//   {
+//     name: 'saturday',
+//     label: 'Суббота',
+//     align: 'center',
+//     field: (row) => row.days.saturday.name,
+//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+//   },
+// ]
 
 
 export default {
@@ -112,8 +112,10 @@ export default {
     const store = useStore();
     const selected = ref(null);
     const options = ref([]);
+    const columns = ref(getTableColumns());
     const rows = ref([]);
     const title = ref('');
+    const date = ref(new Date());
 
     const filteredOptions = ref(options.value);
     onMounted(async () => {
@@ -155,7 +157,7 @@ export default {
           const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
             groupName: selected.value,
           });
-          rows.value = createTableRows(selectedGroup.lessons);
+          rows.value = getTableRowsFromLessons(selectedGroup.lessons);
         } else {
           console.log('debil');
         }
