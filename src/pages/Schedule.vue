@@ -23,59 +23,121 @@
                 </q-item>
               </template>
             </q-select>
-            <q-btn round @click="loadGroupSchedule" />
+            <q-btn round @click="loadGroupSchedule"/>
           </div>
         </div>
       </q-card-section>
       <q-card-section>
-        <thead>
-        <tr>
-          <th v-for="head in headers" :key="head.title">{{ head.label }}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="lesson in lessons" :key="lesson.lessonId">
-          <td v-for="col in headers" :key="col.title">{{ lesson[col.field] }}</td>
-        </tr>
-        </tbody>
+        <q-table
+          :title="title"
+          :rows="rows"
+          :columns="columns"
+          row-key="rowNum"
+          table-colspan="7"
+          :rows-per-page-options="[5,6]"
+          hide-pagination
+          separator="cell"
+          wrap-cells
+        />
       </q-card-section>
     </q-card>
   </q-page>
   <q-page-container>
-    <router-view />
+    <router-view/>
   </q-page-container>
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
-import { useStore } from "vuex";
-import EventBus from "../common/eventBus"
+import {onMounted, ref, watch} from "vue";
+import {useStore} from "vuex";
+import createTableRows from "../composables/schedule/createTableRows"
+
+const columns = [
+  {
+    name: 'time',
+    label: 'Время',
+    align: 'center',
+    field: 'time',
+  },
+  {
+    name: 'monday',
+    label: 'Понедельник',
+    align: 'center',
+    field: (row) => row.days.monday.name,
+    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+  },
+  {
+    name: 'tuesday',
+    label: 'Вторник',
+    align: 'center',
+    field: (row) => row.days.tuesday.name,
+    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
+  },
+  {
+    name: 'wednesday',
+    label: 'Среда',
+    align: 'center',
+    field: (row) => row.days.wednesday.name,
+    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+  },
+  {
+    name: 'thursday',
+    label: 'Четверг',
+    align: 'center',
+    field: (row) => row.days.thursday.name,
+    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+  },
+  {
+    name: 'friday',
+    label: 'Пятница',
+    align: 'center',
+    field: (row) => row.days.friday.name,
+    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+  },
+  {
+    name: 'saturday',
+    label: 'Суббота',
+    align: 'center',
+    field: (row) => row.days.saturday.name,
+    classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+  },
+]
+
 
 export default {
-  name: "GroupSelectingLayout",
+  name: 'GroupSelectingLayout',
   components: {},
 
   setup() {
     const store = useStore();
     const selected = ref(null);
     const options = ref([]);
-    const lessons = ref([]);
+    const rows = ref([]);
+    const title = ref('');
 
     const filteredOptions = ref(options.value);
     onMounted(async () => {
-      await store.dispatch("groups/getGroupNamesAction");
-      options.value = store.getters["groups/getGroupNames"];
+      await store.dispatch('groups/getGroupNamesAction');
+      options.value = store.getters['groups/getGroupNames'];
     });
 
+    const getTitleText = ()=> {
+      if (selected.value !== null) {
+        title.value = 'Расписание группы ' + selected.value;
+      } else {
+        title.value = '';
+      }
+    }
+
+    watch(selected, getTitleText)
+
     return {
-      headers: [
-        { title: "name", label: "Название", field: "name" },
-        { title: "day", label: "День", field: "day" },
-        { title: "time", label: "Время", field: "time" }
-      ],
       filteredOptions,
       selected,
-      lessons,
+      columns,
+      rows,
+      title,
+      getTitleText,
       filterFn(val, update, abort) {
         update(() => {
           const needle = val.toLocaleLowerCase();
@@ -90,29 +152,12 @@ export default {
       },
       async loadGroupSchedule() {
         if (selected.value !== null) {
-          try {
-              const selectedGroup = await store.dispatch("schedule/getGroupByNameAndUnivAction", {
-              groupName: selected.value,
-            });
-              const lessonsFromGroup = selectedGroup.lessons;
-              lessons.value = lessonsFromGroup;
-              console.log(selectedGroup);
-              console.log(lessonsFromGroup);
-            // const state = store.state.schedule.selectedGroup;
-            // const selectedGroup = store.getters['schedule/getSelectedGroup'];
-            // //store.commit('schedule/setSelectedGroup', {group : "groupGavna"})
-            // store.dispatch("schedule/getGroupByNameAndUnivAction", {
-            //   groupName: selected.value,
-            // });
-          } catch (e) {
-            // if (e.response && e.response.status === 403) {
-            //   EventBus.dispatch("logout");
-            // }
-          }
-
-          //console.log(store.state.schedule.selectedGroup);
+          const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
+            groupName: selected.value,
+          });
+          rows.value = createTableRows(selectedGroup.lessons);
         } else {
-          console.log("debil");
+          console.log('debil');
         }
       },
     };
