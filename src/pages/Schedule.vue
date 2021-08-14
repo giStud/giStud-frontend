@@ -29,11 +29,18 @@
         </div>
       </q-card-section>
       <q-card-section>
-        <div>
-
-        </div>
         <q-btn push color="primary" label="Числитель" @click="loadNumeratorLessons"/>
         <q-btn push color="primary" label="Знаменатель" @click="loadDenominatorLessons"/>
+        <q-btn icon="today" color="primary">
+          <q-popup-proxy transition-show="scale" transition-hide="scale">
+            <q-date v-model="datePickerDate">
+              <div class="row items-center justify-end q-gutter-sm">
+                <q-btn label="Cancel" color="primary" flat v-close-popup />
+                <q-btn label="OK" color="primary" flat @click="changeDateFromDatePicker" v-close-popup />
+              </div>
+            </q-date>
+          </q-popup-proxy>
+        </q-btn>
         <br>
         <span>Тип недели: {{currentWeekType}}</span>
         <br>
@@ -143,6 +150,7 @@ export default {
     const saturdayDate = ref('');
     const currentWeekType = ref('');
     const currentWeekNumber = ref(null);
+    const datePickerDate = ref(new Date());
 
     const updateHeadersDates = (date)=> {
       if (date !== null) {
@@ -205,15 +213,17 @@ export default {
       }
     }
 
+    const changeDateFromDatePicker = ()=> {
+      selectedDate.value = new Date(datePickerDate.value);
+    }
+
     watch(rawLessonStringMode, (newValue, oldValue) => {
       columns.value = getTableColumns(newValue)
     })
     watch(selectedDate, (newValue, oldValue) => {
       const date = getDateOfMonday(newValue)
       //const date = getDateOfMonday(new Date(2020,10, 23))
-      console.log(date)
       updateHeadersDates(date)
-      console.log(date)
       currentWeekType.value = getTypeOfWeek(date) === 'NUMERATOR' ? 'Числитель' : 'Знаменатель';
       currentWeekNumber.value = getNumberOfWeek(date);
       const selectedGroup = store.getters['schedule/getSelectedGroup'];
@@ -241,11 +251,13 @@ export default {
       currentWeekType,
       currentWeekNumber,
       rawLessonStringMode,
+      datePickerDate,
       filterFn,
       loadGroupSchedule,
       getTitleText,
       loadNumeratorLessons,
-      loadDenominatorLessons
+      loadDenominatorLessons,
+      changeDateFromDatePicker
     };
   },
 };
