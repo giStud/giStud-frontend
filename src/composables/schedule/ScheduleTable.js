@@ -1,9 +1,7 @@
-import store from '../../store'
-
 export function getTableRowsFromLessons(lessons, date) {
   const timeArray = ['8:00', '9:45', '11:30', '13:30', '15:15', '17:00'];
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  const numerator = getTypeOfWeek(date)
+  const numerator = getTypeOfWeek(date);
   let rowsArray = []
 
   for (let indexOfTimeArray = 0; indexOfTimeArray < 6; indexOfTimeArray++) {
@@ -33,7 +31,7 @@ export function getTableRowsFromLessons(lessons, date) {
   return rowsArray;
 }
 
-export function getTableColumns() {
+export function getTableColumns(rawLessonStringMode) {
   return [
     {
       name: 'time',
@@ -45,42 +43,78 @@ export function getTableColumns() {
       name: 'monday',
       label: 'Понедельник',
       align: 'center',
-      field: (row) => row.days.monday.name,
+      field: (row) =>{
+        if (rawLessonStringMode) {
+          return row.days.monday.rawLessonString;
+        } else {
+          return row.days.monday.name;
+        }
+      },
       classes: (row) => getColorOfCellFromType(row.days.monday)
     },
     {
       name: 'tuesday',
       label: 'Вторник',
       align: 'center',
-      field: (row) => row.days.tuesday.name,
+      field: (row) => {
+        if (rawLessonStringMode) {
+          return row.days.tuesday.rawLessonString;
+        } else {
+          return row.days.tuesday.name;
+        }
+      },
       classes: (row) => getColorOfCellFromType(row.days.tuesday)
     },
     {
       name: 'wednesday',
       label: 'Среда',
       align: 'center',
-      field: (row) => row.days.wednesday.name,
+      field: (row) => {
+        if (rawLessonStringMode) {
+          return row.days.wednesday.rawLessonString;
+        } else {
+          return row.days.wednesday.name;
+        }
+      },
       classes: (row) => getColorOfCellFromType(row.days.wednesday)
     },
     {
       name: 'thursday',
       label: 'Четверг',
       align: 'center',
-      field: (row) => row.days.thursday.name,
+      field: (row) => {
+        if (rawLessonStringMode) {
+          return row.days.thursday.rawLessonString;
+        } else {
+          return row.days.thursday.name;
+        }
+      },
       classes: (row) => getColorOfCellFromType(row.days.thursday)
     },
     {
       name: 'friday',
       label: 'Пятница',
       align: 'center',
-      field: (row) => row.days.friday.name,
+      field: (row) => {
+        if (rawLessonStringMode) {
+          return row.days.friday.rawLessonString;
+        } else {
+          return row.days.friday.name;
+        }
+      },
       classes: (row) => getColorOfCellFromType(row.days.friday)
     },
     {
       name: 'saturday',
       label: 'Суббота',
       align: 'center',
-      field: (row) => row.days.saturday.name,
+      field: (row) => {
+        if (rawLessonStringMode) {
+          return row.days.saturday.rawLessonString;
+        } else {
+          return row.days.saturday.name;
+        }
+      },
       classes: (row) => getColorOfCellFromType(row.days.saturday)
     },
   ];
@@ -144,7 +178,7 @@ function getColorOfCellFromType(dayObject) {
       case 'PRACTICE' : return 'bg-blue'
       case 'PE' : return 'bg-orange'
       case 'RELOCATION' : return 'bg-gray'
-      case 'MILITARY_TRAINING' : return 'bg-black'
+      case 'MILITARY_TRAINING' : return 'bg-lime'
       default: {
         console.log(typeName)
         return 'bg-white'

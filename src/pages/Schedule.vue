@@ -14,6 +14,7 @@
               :options="filteredOptions"
               @filter="filterFn"
               style="width: 250px; padding-bottom: 32px"
+              @change="loadGroupSchedule"
             >
               <template v-slot:no-option>
                 <q-item>
@@ -129,7 +130,8 @@ export default {
     //Group selecting end
 
     //Schedule table start
-    const columns = ref(getTableColumns());
+    const rawLessonStringMode = ref(false)
+    const columns = ref(getTableColumns(rawLessonStringMode.value));
     const rows = ref([]);
     const title = ref('');
     const selectedDate = ref(null);
@@ -141,11 +143,9 @@ export default {
     const saturdayDate = ref('');
     const currentWeekType = ref('');
     const currentWeekNumber = ref(null);
-    const rawLessonStringMode = ref(false)
 
-    const updateHeadersDates = (newValue)=> {
-      if (newValue !== null) {
-        const date = getDateOfMonday(newValue)
+    const updateHeadersDates = (date)=> {
+      if (date !== null) {
         mondayDate.value = getDateString(date);
         date.setDate(date.getDate() + 1);
 
@@ -163,9 +163,7 @@ export default {
 
         saturdayDate.value = getDateString(date);
         date.setDate(date.getDate() + 1);
-
-        currentWeekType.value = getTypeOfWeek(date) === 'NUMERATOR' ? 'Числитель' : 'Знаменатель';
-        currentWeekNumber.value = getNumberOfWeek(date);
+        date.setDate(date.getDate() - 6);
       }
     }
 
@@ -187,7 +185,6 @@ export default {
           do {
             date.setDate(date.getDate() - 1);
           } while (date.getDay() !== 1)
-          rows.value = getTableRowsFromLessons(selectedGroup.lessons, date)
           selectedDate.value = date;
         }
       }
@@ -203,20 +200,30 @@ export default {
           do {
             date.setDate(date.getDate() + 1);
           } while (date.getDay() !== 1)
-          rows.value = getTableRowsFromLessons(selectedGroup.lessons, date)
           selectedDate.value = date;
         }
       }
     }
 
-    watch(rawLessonStringMode, () => {
-      const selectedGroup = store.getters['schedule/getSelectedGroup'];
-      rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedGroup.value)
+    watch(rawLessonStringMode, (newValue, oldValue) => {
+      columns.value = getTableColumns(newValue)
     })
-    watch(selectedDate, (newValue, oldValue) => {updateHeadersDates(newValue)})
+    watch(selectedDate, (newValue, oldValue) => {
+      const date = getDateOfMonday(newValue)
+      //const date = getDateOfMonday(new Date(2020,10, 23))
+      console.log(date)
+      updateHeadersDates(date)
+      console.log(date)
+      currentWeekType.value = getTypeOfWeek(date) === 'NUMERATOR' ? 'Числитель' : 'Знаменатель';
+      currentWeekNumber.value = getNumberOfWeek(date);
+      const selectedGroup = store.getters['schedule/getSelectedGroup'];
+      if (selectedGroup.lessons) {
+        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value)
+      }
+    })
     watch(selected, getTitleText)
 
-    selectedDate.value = new Date();
+    selectedDate.value = getDateOfMonday(new Date());
     //Schedule table end
 
     return {
