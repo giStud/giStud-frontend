@@ -46,42 +46,42 @@ export function getTableColumns() {
       label: 'Понедельник',
       align: 'center',
       field: (row) => row.days.monday.name,
-      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      classes: (row) => getColorOfCellFromType(row.days.monday)
     },
     {
       name: 'tuesday',
       label: 'Вторник',
       align: 'center',
       field: (row) => row.days.tuesday.name,
-      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
+      classes: (row) => getColorOfCellFromType(row.days.tuesday)
     },
     {
       name: 'wednesday',
       label: 'Среда',
       align: 'center',
       field: (row) => row.days.wednesday.name,
-      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      classes: (row) => getColorOfCellFromType(row.days.wednesday)
     },
     {
       name: 'thursday',
       label: 'Четверг',
       align: 'center',
       field: (row) => row.days.thursday.name,
-      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      classes: (row) => getColorOfCellFromType(row.days.thursday)
     },
     {
       name: 'friday',
       label: 'Пятница',
       align: 'center',
       field: (row) => row.days.friday.name,
-      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      classes: (row) => getColorOfCellFromType(row.days.friday)
     },
     {
       name: 'saturday',
       label: 'Суббота',
       align: 'center',
       field: (row) => row.days.saturday.name,
-      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      classes: (row) => getColorOfCellFromType(row.days.saturday)
     },
   ];
 }
@@ -132,4 +132,23 @@ export function getNumberOfWeek(date) {
     startDate.setDate(startDate.getDate() + 1);
   }
   return weekCounter;
+}
+
+function getColorOfCellFromType(dayObject) {
+  if (dayObject.typeEntity) {
+    const typeName = dayObject.typeEntity.typeName;
+    switch (typeName) {
+      case 'LAB' : return 'bg-green'
+      case 'LANGUAGE' : return 'bg-yellow'
+      case 'LECTURE' : return 'bg-red'
+      case 'PRACTICE' : return 'bg-blue'
+      case 'PE' : return 'bg-orange'
+      case 'RELOCATION' : return 'bg-gray'
+      case 'MILITARY_TRAINING' : return 'bg-black'
+      default: {
+        console.log(typeName)
+        return 'bg-white'
+      }
+    }
+  }
 }

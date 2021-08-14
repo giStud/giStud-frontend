@@ -39,6 +39,13 @@
         <span>Номер недели: {{currentWeekNumber}}</span>
       </q-card-section>
       <q-card-section>
+        <q-toggle
+          v-model="rawLessonStringMode"
+          label="Режим отображения текста: "
+          left-label
+        />
+      </q-card-section>
+      <q-card-section>
         <q-table
           :title="title"
           :rows="rows"
@@ -134,6 +141,7 @@ export default {
     const saturdayDate = ref('');
     const currentWeekType = ref('');
     const currentWeekNumber = ref(null);
+    const rawLessonStringMode = ref(false)
 
     const updateHeadersDates = (newValue)=> {
       if (newValue !== null) {
@@ -173,7 +181,6 @@ export default {
       const selectedGroup = store.getters['schedule/getSelectedGroup'];
       if (selectedDate.value !== null && selectedGroup) {
         let date = new Date(selectedDate.value);
-        console.log(date)
         let numerator = getTypeOfWeek(date);
         if (numerator === 'DENOMINATOR')
         {
@@ -181,9 +188,7 @@ export default {
             date.setDate(date.getDate() - 1);
           } while (date.getDay() !== 1)
           rows.value = getTableRowsFromLessons(selectedGroup.lessons, date)
-          console.log(selectedDate.value)
           selectedDate.value = date;
-          console.log(selectedDate.value)
         }
       }
     }
@@ -204,6 +209,10 @@ export default {
       }
     }
 
+    watch(rawLessonStringMode, () => {
+      const selectedGroup = store.getters['schedule/getSelectedGroup'];
+      rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedGroup.value)
+    })
     watch(selectedDate, (newValue, oldValue) => {updateHeadersDates(newValue)})
     watch(selected, getTitleText)
 
@@ -224,6 +233,7 @@ export default {
       saturdayDate,
       currentWeekType,
       currentWeekNumber,
+      rawLessonStringMode,
       filterFn,
       loadGroupSchedule,
       getTitleText,
