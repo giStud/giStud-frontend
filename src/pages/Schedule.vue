@@ -23,9 +23,20 @@
                 </q-item>
               </template>
             </q-select>
-            <q-btn round @click="loadGroupSchedule"/>
+            <q-btn push color="primary" label="Загрузить расписание" @click="loadGroupSchedule"/>
           </div>
         </div>
+      </q-card-section>
+      <q-card-section>
+        <div>
+
+        </div>
+        <q-btn push color="primary" label="Числитель" @click="loadNumeratorLessons"/>
+        <q-btn push color="primary" label="Знаменатель" @click="loadDenominatorLessons"/>
+        <br>
+        <span>Тип недели: {{currentWeekType}}</span>
+        <br>
+        <span>Номер недели: {{currentWeekNumber}}</span>
       </q-card-section>
       <q-card-section>
         <q-table
@@ -60,7 +71,13 @@
 <script>
 import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
-import {getTableRowsFromLessons, getTableColumns, getDateOfMonday, getDateString} from "../composables/schedule/ScheduleTable"
+import {
+  getTableRowsFromLessons,
+  getTableColumns,
+  getDateOfMonday,
+  getDateString,
+  getTypeOfWeek, getNumberOfWeek
+} from "../composables/schedule/ScheduleTable"
 
 export default {
   name: 'GroupSelectingLayout',
@@ -97,7 +114,7 @@ export default {
         const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
           groupName: selected.value,
         });
-        rows.value = getTableRowsFromLessons(selectedGroup.lessons);
+        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       } else {
         console.log('debil');
       }
@@ -115,10 +132,12 @@ export default {
     const thursdayDate = ref('');
     const fridayDate = ref('');
     const saturdayDate = ref('');
+    const currentWeekType = ref('');
+    const currentWeekNumber = ref(null);
 
-    const updateHeadersDates = ()=> {
-      if (selectedDate.value !== null) {
-        const date = getDateOfMonday(selectedDate.value)
+    const updateHeadersDates = (newValue)=> {
+      if (newValue !== null) {
+        const date = getDateOfMonday(newValue)
         mondayDate.value = getDateString(date);
         date.setDate(date.getDate() + 1);
 
@@ -136,6 +155,9 @@ export default {
 
         saturdayDate.value = getDateString(date);
         date.setDate(date.getDate() + 1);
+
+        currentWeekType.value = getTypeOfWeek(date) === 'NUMERATOR' ? 'Числитель' : 'Знаменатель';
+        currentWeekNumber.value = getNumberOfWeek(date);
       }
     }
 
@@ -147,7 +169,42 @@ export default {
       }
     }
 
-    watch(selectedDate, updateHeadersDates)
+    const loadNumeratorLessons = ()=> {
+      const selectedGroup = store.getters['schedule/getSelectedGroup'];
+      if (selectedDate.value !== null && selectedGroup) {
+        let date = new Date(selectedDate.value);
+        console.log(date)
+        let numerator = getTypeOfWeek(date);
+        if (numerator === 'DENOMINATOR')
+        {
+          do {
+            date.setDate(date.getDate() - 1);
+          } while (date.getDay() !== 1)
+          rows.value = getTableRowsFromLessons(selectedGroup.lessons, date)
+          console.log(selectedDate.value)
+          selectedDate.value = date;
+          console.log(selectedDate.value)
+        }
+      }
+    }
+
+    const loadDenominatorLessons = ()=> {
+      const selectedGroup = store.getters['schedule/getSelectedGroup'];
+      if (selectedDate.value !== null && selectedGroup) {
+        let date = new Date(selectedDate.value);
+        let numerator = getTypeOfWeek(date);
+        if (numerator === 'NUMERATOR')
+        {
+          do {
+            date.setDate(date.getDate() + 1);
+          } while (date.getDay() !== 1)
+          rows.value = getTableRowsFromLessons(selectedGroup.lessons, date)
+          selectedDate.value = date;
+        }
+      }
+    }
+
+    watch(selectedDate, (newValue, oldValue) => {updateHeadersDates(newValue)})
     watch(selected, getTitleText)
 
     selectedDate.value = new Date();
@@ -165,9 +222,13 @@ export default {
       thursdayDate,
       fridayDate,
       saturdayDate,
+      currentWeekType,
+      currentWeekNumber,
       filterFn,
       loadGroupSchedule,
-      getTitleText
+      getTitleText,
+      loadNumeratorLessons,
+      loadDenominatorLessons
     };
   },
 };

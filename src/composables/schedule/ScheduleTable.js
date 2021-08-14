@@ -1,8 +1,9 @@
 import store from '../../store'
 
-export function getTableRowsFromLessons(lessons) {
+export function getTableRowsFromLessons(lessons, date) {
   const timeArray = ['8:00', '9:45', '11:30', '13:30', '15:15', '17:00'];
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+  const numerator = getTypeOfWeek(date)
   let rowsArray = []
 
   for (let indexOfTimeArray = 0; indexOfTimeArray < 6; indexOfTimeArray++) {
@@ -21,9 +22,10 @@ export function getTableRowsFromLessons(lessons) {
     let time = lesson.time.substr(0,5);
     time = time.substr(0,1) === '0' ? time.substr(1) : time;
     const day = lesson.day.toLocaleLowerCase();
+    const lessonNumerator = lesson.numerator;
 
     for (let rowObject of rowsArray) {
-      if (rowObject.time === time) {
+      if (rowObject.time === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
         rowObject['days'][day] = lesson;
       }
     }
@@ -44,42 +46,42 @@ export function getTableColumns() {
       label: 'Понедельник',
       align: 'center',
       field: (row) => row.days.monday.name,
-      classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'tuesday',
       label: 'Вторник',
       align: 'center',
       field: (row) => row.days.tuesday.name,
-      classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
+      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
     },
     {
       name: 'wednesday',
       label: 'Среда',
       align: 'center',
       field: (row) => row.days.wednesday.name,
-      classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'thursday',
       label: 'Четверг',
       align: 'center',
       field: (row) => row.days.thursday.name,
-      classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'friday',
       label: 'Пятница',
       align: 'center',
       field: (row) => row.days.friday.name,
-      classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'saturday',
       label: 'Суббота',
       align: 'center',
       field: (row) => row.days.saturday.name,
-      classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
+      //classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
   ];
 }
@@ -92,10 +94,42 @@ export function getDateString(date) {
     (month < 10 ? '0' + month : month) + '.' + year;
 }
 
-export function getDateOfMonday() {
-  let date = store().getters['schedule/getCurrentDate']
-  let dayWeek = [7, 1, 2, 3, 4, 5, 6][date.getDay()];
-  date.setDate(date.getDate() - (dayWeek - 1));
+export function getDateOfMonday(date) {
+  let tempDate = new Date(date);
+  let dayWeek = [7, 1, 2, 3, 4, 5, 6][tempDate.getDay()];
+  tempDate.setDate(tempDate.getDate() - (dayWeek - 1));
 
-  return date;
+  return tempDate;
+}
+
+export function getTypeOfWeek(date) {
+  if (getNumberOfWeek(date) %2 === 0) {
+    return 'DENOMINATOR';
+  } else {
+    return 'NUMERATOR';
+  }
+}
+
+export function getNumberOfWeek(date) {
+  let weekCounter = 1;
+  let year;
+  if (date.getMonth() >= 8)
+  {
+    year = date.getFullYear();
+  } else {
+    year = date.getFullYear() - 1;
+  }
+
+  //1 september
+  let startDate = new Date(year, 8, 1);
+
+  while (startDate < date)
+  {
+    if (startDate.getDay() === 0)
+    {
+      weekCounter++;
+    }
+    startDate.setDate(startDate.getDate() + 1);
+  }
+  return weekCounter;
 }
