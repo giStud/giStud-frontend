@@ -1,5 +1,4 @@
 import store from '../../store'
-import UtilsService from "../../services/utilsService"
 
 export function getTableRowsFromLessons(lessons) {
   const timeArray = ['8:00', '9:45', '11:30', '13:30', '15:15', '17:00'];
@@ -42,42 +41,42 @@ export function getTableColumns() {
     },
     {
       name: 'monday',
-      label: 'Понедельник\n' + getDateString(getDateOfMonday()),
+      label: 'Понедельник',
       align: 'center',
       field: (row) => row.days.monday.name,
       classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'tuesday',
-      label: 'Вторник\n' + getDateString(UtilsService.incrementDateDays(getDateOfMonday(),1)),
+      label: 'Вторник',
       align: 'center',
       field: (row) => row.days.tuesday.name,
       classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
     },
     {
       name: 'wednesday',
-      label: 'Среда\n' + getDateString(UtilsService.incrementDateDays(getDateOfMonday(),2)),
+      label: 'Среда',
       align: 'center',
       field: (row) => row.days.wednesday.name,
       classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'thursday',
-      label: 'Четверг\n' + getDateString(UtilsService.incrementDateDays(getDateOfMonday(),3)),
+      label: 'Четверг',
       align: 'center',
       field: (row) => row.days.thursday.name,
       classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'friday',
-      label: 'Пятница\n' + getDateString(UtilsService.incrementDateDays(getDateOfMonday(),4)),
+      label: 'Пятница',
       align: 'center',
       field: (row) => row.days.friday.name,
       classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
     },
     {
       name: 'saturday',
-      label: 'Суббота\n' + getDateString(UtilsService.incrementDateDays(getDateOfMonday(),5)),
+      label: 'Суббота',
       align: 'center',
       field: (row) => row.days.saturday.name,
       classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
@@ -93,7 +92,7 @@ export function getDateString(date) {
     (month < 10 ? '0' + month : month) + '.' + year;
 }
 
-function getDateOfMonday() {
+export function getDateOfMonday() {
   let date = store().getters['schedule/getCurrentDate']
   let dayWeek = [7, 1, 2, 3, 4, 5, 6][date.getDay()];
   date.setDate(date.getDate() - (dayWeek - 1));

@@ -38,7 +38,17 @@
           hide-pagination
           separator="cell"
           wrap-cells
-        />
+        >
+          <template v-slot:header="props">
+            <q-th >{{props.cols[0].label}}</q-th>
+            <q-th >{{props.cols[1].label}}<br>{{mondayDate}}</q-th>
+            <q-th >{{props.cols[2].label}}<br>{{tuesdayDate}}</q-th>
+            <q-th >{{props.cols[3].label}}<br>{{wednesdayDate}}</q-th>
+            <q-th >{{props.cols[4].label}}<br>{{thursdayDate}}</q-th>
+            <q-th >{{props.cols[5].label}}<br>{{fridayDate}}</q-th>
+            <q-th >{{props.cols[6].label}}<br>{{saturdayDate}}</q-th>
+          </template>
+        </q-table>
       </q-card-section>
     </q-card>
   </q-page>
@@ -50,59 +60,7 @@
 <script>
 import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
-import {getTableRowsFromLessons, getTableColumns} from "../composables/schedule/ScheduleTable"
-
-// const columns = [
-//   {
-//     name: 'time',
-//     label: 'Время',
-//     align: 'center',
-//     field: 'time',
-//   },
-//   {
-//     name: 'monday',
-//     label: 'Понедельник',
-//     align: 'center',
-//     field: (row) => row.days.monday.name,
-//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-//   },
-//   {
-//     name: 'tuesday',
-//     label: 'Вторник',
-//     align: 'center',
-//     field: (row) => row.days.tuesday.name,
-//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-blue' : 'bg-red'
-//   },
-//   {
-//     name: 'wednesday',
-//     label: 'Среда',
-//     align: 'center',
-//     field: (row) => row.days.wednesday.name,
-//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-//   },
-//   {
-//     name: 'thursday',
-//     label: 'Четверг',
-//     align: 'center',
-//     field: (row) => row.days.thursday.name,
-//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-//   },
-//   {
-//     name: 'friday',
-//     label: 'Пятница',
-//     align: 'center',
-//     field: (row) => row.days.friday.name,
-//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-//   },
-//   {
-//     name: 'saturday',
-//     label: 'Суббота',
-//     align: 'center',
-//     field: (row) => row.days.saturday.name,
-//     classes: (row) => row.days.monday.typeEntity.typeName === 'LAB' ? 'bg-red' : 'bg-blue'
-//   },
-// ]
-
+import {getTableRowsFromLessons, getTableColumns, getDateOfMonday, getDateString} from "../composables/schedule/ScheduleTable"
 
 export default {
   name: 'GroupSelectingLayout',
@@ -110,18 +68,76 @@ export default {
 
   setup() {
     const store = useStore();
+
+    //Group selecting start
     const selected = ref(null);
     const options = ref([]);
-    const columns = ref(getTableColumns());
-    const rows = ref([]);
-    const title = ref('');
-    const date = ref(new Date());
 
     const filteredOptions = ref(options.value);
     onMounted(async () => {
       await store.dispatch('groups/getGroupNamesAction');
       options.value = store.getters['groups/getGroupNames'];
     });
+
+    const filterFn = (val, update, abort) => {
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        if (needle === '') {
+          filteredOptions.value = options.value;
+        } else {
+          filteredOptions.value = options.value.filter((v) =>
+            v.toLowerCase().includes(needle)
+          );
+        }
+      });
+    }
+
+     const loadGroupSchedule = async () => {
+      if (selected.value !== null) {
+        const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
+          groupName: selected.value,
+        });
+        rows.value = getTableRowsFromLessons(selectedGroup.lessons);
+      } else {
+        console.log('debil');
+      }
+    }
+    //Group selecting end
+
+    //Schedule table start
+    const columns = ref(getTableColumns());
+    const rows = ref([]);
+    const title = ref('');
+    const selectedDate = ref(null);
+    const mondayDate = ref('');
+    const tuesdayDate = ref('');
+    const wednesdayDate = ref('');
+    const thursdayDate = ref('');
+    const fridayDate = ref('');
+    const saturdayDate = ref('');
+
+    const updateHeadersDates = ()=> {
+      if (selectedDate.value !== null) {
+        const date = getDateOfMonday(selectedDate.value)
+        mondayDate.value = getDateString(date);
+        date.setDate(date.getDate() + 1);
+
+        tuesdayDate.value = getDateString(date);
+        date.setDate(date.getDate() + 1);
+
+        wednesdayDate.value = getDateString(date);
+        date.setDate(date.getDate() + 1);
+
+        thursdayDate.value = getDateString(date);
+        date.setDate(date.getDate() + 1);
+
+        fridayDate.value = getDateString(date);
+        date.setDate(date.getDate() + 1);
+
+        saturdayDate.value = getDateString(date);
+        date.setDate(date.getDate() + 1);
+      }
+    }
 
     const getTitleText = ()=> {
       if (selected.value !== null) {
@@ -131,7 +147,11 @@ export default {
       }
     }
 
+    watch(selectedDate, updateHeadersDates)
     watch(selected, getTitleText)
+
+    selectedDate.value = new Date();
+    //Schedule table end
 
     return {
       filteredOptions,
@@ -139,29 +159,15 @@ export default {
       columns,
       rows,
       title,
-      getTitleText,
-      filterFn(val, update, abort) {
-        update(() => {
-          const needle = val.toLocaleLowerCase();
-          if (needle === '') {
-            filteredOptions.value = options.value;
-          } else {
-            filteredOptions.value = options.value.filter((v) =>
-              v.toLowerCase().includes(needle)
-            );
-          }
-        });
-      },
-      async loadGroupSchedule() {
-        if (selected.value !== null) {
-          const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
-            groupName: selected.value,
-          });
-          rows.value = getTableRowsFromLessons(selectedGroup.lessons);
-        } else {
-          console.log('debil');
-        }
-      },
+      mondayDate,
+      tuesdayDate,
+      wednesdayDate,
+      thursdayDate,
+      fridayDate,
+      saturdayDate,
+      filterFn,
+      loadGroupSchedule,
+      getTitleText
     };
   },
 };
