@@ -3,15 +3,15 @@
     <q-toolbar class="bg-primary text-white q-my-md shadow-2">
       <q-btn flat round dense icon="menu" class="q-mr-sm" />
       <q-separator dark vertical inset />
-      <q-btn :to="'/groupSelecting'" stretch flat label="Расписание" />
+      <q-btn :to="'/schedule'" stretch flat label="Расписание" />
 
       <q-space />
 
       <template v-if="!loggedIn">
         <q-separator dark vertical />
-        <q-btn :to="'/login'" stretch flat label="Войти" />
+        <q-btn :to="'/auth/login'" stretch flat label="Войти" />
         <q-separator dark vertical />
-        <q-btn :to="'/signup'" stretch flat label="Зарегистрироваться" />
+        <q-btn :to="'/auth/signup'" stretch flat label="Зарегистрироваться" />
       </template>
       <template v-else>
         <q-separator dark vertical />
@@ -58,7 +58,7 @@ export default {
       loggedIn,
       currentUser: computed(() => store.state.auth.user),
       logout
-      
+
     };
   },
 };

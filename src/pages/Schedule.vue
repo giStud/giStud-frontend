@@ -3,7 +3,7 @@
     <q-card flat>
       <q-card-section>
         <div class="q-pa-md">
-          <div class="q-gutter-md row">
+          <div class="q-gutter-md column">
             <q-select
               filled
               v-model="selected"

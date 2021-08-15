@@ -11,24 +11,18 @@ const routes = [
   },
 
   {
-    path: '/groupSelecting',
+    path: '/schedule',
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Schedule')}
     ]
   },
   {
-    path: "/login",
+    path: "/auth",
     component: () => import('layouts/AuthLayout.vue'),
     children: [
-      {path: '', component: () => import('components/Login')}
-    ]
-  },
-  {
-    path: "/signup",
-    component: () => import('layouts/AuthLayout.vue'),
-    children: [
-      {path: '', component: () => import('components/Registration')}
+      {path: 'login', component: () => import('components/Login')},
+      {path: 'signup', component: () => import('components/Registration')}
     ]
   },
   {
