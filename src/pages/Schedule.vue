@@ -109,12 +109,7 @@ export default {
     //Group selecting start
     const selected = ref(null);
     const options = ref([]);
-
     const filteredOptions = ref(options.value);
-    onMounted(async () => {
-      await store.dispatch('groups/getGroupNamesAction');
-      options.value = store.getters['groups/getGroupNames'];
-    });
 
     const filterFn = (val, update, abort) => {
       update(() => {
@@ -142,8 +137,8 @@ export default {
     //Group selecting end
 
     //Schedule table start
-    const rawLessonStringMode = ref(false)
-    const lessonWeekParsingMode = ref(false)
+    const rawLessonStringMode = ref(null)
+    const lessonWeekParsingMode = ref(null)
     const columns = ref(getTableColumns(rawLessonStringMode.value));
     const rows = ref([]);
     const title = ref('');
@@ -223,25 +218,33 @@ export default {
       selectedDate.value = new Date(datePickerDate.value);
     }
 
-    watch(rawLessonStringMode, (newValue, oldValue) => {
+    watch(rawLessonStringMode, (newValue) => {
       if (newValue) {
         lessonWeekParsingMode.value = false;
+        localStorage.setItem('rawLessonStringMode', 'true')
+        localStorage.setItem('lessonWeekParsingMode', 'false');
         columns.value = getTableColumns(newValue, false);
       }
       if (!newValue && !lessonWeekParsingMode.value) {
         columns.value = getTableColumns(false, false);
+        localStorage.setItem('rawLessonStringMode', 'false')
+        localStorage.setItem('lessonWeekParsingMode', 'false');
       }
     })
-    watch(lessonWeekParsingMode, (newValue, oldValue) => {
+    watch(lessonWeekParsingMode, (newValue) => {
       if (newValue) {
         rawLessonStringMode.value = false;
+        localStorage.setItem('lessonWeekParsingMode', 'true')
+        localStorage.setItem('rawLessonStringMode', 'false');
         columns.value = getTableColumns(false, newValue);
       }
       if (!newValue && !rawLessonStringMode.value) {
         columns.value = getTableColumns(false, false);
+        localStorage.setItem('rawLessonStringMode', 'false')
+        localStorage.setItem('lessonWeekParsingMode', 'false');
       }
     })
-    watch(selectedDate, (newValue, oldValue) => {
+    watch(selectedDate, (newValue) => {
       const date = getDateOfMonday(newValue)
       //const date = getDateOfMonday(new Date(2020,10, 23))
       updateHeadersDates(date)
@@ -256,6 +259,28 @@ export default {
 
     selectedDate.value = getDateOfMonday(new Date());
     //Schedule table end
+
+    onMounted(async () => {
+      await store.dispatch('groups/getGroupNamesAction');
+      options.value = store.getters['groups/getGroupNames'];
+
+      let mode1 = localStorage.getItem('rawLessonStringMode');
+      let mode2 = localStorage.getItem('lessonWeekParsingMode');
+
+      if (mode1 === 'true') {
+        rawLessonStringMode.value = true;
+      } else {
+        rawLessonStringMode.value = false;
+        localStorage.setItem('rawLessonStringMode', 'false');
+      }
+
+      if (mode2 === 'true') {
+        lessonWeekParsingMode.value = true;
+      } else {
+        lessonWeekParsingMode.value = false;
+        localStorage.setItem('lessonWeekParsingMode', 'false');
+      }
+    });
 
     return {
       filteredOptions,

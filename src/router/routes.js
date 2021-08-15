@@ -6,15 +6,9 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {path: '', component: () => import('pages/Index.vue')}
-    ]
-  },
-
-  {
-    path: '/schedule',
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {path: '', component: () => import('pages/Schedule')}
+      {path: '', component: () => import('pages/Index.vue')},
+      {path: '/schedule', component: () => import('pages/Schedule')},
+      {path: '/schedulesLoading', component: () => import('pages/ScheduleLoading.vue')}
     ]
   },
   {
@@ -23,13 +17,6 @@ const routes = [
     children: [
       {path: 'login', component: () => import('components/Login')},
       {path: 'signup', component: () => import('components/Registration')}
-    ]
-  },
-  {
-    path: "/schedulesLoading",
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {path: '', component: () => import('pages/ScheduleLoading.vue')}
     ]
   },
   {
