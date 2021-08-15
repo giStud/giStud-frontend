@@ -129,6 +129,8 @@ export default {
         const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
           groupName: selected.value,
         });
+        const groupId = selectedGroup.grId;
+        localStorage.setItem('idOfLastLoadedGroup', groupId);
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       } else {
         console.log('debil');
@@ -266,6 +268,7 @@ export default {
 
       let mode1 = localStorage.getItem('rawLessonStringMode');
       let mode2 = localStorage.getItem('lessonWeekParsingMode');
+      let idOfLastSelectedGroup = localStorage.getItem('idOfLastLoadedGroup');
 
       if (mode1 === 'true') {
         rawLessonStringMode.value = true;
@@ -279,6 +282,11 @@ export default {
       } else {
         lessonWeekParsingMode.value = false;
         localStorage.setItem('lessonWeekParsingMode', 'false');
+      }
+
+      if (idOfLastSelectedGroup !== null) {
+        const selectedGroup = await store.dispatch('schedule/getGroupById', {grId:idOfLastSelectedGroup});
+        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       }
     });
 

@@ -21,6 +21,15 @@ class GroupService {
         }
 
     }
+
+    async getGroupById(grId) {
+      try {
+        const {data} = await api.get("/groups/" + grId)
+        return data;
+      } catch(e) {
+        throw e
+      }
+    }
 }
 
 export default new GroupService();

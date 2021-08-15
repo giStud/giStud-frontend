@@ -8,5 +8,14 @@ export async function getGroupByNameAndUnivAction ({commit}, {groupName}) {
     } catch (e) {
         throw e
     }
-    
+}
+
+export async function getGroupById ({commit}, {grId}) {
+  try {
+    const data = await GroupService.getGroupById(grId)
+    commit('setSelectedGroup', data)
+    return data;
+  } catch (e) {
+    throw e
+  }
 }
