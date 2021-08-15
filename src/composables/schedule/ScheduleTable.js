@@ -31,7 +31,7 @@ export function getTableRowsFromLessons(lessons, date) {
   return rowsArray;
 }
 
-export function getTableColumns(rawLessonStringMode) {
+export function getTableColumns(rawLessonStringMode, weekParsingMode) {
   return [
     {
       name: 'time',
@@ -43,78 +43,42 @@ export function getTableColumns(rawLessonStringMode) {
       name: 'monday',
       label: 'Понедельник',
       align: 'center',
-      field: (row) =>{
-        if (rawLessonStringMode) {
-          return row.days.monday.rawLessonString;
-        } else {
-          return row.days.monday.name;
-        }
-      },
+      field: (row) => getFieldName(row, 'monday', rawLessonStringMode, weekParsingMode),
       classes: (row) => getColorOfCellFromType(row.days.monday)
     },
     {
       name: 'tuesday',
       label: 'Вторник',
       align: 'center',
-      field: (row) => {
-        if (rawLessonStringMode) {
-          return row.days.tuesday.rawLessonString;
-        } else {
-          return row.days.tuesday.name;
-        }
-      },
+      field: (row) =>  getFieldName(row, 'tuesday', rawLessonStringMode, weekParsingMode),
       classes: (row) => getColorOfCellFromType(row.days.tuesday)
     },
     {
       name: 'wednesday',
       label: 'Среда',
       align: 'center',
-      field: (row) => {
-        if (rawLessonStringMode) {
-          return row.days.wednesday.rawLessonString;
-        } else {
-          return row.days.wednesday.name;
-        }
-      },
+      field: (row) =>  getFieldName(row, 'wednesday', rawLessonStringMode, weekParsingMode),
       classes: (row) => getColorOfCellFromType(row.days.wednesday)
     },
     {
       name: 'thursday',
       label: 'Четверг',
       align: 'center',
-      field: (row) => {
-        if (rawLessonStringMode) {
-          return row.days.thursday.rawLessonString;
-        } else {
-          return row.days.thursday.name;
-        }
-      },
+      field: (row) =>  getFieldName(row, 'thursday', rawLessonStringMode, weekParsingMode),
       classes: (row) => getColorOfCellFromType(row.days.thursday)
     },
     {
       name: 'friday',
       label: 'Пятница',
       align: 'center',
-      field: (row) => {
-        if (rawLessonStringMode) {
-          return row.days.friday.rawLessonString;
-        } else {
-          return row.days.friday.name;
-        }
-      },
+      field: (row) =>  getFieldName(row, 'friday', rawLessonStringMode, weekParsingMode),
       classes: (row) => getColorOfCellFromType(row.days.friday)
     },
     {
       name: 'saturday',
       label: 'Суббота',
       align: 'center',
-      field: (row) => {
-        if (rawLessonStringMode) {
-          return row.days.saturday.rawLessonString;
-        } else {
-          return row.days.saturday.name;
-        }
-      },
+      field: (row) =>  getFieldName(row, 'saturday', rawLessonStringMode, weekParsingMode),
       classes: (row) => getColorOfCellFromType(row.days.saturday)
     },
   ];
@@ -184,5 +148,15 @@ function getColorOfCellFromType(dayObject) {
         return 'bg-white'
       }
     }
+  }
+}
+
+function getFieldName(row, dayName, rawLessonStringMode, weekParsingMode) {
+  if (rawLessonStringMode) {
+    return row.days[dayName].rawLessonString;
+  } else if (weekParsingMode){
+    return row.days[dayName].lessonWeekModeString;
+  } else {
+    return row.days[dayName].name;
   }
 }

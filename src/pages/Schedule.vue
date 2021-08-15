@@ -49,7 +49,12 @@
       <q-card-section>
         <q-toggle
           v-model="rawLessonStringMode"
-          label="Режим отображения текста: "
+          label="Отображение занятий без обработки: "
+          left-label
+        />
+        <q-toggle
+          v-model="lessonWeekParsingMode"
+          label="Режим обработки недель: "
           left-label
         />
       </q-card-section>
@@ -138,6 +143,7 @@ export default {
 
     //Schedule table start
     const rawLessonStringMode = ref(false)
+    const lessonWeekParsingMode = ref(false)
     const columns = ref(getTableColumns(rawLessonStringMode.value));
     const rows = ref([]);
     const title = ref('');
@@ -218,7 +224,22 @@ export default {
     }
 
     watch(rawLessonStringMode, (newValue, oldValue) => {
-      columns.value = getTableColumns(newValue)
+      if (newValue) {
+        lessonWeekParsingMode.value = false;
+        columns.value = getTableColumns(newValue, false);
+      }
+      if (!newValue && !lessonWeekParsingMode.value) {
+        columns.value = getTableColumns(false, false);
+      }
+    })
+    watch(lessonWeekParsingMode, (newValue, oldValue) => {
+      if (newValue) {
+        rawLessonStringMode.value = false;
+        columns.value = getTableColumns(false, newValue);
+      }
+      if (!newValue && !rawLessonStringMode.value) {
+        columns.value = getTableColumns(false, false);
+      }
     })
     watch(selectedDate, (newValue, oldValue) => {
       const date = getDateOfMonday(newValue)
@@ -251,6 +272,7 @@ export default {
       currentWeekType,
       currentWeekNumber,
       rawLessonStringMode,
+      lessonWeekParsingMode,
       datePickerDate,
       filterFn,
       loadGroupSchedule,
