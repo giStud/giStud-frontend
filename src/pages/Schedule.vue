@@ -47,20 +47,7 @@
         <span>Номер недели: {{currentWeekNumber}}</span>
       </q-card-section>
       <q-card-section>
-        <q-toggle
-          v-model="rawLessonStringMode"
-          label="Отображение занятий без обработки: "
-          left-label
-        />
-        <q-toggle
-          v-model="lessonWeekParsingMode"
-          label="Режим обработки недель: "
-          left-label
-        />
-      </q-card-section>
-      <q-card-section>
         <q-table
-          :title="title"
           :rows="rows"
           :columns="columns"
           row-key="rowNum"
@@ -78,6 +65,24 @@
             <q-th >{{props.cols[4].label}}<br>{{thursdayDate}}</q-th>
             <q-th >{{props.cols[5].label}}<br>{{fridayDate}}</q-th>
             <q-th >{{props.cols[6].label}}<br>{{saturdayDate}}</q-th>
+          </template>
+          <template v-slot:top class="row justify-between items-center">
+              <div class="row-4 q-table__title">{{ title }}</div>
+
+              <q-space />
+
+              <div class="row-4 order-last">
+                <q-toggle
+                  v-model="rawLessonStringMode"
+                  label="Отображение занятий без обработки: "
+                  left-label
+                />
+                <q-toggle
+                  v-model="lessonWeekParsingMode"
+                  label="Режим обработки недель: "
+                  left-label
+                />
+              </div>
           </template>
         </q-table>
       </q-card-section>
@@ -129,10 +134,12 @@ export default {
         const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
           groupName: selected.value,
         });
+        title.value = 'Расписание группы ' + selected.value;
         const groupId = selectedGroup.grId;
         localStorage.setItem('idOfLastLoadedGroup', groupId);
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       } else {
+        title.value = '';
         console.log('debil');
       }
     }
@@ -175,14 +182,6 @@ export default {
         saturdayDate.value = getDateString(date);
         date.setDate(date.getDate() + 1);
         date.setDate(date.getDate() - 6);
-      }
-    }
-
-    const getTitleText = ()=> {
-      if (selected.value !== null) {
-        title.value = 'Расписание группы ' + selected.value;
-      } else {
-        title.value = '';
       }
     }
 
@@ -257,7 +256,6 @@ export default {
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value)
       }
     })
-    watch(selected, getTitleText)
 
     selectedDate.value = getDateOfMonday(new Date());
     //Schedule table end
@@ -286,6 +284,8 @@ export default {
 
       if (idOfLastSelectedGroup !== null) {
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId:idOfLastSelectedGroup});
+        title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
+        console.log(selectedGroup)
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       }
     });
@@ -309,7 +309,6 @@ export default {
       datePickerDate,
       filterFn,
       loadGroupSchedule,
-      getTitleText,
       loadNumeratorLessons,
       loadDenominatorLessons,
       changeDateFromDatePicker
