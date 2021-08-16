@@ -21,9 +21,12 @@
                   fill-input
                   input-debounce="0"
                   :options="filteredOptions"
+                  option-value="groupId"
+                  option-label="groupName"
+                  map-options
+                  emit-value
                   @filter="filterFn"
                   style="width: 250px; padding-bottom: 32px"
-                  @input-value="val => loadGroupSchedule(val)"
                   transition-show="jump-up"
                   transition-hide="jump-up"
                   bottom-slots
@@ -158,12 +161,12 @@ export default {
 
     const loadGroupSchedule = async (val) => {
       if (val !== 'Выберите группу') {
-        const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
-          groupName: val,
+        const selectedGroup = await store.dispatch('schedule/getGroupById', {
+          grId: val,
         });
-        title.value = 'Расписание группы ' + val;
-        const groupId = selectedGroup.grId;
-        localStorage.setItem('idOfLastLoadedGroup', groupId);
+        console.log(selectedGroup)
+        title.value = 'Расписание группы ' + selectedGroup.name;
+        localStorage.setItem('idOfLastLoadedGroup', val);
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       } else {
         title.value = '';
@@ -282,6 +285,8 @@ export default {
       }
     })
 
+    watch(selected, (newValue)=>{loadGroupSchedule(newValue)});
+
     selectedDate.value = getDateOfMonday(new Date());
     //Schedule table end
 
@@ -306,8 +311,8 @@ export default {
         lessonWeekParsingMode.value = false;
         localStorage.setItem('lessonWeekParsingMode', 'false');
       }
-      console.log(idOfLastSelectedGroup)
-      if (idOfLastSelectedGroup !== 'Выберите группу') {
+      if (typeof idOfLastSelectedGroup !== 'undefined' && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу' ) {
+        console.log(idOfLastSelectedGroup)
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
         console.log(selectedGroup)

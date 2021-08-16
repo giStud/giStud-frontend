@@ -3,7 +3,6 @@ export function getTableRowsFromLessons(lessons, date) {
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   const numerator = getTypeOfWeek(date);
   let rowsArray = []
-  console.log(lessons)
   for (let indexOfTimeArray = 0; indexOfTimeArray < 6; indexOfTimeArray++) {
     let rowObject = {}
     rowObject['rowNum'] = indexOfTimeArray;
@@ -17,28 +16,18 @@ export function getTableRowsFromLessons(lessons, date) {
   }
 
   for (let lesson of lessons) {
-    console.log(lesson)
     let time = lesson.time.substr(0,5);
     time = time.substr(0,1) === '0' ? time.substr(1) : time;
-    console.log(time)
     const day = lesson.day.toLocaleLowerCase();
-
-    console.log(day)
-
     const lessonNumerator = lesson.numerator;
-    console.log(lessonNumerator)
-
 
 
     for (let rowObject of rowsArray) {
-      console.log("зашёл ебать2")
       if (rowObject.time === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
-        console.log("зашёл ебать")
         rowObject['days'][day] = lesson;
       }
     }
   }
-  console.log(rowsArray)
   return rowsArray;
 }
 
