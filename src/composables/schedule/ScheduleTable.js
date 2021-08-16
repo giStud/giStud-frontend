@@ -3,7 +3,7 @@ export function getTableRowsFromLessons(lessons, date) {
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   const numerator = getTypeOfWeek(date);
   let rowsArray = []
-
+  console.log(lessons)
   for (let indexOfTimeArray = 0; indexOfTimeArray < 6; indexOfTimeArray++) {
     let rowObject = {}
     rowObject['rowNum'] = indexOfTimeArray;
@@ -17,17 +17,28 @@ export function getTableRowsFromLessons(lessons, date) {
   }
 
   for (let lesson of lessons) {
+    console.log(lesson)
     let time = lesson.time.substr(0,5);
     time = time.substr(0,1) === '0' ? time.substr(1) : time;
+    console.log(time)
     const day = lesson.day.toLocaleLowerCase();
+
+    console.log(day)
+
     const lessonNumerator = lesson.numerator;
+    console.log(lessonNumerator)
+
+
 
     for (let rowObject of rowsArray) {
+      console.log("зашёл ебать2")
       if (rowObject.time === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+        console.log("зашёл ебать")
         rowObject['days'][day] = lesson;
       }
     }
   }
+  console.log(rowsArray)
   return rowsArray;
 }
 
@@ -38,48 +49,56 @@ export function getTableColumns(rawLessonStringMode, weekParsingMode) {
       label: 'Время',
       align: 'center',
       field: 'time',
+      style: 'width: 100px',
+      headerStyle: 'max-width: 100px',
     },
     {
       name: 'monday',
       label: 'Понедельник',
       align: 'center',
+      style: (row) => getColorOfCellFromType(row.days.monday),
+      headerStyle: 'max-width: 250px',
       field: (row) => getFieldName(row, 'monday', rawLessonStringMode, weekParsingMode),
-      classes: (row) => getColorOfCellFromType(row.days.monday)
     },
     {
       name: 'tuesday',
       label: 'Вторник',
       align: 'center',
+      style: (row) => getColorOfCellFromType(row.days.tuesday),
+      headerStyle: 'max-width: 250px',
       field: (row) =>  getFieldName(row, 'tuesday', rawLessonStringMode, weekParsingMode),
-      classes: (row) => getColorOfCellFromType(row.days.tuesday)
     },
     {
       name: 'wednesday',
       label: 'Среда',
       align: 'center',
+      style: (row) => getColorOfCellFromType(row.days.wednesday),
+      headerStyle: 'max-width: 250px',
       field: (row) =>  getFieldName(row, 'wednesday', rawLessonStringMode, weekParsingMode),
-      classes: (row) => getColorOfCellFromType(row.days.wednesday)
     },
     {
       name: 'thursday',
       label: 'Четверг',
       align: 'center',
+      style: (row) => getColorOfCellFromType(row.days.thursday),
+      headerStyle: 'max-width: 250px',
       field: (row) =>  getFieldName(row, 'thursday', rawLessonStringMode, weekParsingMode),
-      classes: (row) => getColorOfCellFromType(row.days.thursday)
     },
     {
       name: 'friday',
       label: 'Пятница',
       align: 'center',
-      field: (row) =>  getFieldName(row, 'friday', rawLessonStringMode, weekParsingMode),
-      classes: (row) => getColorOfCellFromType(row.days.friday)
+      style:  (row) => getColorOfCellFromType(row.days.friday),
+      headerStyle: 'max-width: 250px',
+      field: (row) =>  getFieldName(row, 'friday', rawLessonStringMode, weekParsingMode)
     },
     {
       name: 'saturday',
       label: 'Суббота',
       align: 'center',
+      style: (row) => getColorOfCellFromType(row.days.saturday),
+      headerStyle: 'max-width: 250px',
       field: (row) =>  getFieldName(row, 'saturday', rawLessonStringMode, weekParsingMode),
-      classes: (row) => getColorOfCellFromType(row.days.saturday)
     },
   ];
 }
@@ -135,19 +154,46 @@ export function getNumberOfWeek(date) {
 function getColorOfCellFromType(dayObject) {
   if (dayObject.typeEntity) {
     const typeName = dayObject.typeEntity.typeName;
+    let style = 'width: 250px;'
     switch (typeName) {
-      case 'LAB' : return 'bg-green'
-      case 'LANGUAGE' : return 'bg-yellow'
-      case 'LECTURE' : return 'bg-red'
-      case 'PRACTICE' : return 'bg-blue'
-      case 'PE' : return 'bg-orange'
-      case 'RELOCATION' : return 'bg-gray'
-      case 'MILITARY_TRAINING' : return 'bg-lime'
-      default: {
-        console.log(typeName)
-        return 'bg-white'
+      case 'LAB' : {
+        style += 'background-color: rgba(169, 191, 90, 0.5);';
+        break;
+      }
+      case 'LANGUAGE' : {
+        style += 'background-color: rgba(242, 172, 41, 0.5);';
+        break;
+      }
+      case 'LECTURE' : {
+        style += 'background-color: rgba(38, 180, 201, 0.5);';
+        break;
+      }
+      case 'LECTURE_AND_LAB' : {
+        style += 'background-color: rgba(128, 111, 111, 0.5);';
+        break;
+      }
+      case 'MILITARY_TRAINING' : {
+        style+= 'background-color: rgba(238, 111, 111, 0.5);'
+        break;
+      }
+      case 'PE' : {
+        style += 'background-color: rgba(238, 111, 111, 0.5);';
+        break
+      }
+      case 'PRACTICE' : {
+        style += 'background-color: rgba(238, 111, 111, 0.5);';
+        break;
+      }
+      case 'PRACTICE_AND_LECTURE' : {
+        style += 'background-color: rgba(238, 111, 111, 0.5);';
+        break;
+      }
+      case 'RELOCATION' : {
+        style += 'background-color: rgba(238, 111, 111, 0.5);';
+        break;
       }
     }
+    return style;
   }
 }
 

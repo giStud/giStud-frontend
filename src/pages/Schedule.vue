@@ -1,75 +1,104 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-card flat>
-      <q-card-section>
-        <div class="q-pa-md">
-          <div class="q-gutter-md column">
-            <q-select
-              filled
-              v-model="selected"
-              use-input
-              hide-selected
-              fill-input
-              input-debounce="0"
-              :options="filteredOptions"
-              @filter="filterFn"
-              style="width: 250px; padding-bottom: 32px"
-              @change="loadGroupSchedule"
-            >
-              <template v-slot:no-option>
-                <q-item>
-                  <q-item-section class="text-grey">
-                    Не найдено
-                  </q-item-section>
-                </q-item>
-              </template>
-            </q-select>
-            <q-btn push color="primary" label="Загрузить расписание" @click="loadGroupSchedule"/>
+  <q-page>
+    <div class="flex column">
+      <div class="column q-pa-lg q-col-gutter-y-md">
+        <div class="col-12 content-end">
+          <div class="">
+            <div class="column">
+              <div class="col-12" style="margin-top: 30px">
+
+              </div>
+              <div class="row" style="height: 50px">
+                <!--                <div class="col-4" style="padding-top: 21px">-->
+                <!--                  <q-btn color="primary" label="Загрузить расписание" style="box-shadow: 0 0 10px rgba(0,0,0,0.5);" @click="loadGroupSchedule" />-->
+                <!--                </div>-->
+                <q-select
+                  rounded
+                  outlined
+                  v-model="selected"
+                  use-input
+                  hide-selected
+                  fill-input
+                  input-debounce="0"
+                  :options="filteredOptions"
+                  @filter="filterFn"
+                  style="width: 250px; padding-bottom: 32px"
+                  @input-value="val => loadGroupSchedule(val)"
+                  transition-show="jump-up"
+                  transition-hide="jump-up"
+                  bottom-slots
+                >
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">
+                        Не найдено
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="search"/>
+                  </template>
+                  <template v-slot:hint>
+                    Поиск группы
+                  </template>
+                </q-select>
+                <div class="col-4" style="padding-top: 31px; text-align: center; font-size: 18px">
+                  <div class="content-end">
+                    <span> {{ currentWeekNumber }} неделя, {{ currentWeekType }}</span>
+                  </div>
+                </div>
+                <div class="col-4" style="padding-top: 21px">
+                  <div class="row justify-end">
+
+                    <div>
+
+                      <div>
+                        <q-btn color="primary" label="Числитель" @click="loadNumeratorLessons"
+                               style="margin-right: 8px;  box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
+                        <q-btn color="primary" label="Знаменатель" @click="loadDenominatorLessons"
+                               style="margin-right: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
+                        <q-btn icon="today" color="primary" style="box-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                          <q-popup-proxy transition-show="scale" transition-hide="scale">
+                            <q-date v-model="datePickerDate">
+                              <div class="row items-center justify-end q-gutter-sm">
+                                <q-btn label="Cancel" color="primary" flat v-close-popup/>
+                                <q-btn label="OK" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-btn>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </q-card-section>
-      <q-card-section>
-        <q-btn push color="primary" label="Числитель" @click="loadNumeratorLessons"/>
-        <q-btn push color="primary" label="Знаменатель" @click="loadDenominatorLessons"/>
-        <q-btn icon="today" color="primary">
-          <q-popup-proxy transition-show="scale" transition-hide="scale">
-            <q-date v-model="datePickerDate">
-              <div class="row items-center justify-end q-gutter-sm">
-                <q-btn label="Cancel" color="primary" flat v-close-popup />
-                <q-btn label="OK" color="primary" flat @click="changeDateFromDatePicker" v-close-popup />
-              </div>
-            </q-date>
-          </q-popup-proxy>
-        </q-btn>
-        <br>
-        <span>Тип недели: {{currentWeekType}}</span>
-        <br>
-        <span>Номер недели: {{currentWeekNumber}}</span>
-      </q-card-section>
-      <q-card-section>
-        <q-table
-          :rows="rows"
-          :columns="columns"
-          row-key="rowNum"
-          table-colspan="7"
-          :rows-per-page-options="[5,6]"
-          hide-pagination
-          separator="cell"
-          wrap-cells
-        >
-          <template v-slot:header="props">
-            <q-th >{{props.cols[0].label}}</q-th>
-            <q-th >{{props.cols[1].label}}<br>{{mondayDate}}</q-th>
-            <q-th >{{props.cols[2].label}}<br>{{tuesdayDate}}</q-th>
-            <q-th >{{props.cols[3].label}}<br>{{wednesdayDate}}</q-th>
-            <q-th >{{props.cols[4].label}}<br>{{thursdayDate}}</q-th>
-            <q-th >{{props.cols[5].label}}<br>{{fridayDate}}</q-th>
-            <q-th >{{props.cols[6].label}}<br>{{saturdayDate}}</q-th>
-          </template>
-          <template v-slot:top class="row justify-between items-center">
+        <div class="col-12">
+          <q-table
+            :rows="rows"
+            :columns="columns"
+            row-key="rowNum"
+            table-colspan="7"
+            :rows-per-page-options="[5,8]"
+            hide-pagination
+            separator="cell"
+            wrap-cells
+          >
+            <template v-slot:header="props">
+              <q-th>{{ props.cols[0].label }}</q-th>
+              <q-th>{{ props.cols[1].label }}<br>{{ mondayDate }}</q-th>
+              <q-th>{{ props.cols[2].label }}<br>{{ tuesdayDate }}</q-th>
+              <q-th>{{ props.cols[3].label }}<br>{{ wednesdayDate }}</q-th>
+              <q-th>{{ props.cols[4].label }}<br>{{ thursdayDate }}</q-th>
+              <q-th>{{ props.cols[5].label }}<br>{{ fridayDate }}</q-th>
+              <q-th>{{ props.cols[6].label }}<br>{{ saturdayDate }}</q-th>
+            </template>
+            <template v-slot:top class="row justify-between items-center">
               <div class="row-4 q-table__title">{{ title }}</div>
 
-              <q-space />
+              <q-space/>
 
               <div class="row-4 order-last">
                 <q-toggle
@@ -83,14 +112,12 @@
                   left-label
                 />
               </div>
-          </template>
-        </q-table>
-      </q-card-section>
-    </q-card>
+            </template>
+          </q-table>
+        </div>
+      </div>
+    </div>
   </q-page>
-  <q-page-container>
-    <router-view/>
-  </q-page-container>
 </template>
 
 <script>
@@ -112,7 +139,7 @@ export default {
     const store = useStore();
 
     //Group selecting start
-    const selected = ref(null);
+    const selected = ref('Выберите группу');
     const options = ref([]);
     const filteredOptions = ref(options.value);
 
@@ -129,12 +156,12 @@ export default {
       });
     }
 
-     const loadGroupSchedule = async () => {
-      if (selected.value !== null) {
+    const loadGroupSchedule = async (val) => {
+      if (val !== 'Выберите группу') {
         const selectedGroup = await store.dispatch('schedule/getGroupByNameAndUnivAction', {
-          groupName: selected.value,
+          groupName: val,
         });
-        title.value = 'Расписание группы ' + selected.value;
+        title.value = 'Расписание группы ' + val;
         const groupId = selectedGroup.grId;
         localStorage.setItem('idOfLastLoadedGroup', groupId);
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
@@ -162,7 +189,7 @@ export default {
     const currentWeekNumber = ref(null);
     const datePickerDate = ref(new Date());
 
-    const updateHeadersDates = (date)=> {
+    const updateHeadersDates = (date) => {
       if (date !== null) {
         mondayDate.value = getDateString(date);
         date.setDate(date.getDate() + 1);
@@ -185,13 +212,12 @@ export default {
       }
     }
 
-    const loadNumeratorLessons = ()=> {
+    const loadNumeratorLessons = () => {
       const selectedGroup = store.getters['schedule/getSelectedGroup'];
       if (selectedDate.value !== null && selectedGroup) {
         let date = new Date(selectedDate.value);
         let numerator = getTypeOfWeek(date);
-        if (numerator === 'DENOMINATOR')
-        {
+        if (numerator === 'DENOMINATOR') {
           do {
             date.setDate(date.getDate() - 1);
           } while (date.getDay() !== 1)
@@ -200,13 +226,12 @@ export default {
       }
     }
 
-    const loadDenominatorLessons = ()=> {
+    const loadDenominatorLessons = () => {
       const selectedGroup = store.getters['schedule/getSelectedGroup'];
       if (selectedDate.value !== null && selectedGroup) {
         let date = new Date(selectedDate.value);
         let numerator = getTypeOfWeek(date);
-        if (numerator === 'NUMERATOR')
-        {
+        if (numerator === 'NUMERATOR') {
           do {
             date.setDate(date.getDate() + 1);
           } while (date.getDay() !== 1)
@@ -215,7 +240,7 @@ export default {
       }
     }
 
-    const changeDateFromDatePicker = ()=> {
+    const changeDateFromDatePicker = () => {
       selectedDate.value = new Date(datePickerDate.value);
     }
 
@@ -249,7 +274,7 @@ export default {
       const date = getDateOfMonday(newValue)
       //const date = getDateOfMonday(new Date(2020,10, 23))
       updateHeadersDates(date)
-      currentWeekType.value = getTypeOfWeek(date) === 'NUMERATOR' ? 'Числитель' : 'Знаменатель';
+      currentWeekType.value = getTypeOfWeek(date) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
       currentWeekNumber.value = getNumberOfWeek(date);
       const selectedGroup = store.getters['schedule/getSelectedGroup'];
       if (selectedGroup.lessons) {
@@ -281,9 +306,9 @@ export default {
         lessonWeekParsingMode.value = false;
         localStorage.setItem('lessonWeekParsingMode', 'false');
       }
-
-      if (idOfLastSelectedGroup !== null) {
-        const selectedGroup = await store.dispatch('schedule/getGroupById', {grId:idOfLastSelectedGroup});
+      console.log(idOfLastSelectedGroup)
+      if (idOfLastSelectedGroup !== 'Выберите группу') {
+        const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
         console.log(selectedGroup)
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
