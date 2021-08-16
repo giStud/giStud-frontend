@@ -1,7 +1,33 @@
 export function getTableRowsFromLessons(lessons, date) {
-  const timeArray = ['8:00', '9:45', '11:30', '13:30', '15:15', '17:00'];
+  const timeArray = [];
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   const numerator = getTypeOfWeek(date);
+  const numOfWeek = getNumberOfWeek(date);
+
+  console.time('lessonsArray')
+  let lessonsOfSelectedWeek = [];
+  for (let lesson of lessons) {
+    if (lesson.week === numOfWeek) {
+      lessonsOfSelectedWeek.push(lesson);
+    }
+  }
+  console.timeEnd('lessonsArray')
+
+  console.time('timeArray')
+  for (let lesson of lessonsOfSelectedWeek) {
+    if (lesson.day === 'MONDAY') {
+      timeArray.push(lesson.time);
+    }
+  }
+  timeArray.sort();
+  for (let time in timeArray) {
+    let timeValue = timeArray[time];
+    timeValue = timeValue.substr(0,5);
+    timeValue = timeValue.substr(0,1) === '0' ? timeValue.substr(1) : timeValue;
+    timeArray[time] = timeValue;
+  }
+  console.timeEnd('timeArray')
+
   let rowsArray = []
   for (let indexOfTimeArray = 0; indexOfTimeArray < 6; indexOfTimeArray++) {
     let rowObject = {}
@@ -15,7 +41,7 @@ export function getTableRowsFromLessons(lessons, date) {
     rowsArray[indexOfTimeArray] = rowObject
   }
 
-  for (let lesson of lessons) {
+  for (let lesson of lessonsOfSelectedWeek) {
     let time = lesson.time.substr(0,5);
     time = time.substr(0,1) === '0' ? time.substr(1) : time;
     const day = lesson.day.toLocaleLowerCase();
@@ -31,7 +57,7 @@ export function getTableRowsFromLessons(lessons, date) {
   return rowsArray;
 }
 
-export function getTableColumns(rawLessonStringMode, weekParsingMode) {
+export function getTableColumns(rawLessonStringMode) {
   return [
     {
       name: 'time',
@@ -47,7 +73,7 @@ export function getTableColumns(rawLessonStringMode, weekParsingMode) {
       align: 'center',
       style: (row) => getColorOfCellFromType(row.days.monday),
       headerStyle: 'max-width: 250px',
-      field: (row) => getFieldName(row, 'monday', rawLessonStringMode, weekParsingMode),
+      field: (row) => getFieldName(row, 'monday', rawLessonStringMode),
     },
     {
       name: 'tuesday',
@@ -55,7 +81,7 @@ export function getTableColumns(rawLessonStringMode, weekParsingMode) {
       align: 'center',
       style: (row) => getColorOfCellFromType(row.days.tuesday),
       headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'tuesday', rawLessonStringMode, weekParsingMode),
+      field: (row) =>  getFieldName(row, 'tuesday', rawLessonStringMode),
     },
     {
       name: 'wednesday',
@@ -63,7 +89,7 @@ export function getTableColumns(rawLessonStringMode, weekParsingMode) {
       align: 'center',
       style: (row) => getColorOfCellFromType(row.days.wednesday),
       headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'wednesday', rawLessonStringMode, weekParsingMode),
+      field: (row) =>  getFieldName(row, 'wednesday', rawLessonStringMode),
     },
     {
       name: 'thursday',
@@ -71,7 +97,7 @@ export function getTableColumns(rawLessonStringMode, weekParsingMode) {
       align: 'center',
       style: (row) => getColorOfCellFromType(row.days.thursday),
       headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'thursday', rawLessonStringMode, weekParsingMode),
+      field: (row) =>  getFieldName(row, 'thursday', rawLessonStringMode),
     },
     {
       name: 'friday',
@@ -79,7 +105,7 @@ export function getTableColumns(rawLessonStringMode, weekParsingMode) {
       align: 'center',
       style:  (row) => getColorOfCellFromType(row.days.friday),
       headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'friday', rawLessonStringMode, weekParsingMode)
+      field: (row) =>  getFieldName(row, 'friday', rawLessonStringMode)
     },
     {
       name: 'saturday',
@@ -87,7 +113,7 @@ export function getTableColumns(rawLessonStringMode, weekParsingMode) {
       align: 'center',
       style: (row) => getColorOfCellFromType(row.days.saturday),
       headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'saturday', rawLessonStringMode, weekParsingMode),
+      field: (row) =>  getFieldName(row, 'saturday', rawLessonStringMode),
     },
   ];
 }
@@ -125,6 +151,8 @@ export function getNumberOfWeek(date) {
   } else {
     year = date.getFullYear() - 1;
   }
+
+
 
   //1 september
   let startDate = new Date(year, 8, 1);
@@ -186,11 +214,9 @@ function getColorOfCellFromType(dayObject) {
   }
 }
 
-function getFieldName(row, dayName, rawLessonStringMode, weekParsingMode) {
+function getFieldName(row, dayName, rawLessonStringMode) {
   if (rawLessonStringMode) {
     return row.days[dayName].rawLessonString;
-  } else if (weekParsingMode){
-    return row.days[dayName].lessonWeekModeString;
   } else {
     return row.days[dayName].name;
   }

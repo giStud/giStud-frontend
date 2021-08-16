@@ -84,7 +84,7 @@
             :columns="columns"
             row-key="rowNum"
             table-colspan="7"
-            :rows-per-page-options="[5,8]"
+            :rows-per-page-options="[6,8]"
             hide-pagination
             separator="cell"
             wrap-cells
@@ -107,11 +107,6 @@
                 <q-toggle
                   v-model="rawLessonStringMode"
                   label="Отображение занятий без обработки: "
-                  left-label
-                />
-                <q-toggle
-                  v-model="lessonWeekParsingMode"
-                  label="Режим обработки недель: "
                   left-label
                 />
               </div>
@@ -177,7 +172,6 @@ export default {
 
     //Schedule table start
     const rawLessonStringMode = ref(null)
-    const lessonWeekParsingMode = ref(null)
     const columns = ref(getTableColumns(rawLessonStringMode.value));
     const rows = ref([]);
     const title = ref('');
@@ -248,30 +242,8 @@ export default {
     }
 
     watch(rawLessonStringMode, (newValue) => {
-      if (newValue) {
-        lessonWeekParsingMode.value = false;
-        localStorage.setItem('rawLessonStringMode', 'true')
-        localStorage.setItem('lessonWeekParsingMode', 'false');
-        columns.value = getTableColumns(newValue, false);
-      }
-      if (!newValue && !lessonWeekParsingMode.value) {
-        columns.value = getTableColumns(false, false);
-        localStorage.setItem('rawLessonStringMode', 'false')
-        localStorage.setItem('lessonWeekParsingMode', 'false');
-      }
-    })
-    watch(lessonWeekParsingMode, (newValue) => {
-      if (newValue) {
-        rawLessonStringMode.value = false;
-        localStorage.setItem('lessonWeekParsingMode', 'true')
-        localStorage.setItem('rawLessonStringMode', 'false');
-        columns.value = getTableColumns(false, newValue);
-      }
-      if (!newValue && !rawLessonStringMode.value) {
-        columns.value = getTableColumns(false, false);
-        localStorage.setItem('rawLessonStringMode', 'false')
-        localStorage.setItem('lessonWeekParsingMode', 'false');
-      }
+      columns.value = getTableColumns(newValue)
+      localStorage.setItem('rawLessonStringMode', newValue.toString)
     })
     watch(selectedDate, (newValue) => {
       const date = getDateOfMonday(newValue)
@@ -295,7 +267,6 @@ export default {
       options.value = store.getters['groups/getGroupNames'];
 
       let mode1 = localStorage.getItem('rawLessonStringMode');
-      let mode2 = localStorage.getItem('lessonWeekParsingMode');
       let idOfLastSelectedGroup = localStorage.getItem('idOfLastLoadedGroup');
 
       if (mode1 === 'true') {
@@ -305,12 +276,6 @@ export default {
         localStorage.setItem('rawLessonStringMode', 'false');
       }
 
-      if (mode2 === 'true') {
-        lessonWeekParsingMode.value = true;
-      } else {
-        lessonWeekParsingMode.value = false;
-        localStorage.setItem('lessonWeekParsingMode', 'false');
-      }
       if (typeof idOfLastSelectedGroup !== 'undefined' && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу' ) {
         console.log(idOfLastSelectedGroup)
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
@@ -335,7 +300,6 @@ export default {
       currentWeekType,
       currentWeekNumber,
       rawLessonStringMode,
-      lessonWeekParsingMode,
       datePickerDate,
       filterFn,
       loadGroupSchedule,

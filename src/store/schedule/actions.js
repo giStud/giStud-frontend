@@ -19,3 +19,13 @@ export async function getGroupById ({commit}, {grId}) {
     throw e
   }
 }
+
+export async function getGroupLessonsById ({commit}, {grId}) {
+  try {
+    const data = await GroupService.getGroupLessonsById(grId)
+    //commit('setSelectedGroup', data)
+    return data;
+  } catch (e) {
+    throw e
+  }
+}
