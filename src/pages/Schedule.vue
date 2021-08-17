@@ -84,9 +84,9 @@
             :columns="columns"
             row-key="rowNum"
             table-colspan="7"
-            :rows-per-page-options="[6,8]"
-            hide-pagination
+            :rows-per-page-options="[10,12]"
             separator="cell"
+            hide-pagination
             wrap-cells
           >
             <template v-slot:header="props">

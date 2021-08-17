@@ -4,16 +4,13 @@ export function getTableRowsFromLessons(lessons, date) {
   const numerator = getTypeOfWeek(date);
   const numOfWeek = getNumberOfWeek(date);
 
-  console.time('lessonsArray')
   let lessonsOfSelectedWeek = [];
   for (let lesson of lessons) {
     if (lesson.week === numOfWeek) {
       lessonsOfSelectedWeek.push(lesson);
     }
   }
-  console.timeEnd('lessonsArray')
 
-  console.time('timeArray')
   for (let lesson of lessonsOfSelectedWeek) {
     if (lesson.day === 'MONDAY') {
       timeArray.push(lesson.time);
@@ -26,10 +23,9 @@ export function getTableRowsFromLessons(lessons, date) {
     timeValue = timeValue.substr(0,1) === '0' ? timeValue.substr(1) : timeValue;
     timeArray[time] = timeValue;
   }
-  console.timeEnd('timeArray')
 
   let rowsArray = []
-  for (let indexOfTimeArray = 0; indexOfTimeArray < 6; indexOfTimeArray++) {
+  for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
     let rowObject = {}
     rowObject['rowNum'] = indexOfTimeArray;
     rowObject['time'] = timeArray[indexOfTimeArray]
@@ -143,6 +139,21 @@ export function getTypeOfWeek(date) {
 }
 
 export function getNumberOfWeek(date) {
+
+  //IDFK WTF WITH THIS SHIT P.s: calculate first week
+  let tempDate = new Date(date);
+  const tempSeptemberDate = new Date(tempDate.getFullYear(),8,1)
+  if (tempDate < tempSeptemberDate) {
+    for (let i = 0; i < 7; i++) {
+      tempDate.setDate(tempDate.getDate() + 1);
+      console.log(tempDate)
+      console.log(tempSeptemberDate)
+      if (tempDate >= tempSeptemberDate) {
+        return 1;
+      }
+    }
+  }
+
   let weekCounter = 1;
   let year;
   if (date.getMonth() >= 8)
@@ -151,8 +162,6 @@ export function getNumberOfWeek(date) {
   } else {
     year = date.getFullYear() - 1;
   }
-
-
 
   //1 september
   let startDate = new Date(year, 8, 1);
