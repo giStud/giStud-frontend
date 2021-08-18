@@ -91,27 +91,23 @@
           >
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
-                <q-td><pre>{{props.cols}}</pre></q-td>
-                <q-td style="text-align: center; align-items: center">{{ props.row.time }}</q-td>
-                <q-td v-for="cell in props.row.days" :key="cell.day" :style="getColorOfCellFromType(cell[0])">
+                <q-td style="text-align: center; align-items: center; width: 100px">{{ props.row.time }}</q-td>
+                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="getScheduleColumnStyle(cell[0])">
                   <template v-if="cell.length > 1">
                     <template v-if="rawLessonStringMode">
                       {{ cell[0].rawLessonString }}
                       {{ cell[1].rawLessonString }}
+                      <br> splitter weeks
                     </template>
                     <template v-else>
                       {{ cell[0].name}}
                       {{ cell[1].name}}
+                      <br> splitter weeks
                     </template>
 
                   </template>
                   <template v-else>
-                    <template v-if="rawLessonStringMode">
-                      {{ cell[0].rawLessonString }}
-                    </template>
-                    <template v-else>
-                      {{ cell[0].name}}
-                    </template>
+                    {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                   </template>
                 </q-td>
               </q-tr>
@@ -150,12 +146,56 @@ import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {
   getTableRowsFromLessons,
-  getTableColumns,
   getDateOfMonday,
   getDateString,
   getTypeOfWeek, getNumberOfWeek,
-  getColorOfCellFromType
+  getScheduleColumnStyle
 } from "../composables/schedule/ScheduleTable"
+
+const columns = [
+  {
+    name: 'time',
+    label: 'Время',
+    align: 'center',
+    headerStyle: 'max-width: 100px',
+  },
+  {
+    name: 'monday',
+    label: 'Понедельник',
+    align: 'center',
+    headerStyle: 'max-width: 250px',
+  },
+  {
+    name: 'tuesday',
+    label: 'Вторник',
+    align: 'center',
+    headerStyle: 'max-width: 250px',
+  },
+  {
+    name: 'wednesday',
+    label: 'Среда',
+    align: 'center',
+    headerStyle: 'max-width: 250px',
+  },
+  {
+    name: 'thursday',
+    label: 'Четверг',
+    align: 'center',
+    headerStyle: 'max-width: 250px',
+  },
+  {
+    name: 'friday',
+    label: 'Пятница',
+    align: 'center',
+    headerStyle: 'max-width: 250px',
+  },
+  {
+    name: 'saturday',
+    label: 'Суббота',
+    align: 'center',
+    headerStyle: 'max-width: 250px',
+  }
+]
 
 export default {
   name: 'GroupSelectingLayout',
@@ -187,8 +227,7 @@ export default {
         const selectedGroup = await store.dispatch('schedule/getGroupById', {
           grId: val,
         });
-        console.log(selectedGroup)
-        title.value = 'Расписание группы ' + selectedGroup.name;
+        title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
         localStorage.setItem('idOfLastLoadedGroup', val);
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       } else {
@@ -200,7 +239,6 @@ export default {
 
     //Schedule table start
     const rawLessonStringMode = ref(null)
-    const columns = ref(getTableColumns(rawLessonStringMode.value));
     const rows = ref([]);
     const title = ref('');
     const selectedDate = ref(null);
@@ -270,8 +308,7 @@ export default {
     }
 
     watch(rawLessonStringMode, (newValue) => {
-      columns.value = getTableColumns(newValue)
-      localStorage.setItem('rawLessonStringMode', newValue.toString)
+      localStorage.setItem('rawLessonStringMode', newValue)
     })
     watch(selectedDate, (newValue) => {
       const date = getDateOfMonday(newValue)
@@ -307,7 +344,6 @@ export default {
       }
 
       if ((typeof idOfLastSelectedGroup !== 'undefined') && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу') {
-        console.log(idOfLastSelectedGroup)
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
         console.log(selectedGroup)
@@ -336,7 +372,7 @@ export default {
       loadNumeratorLessons,
       loadDenominatorLessons,
       changeDateFromDatePicker,
-      getColorOfCellFromType
+      getScheduleColumnStyle
     };
   },
 };

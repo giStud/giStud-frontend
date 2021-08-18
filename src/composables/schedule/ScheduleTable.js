@@ -45,80 +45,53 @@ export function getTableRowsFromLessons(lessons, date) {
 
 
     for (let rowObject of rowsArray) {
-      if (lesson.day === 'FRIDAY' && time === '17:00') {
-        let x = 0;
-      }
       if (rowObject.time === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+        let dayArray = rowObject['days'][day];
         if (lesson.name !== '') {
-          rowObject['days'][day].push(lesson);
-        } else if(rowObject['days'][day].length === 0) {
-          rowObject['days'][day].push(lesson);
+          if (dayArray.length !== 0) {
+            if (dayArray[0].name === '') {
+              dayArray[0] = lesson;
+            } else {
+              dayArray.push(lesson);
+            }
+          } else {
+            if (lesson.name === 'testLesson') {
+              let obj = {
+                "lessonId": 9999,
+                "rawLessonString": "testLesson",
+                "name": "testLesson",
+                "numerator": "FULL",
+                "time": "17:00:00",
+                "day": "FRIDAY",
+                "week": 4,
+                "typeEntity":
+                  {
+                    "typeId": 88,
+                    "typeName": "MILITARY_TRAINING"
+                  },
+                "audienceEntity":
+                  {
+                    "audienceId": 470,
+                    "x": null,
+                    "y": null,
+                    "z": null,
+                    "building": null,
+                    "audience": "UNKNOWN"
+                  }
+              }
+              dayArray.push(obj);
+            } else {
+              dayArray.push(lesson);
+            }
+
+          }
+        } else if(dayArray.length === 0) {
+          dayArray.push(lesson);
         }
       }
     }
   }
   return rowsArray;
-}
-
-export function getTableColumns(rawLessonStringMode) {
-  return [
-    {
-      name: 'time',
-      label: 'Время',
-      align: 'center',
-      field: 'time',
-      style: 'width: 100px',
-      headerStyle: 'max-width: 100px',
-    },
-    {
-      name: 'monday',
-      label: 'Понедельник',
-      align: 'center',
-      style: (row) => getColorOfCellFromType(row.days.monday),
-      headerStyle: 'max-width: 250px',
-      field: (row) => getFieldName(row, 'monday', rawLessonStringMode),
-    },
-    {
-      name: 'tuesday',
-      label: 'Вторник',
-      align: 'center',
-      style: (row) => getColorOfCellFromType(row.days.tuesday),
-      headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'tuesday', rawLessonStringMode),
-    },
-    {
-      name: 'wednesday',
-      label: 'Среда',
-      align: 'center',
-      style: (row) => getColorOfCellFromType(row.days.wednesday),
-      headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'wednesday', rawLessonStringMode),
-    },
-    {
-      name: 'thursday',
-      label: 'Четверг',
-      align: 'center',
-      style: (row) => getColorOfCellFromType(row.days.thursday),
-      headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'thursday', rawLessonStringMode),
-    },
-    {
-      name: 'friday',
-      label: 'Пятница',
-      align: 'center',
-      style:  (row) => getColorOfCellFromType(row.days.friday),
-      headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'friday', rawLessonStringMode)
-    },
-    {
-      name: 'saturday',
-      label: 'Суббота',
-      align: 'center',
-      style: (row) => getColorOfCellFromType(row.days.saturday),
-      headerStyle: 'max-width: 250px',
-      field: (row) =>  getFieldName(row, 'saturday', rawLessonStringMode),
-    },
-  ];
 }
 
 export function getDateString(date) {
@@ -153,8 +126,6 @@ export function getNumberOfWeek(date) {
   if (tempDate < tempSeptemberDate) {
     for (let i = 0; i < 7; i++) {
       tempDate.setDate(tempDate.getDate() + 1);
-      console.log(tempDate)
-      console.log(tempSeptemberDate)
       if (tempDate >= tempSeptemberDate) {
         return 1;
       }
@@ -184,11 +155,10 @@ export function getNumberOfWeek(date) {
   return weekCounter;
 }
 
-export function getColorOfCellFromType(dayObject) {
-  console.log(dayObject)
+export function getScheduleColumnStyle(dayObject) {
   if (dayObject.typeEntity) {
     const typeName = dayObject.typeEntity.typeName;
-    let style = 'width: 250px;text-align: center;'
+    let style = 'width: 250px; text-align: center;'
     switch (typeName) {
       case 'LAB' : {
         style += 'background-color: rgba(169, 191, 90, 0.5);';
@@ -228,13 +198,5 @@ export function getColorOfCellFromType(dayObject) {
       }
     }
     return style;
-  }
-}
-
-function getFieldName(row, dayName, rawLessonStringMode) {
-  if (rawLessonStringMode) {
-    return row.days[dayName].rawLessonString;
-  } else {
-    return row.days[dayName].name;
   }
 }
