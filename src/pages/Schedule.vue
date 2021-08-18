@@ -27,7 +27,7 @@
                          @click="loadPreviousWeekLessons"/>
                 </div>
                 <div id="nav-date" class="col-6">
-                  <q-btn flat no-caps class="buttons-date" label="Числитель" @click="loadNumeratorLessons"/>
+                  <q-btn flat no-caps class="buttons-date active" label="Числитель" @click="loadNumeratorLessons"/>
                   <q-btn flat no-caps class="buttons-date" label="Знаменатель" @click="loadDenominatorLessons"/>
                   <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
                     <q-popup-proxy transition-show="scale" transition-hide="scale">
@@ -44,8 +44,6 @@
                   <q-btn flat no-caps class="buttons-week" label="Следующая неделя ❯" @click="loadNextWeekLessons"/>
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>
@@ -55,8 +53,7 @@
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
                 <q-td id="main-table-rasp-time">{{ props.row.time }}</q-td>
-                <q-td v-for="(cell) in props.row.days" :key="cell.day"
-                      :style="getScheduleCellStyle(cell[0], cell.length > 1)">
+                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="cell.length !== 0 ? getScheduleCellStyle(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
                     <q-tab-panels v-model="tab" animated swipeable infinite>
                       <q-tab-panel name="firstLessonTab">
@@ -78,7 +75,7 @@
                       </q-tab-panel>
                     </q-tab-panels>
                   </template>
-                  <template v-else>
+                  <template v-else-if="cell.length !== 0">
                     {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                   </template>
                 </q-td>
@@ -120,7 +117,7 @@ import {
   getDateOfMonday,
   getDateString,
   getTypeOfWeek, getNumberOfWeek,
-  getScheduleCellStyle, getStartDateOfWeek
+  getScheduleCellStyle
 } from "../composables/schedule/ScheduleTable"
 
 const columns = [
