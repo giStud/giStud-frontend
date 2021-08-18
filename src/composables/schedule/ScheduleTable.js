@@ -1,12 +1,11 @@
-export function getTableRowsFromLessons(lessons, date) {
+export function getTableRowsFromLessons(lessons, week) {
   const timeArray = [];
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  const numerator = getTypeOfWeek(date);
-  const numOfWeek = getNumberOfWeek(date);
-
+  const numerator = getTypeOfWeek(week);
   let lessonsOfSelectedWeek = [];
   for (let lesson of lessons) {
-    if (lesson.week === numOfWeek) {
+
+    if (lesson.week === week) {
       lessonsOfSelectedWeek.push(lesson);
     }
   }
@@ -19,8 +18,8 @@ export function getTableRowsFromLessons(lessons, date) {
   timeArray.sort();
   for (let time in timeArray) {
     let timeValue = timeArray[time];
-    timeValue = timeValue.substr(0, 5);
-    timeValue = timeValue.substr(0, 1) === '0' ? timeValue.substr(1) : timeValue;
+    timeValue = timeValue.substr(0,5);
+    timeValue = timeValue.substr(0,1) === '0' ? timeValue.substr(1) : timeValue;
     timeArray[time] = timeValue;
   }
 
@@ -38,8 +37,8 @@ export function getTableRowsFromLessons(lessons, date) {
   }
 
   for (let lesson of lessonsOfSelectedWeek) {
-    let time = lesson.time.substr(0, 5);
-    time = time.substr(0, 1) === '0' ? time.substr(1) : time;
+    let time = lesson.time.substr(0,5);
+    time = time.substr(0,1) === '0' ? time.substr(1) : time;
     const day = lesson.day.toLocaleLowerCase();
     const lessonNumerator = lesson.numerator;
 
@@ -55,9 +54,37 @@ export function getTableRowsFromLessons(lessons, date) {
               dayArray.push(lesson);
             }
           } else {
-            dayArray.push(lesson);
+            if (lesson.name === 'testLesson') {
+              let obj = {
+                "lessonId": 9999,
+                "rawLessonString": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusantium amet delectus",
+                "name": "testLesson",
+                "numerator": "FULL",
+                "time": "17:00:00",
+                "day": "FRIDAY",
+                "week": 4,
+                "typeEntity":
+                  {
+                    "typeId": 88,
+                    "typeName": "MILITARY_TRAINING"
+                  },
+                "audienceEntity":
+                  {
+                    "audienceId": 470,
+                    "x": null,
+                    "y": null,
+                    "z": null,
+                    "building": null,
+                    "audience": "UNKNOWN"
+                  }
+              }
+              dayArray.push(obj);
+            } else {
+              dayArray.push(lesson);
+            }
+
           }
-        } else if (dayArray.length === 0) {
+        } else if(dayArray.length === 0) {
           dayArray.push(lesson);
         }
       }
@@ -82,19 +109,43 @@ export function getDateOfMonday(date) {
   return tempDate;
 }
 
-export function getTypeOfWeek(date) {
-  if (getNumberOfWeek(date) % 2 === 0) {
+export function getTypeOfWeekFromDate(date) {
+  if (getNumberOfWeek(date) %2 === 0) {
     return 'DENOMINATOR';
   } else {
     return 'NUMERATOR';
   }
 }
 
+export function getTypeOfWeek(week) {
+  if (week %2 === 0) {
+    return 'DENOMINATOR';
+  } else {
+    return 'NUMERATOR';
+  }
+}
+
+export function getStartDateOfWeek(week, year) {
+  let weekCounter = 1;
+  let startDate = new Date(year, 8, 1);
+
+  while (weekCounter < week)
+  {
+    if (startDate.getDay() === 0)
+    {
+      weekCounter++;
+    }
+    startDate.setDate(startDate.getDate() + 1);
+  }
+
+  return getDateOfMonday(startDate);
+}
+
 export function getNumberOfWeek(date) {
 
   //IDFK WTF WITH THIS SHIT P.s: calculate first week
   let tempDate = new Date(date);
-  const tempSeptemberDate = new Date(tempDate.getFullYear(), 8, 1)
+  const tempSeptemberDate = new Date(tempDate.getFullYear(),8,1)
   if (tempDate < tempSeptemberDate) {
     for (let i = 0; i < 7; i++) {
       tempDate.setDate(tempDate.getDate() + 1);
@@ -106,7 +157,8 @@ export function getNumberOfWeek(date) {
 
   let weekCounter = 1;
   let year;
-  if (date.getMonth() >= 8) {
+  if (date.getMonth() >= 8)
+  {
     year = date.getFullYear();
   } else {
     year = date.getFullYear() - 1;
@@ -115,8 +167,10 @@ export function getNumberOfWeek(date) {
   //1 september
   let startDate = new Date(year, 8, 1);
 
-  while (startDate < date) {
-    if (startDate.getDay() === 0) {
+  while (startDate < date)
+  {
+    if (startDate.getDay() === 0)
+    {
       weekCounter++;
     }
     startDate.setDate(startDate.getDate() + 1);
@@ -149,7 +203,7 @@ export function getScheduleCellStyle(dayObject, splitterMode) {
           break;
         }
         case 'MILITARY_TRAINING' : {
-          style += 'background-color: rgba(238, 111, 111, 0.5);'
+          style+= 'background-color: rgba(238, 111, 111, 0.5);'
           break;
         }
         case 'PE' : {

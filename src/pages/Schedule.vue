@@ -6,7 +6,10 @@
           <div class="">
             <div class="column">
               <div class="col-12" style="margin-top: 30px">
-
+                <q-btn color="primary" label="Следующая неделя" @click="loadNextWeekLessons"
+                       style="margin-right: 8px;  box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
+                <q-btn color="primary" label="Предыдущая неделя" @click="loadPreviousWeekLessons"
+                       style="margin-right: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
               </div>
               <div class="row" style="height: 50px">
                 <!--                <div class="col-4" style="padding-top: 21px">-->
@@ -47,7 +50,7 @@
                 </q-select>
                 <div class="col-4" style="padding-top: 31px; text-align: center; font-size: 18px">
                   <div class="content-end">
-                    <span> {{ currentWeekNumber }} неделя, {{ currentWeekType }}</span>
+                    <span> {{ selectedWeek }} неделя, {{ currentWeekType }}</span>
                   </div>
                 </div>
                 <div class="col-4" style="padding-top: 21px">
@@ -179,7 +182,7 @@ import {
   getDateOfMonday,
   getDateString,
   getTypeOfWeek, getNumberOfWeek,
-  getScheduleCellStyle
+  getScheduleCellStyle, getStartDateOfWeek
 } from "../composables/schedule/ScheduleTable"
 
 const columns = [
@@ -259,7 +262,7 @@ export default {
         });
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
         localStorage.setItem('idOfLastLoadedGroup', val);
-        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
+        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
       } else {
         title.value = '';
         console.log('debil');
@@ -272,6 +275,8 @@ export default {
     const rows = ref([]);
     const title = ref('');
     const selectedDate = ref(null);
+    const selectedWeek = ref(null);
+    const year = ref(new Date().getFullYear());
     const mondayDate = ref('');
     const tuesdayDate = ref('');
     const wednesdayDate = ref('');
@@ -284,53 +289,65 @@ export default {
 
     const updateHeadersDates = (date) => {
       if (date !== null) {
-        mondayDate.value = getDateString(date);
-        date.setDate(date.getDate() + 1);
+        let tempDate = new Date(date);
+        mondayDate.value = getDateString(tempDate);
+        tempDate.setDate(tempDate.getDate() + 1);
 
-        tuesdayDate.value = getDateString(date);
-        date.setDate(date.getDate() + 1);
+        tuesdayDate.value = getDateString(tempDate);
+        tempDate.setDate(tempDate.getDate() + 1);
 
-        wednesdayDate.value = getDateString(date);
-        date.setDate(date.getDate() + 1);
+        wednesdayDate.value = getDateString(tempDate);
+        tempDate.setDate(tempDate.getDate() + 1);
 
-        thursdayDate.value = getDateString(date);
-        date.setDate(date.getDate() + 1);
+        thursdayDate.value = getDateString(tempDate);
+        tempDate.setDate(tempDate.getDate() + 1);
 
-        fridayDate.value = getDateString(date);
-        date.setDate(date.getDate() + 1);
+        fridayDate.value = getDateString(tempDate);
+        tempDate.setDate(tempDate.getDate() + 1);
 
-        saturdayDate.value = getDateString(date);
-        date.setDate(date.getDate() + 1);
-        date.setDate(date.getDate() - 6);
+        saturdayDate.value = getDateString(tempDate);
+        tempDate.setDate(tempDate.getDate() + 1);
       }
     }
 
+    const incrementWeek = (incrementValue) => {
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() + (7 * incrementValue));
+      //selected date watcher setting the week value after updating date
+      selectedDate.value = tempDate;
+    }
+
+    const decrementWeek = (decrementValue) => {
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() - (7 * decrementValue));
+      //selected date watcher setting the week value after updating date
+      selectedDate.value = tempDate;
+    }
+
     const loadNumeratorLessons = () => {
-      const selectedGroup = store.getters['schedule/getSelectedGroup'];
-      if (selectedDate.value !== null && selectedGroup) {
-        let date = new Date(selectedDate.value);
-        let numerator = getTypeOfWeek(date);
-        if (numerator === 'DENOMINATOR') {
-          do {
-            date.setDate(date.getDate() - 1);
-          } while (date.getDay() !== 1)
-          selectedDate.value = date;
+      if (selectedWeek.value !== null) {
+
+        if (getTypeOfWeek(selectedWeek.value) === 'DENOMINATOR') {
+          decrementWeek(1);
         }
       }
     }
 
     const loadDenominatorLessons = () => {
-      const selectedGroup = store.getters['schedule/getSelectedGroup'];
-      if (selectedDate.value !== null && selectedGroup) {
-        let date = new Date(selectedDate.value);
-        let numerator = getTypeOfWeek(date);
-        if (numerator === 'NUMERATOR') {
-          do {
-            date.setDate(date.getDate() + 1);
-          } while (date.getDay() !== 1)
-          selectedDate.value = date;
+      if (selectedWeek.value !== null) {
+
+        if (getTypeOfWeek(selectedWeek.value) === 'NUMERATOR') {
+          incrementWeek(1);
         }
       }
+    }
+
+    const loadNextWeekLessons = () => {
+      incrementWeek(1);
+    }
+
+    const loadPreviousWeekLessons = () => {
+      decrementWeek(1);
     }
 
     const changeDateFromDatePicker = () => {
@@ -340,23 +357,32 @@ export default {
     watch(rawLessonStringMode, (newValue) => {
       localStorage.setItem('rawLessonStringMode', newValue)
     })
-    watch(selectedDate, (newValue) => {
-      const date = getDateOfMonday(newValue)
+
+    watch(selectedWeek, (newValue) => {
+      const date = selectedDate.value;
       //const date = getDateOfMonday(new Date(2020,10, 23))
-      updateHeadersDates(date)
-      currentWeekType.value = getTypeOfWeek(date) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
-      currentWeekNumber.value = getNumberOfWeek(date);
-      const selectedGroup = store.getters['schedule/getSelectedGroup'];
-      if (selectedGroup.lessons) {
-        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value)
+      if (date !== null) {
+        updateHeadersDates(date);
+        currentWeekType.value = getTypeOfWeek(newValue) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+        const selectedGroup = store.getters['schedule/getSelectedGroup'];
+        if (selectedGroup.lessons) {
+          rows.value = getTableRowsFromLessons(selectedGroup.lessons, newValue)
+        }
       }
+    })
+
+    watch(selectedDate, (newValue) => {
+      console.log("selected date watcher")
+      selectedWeek.value = getNumberOfWeek(newValue);
     })
 
     watch(selected, (newValue) => {
       loadGroupSchedule(newValue)
     });
 
-    selectedDate.value = getDateOfMonday(new Date());
+    if (selectedDate.value === null) {
+      selectedDate.value = getDateOfMonday(new Date());
+    }
     //Schedule table end
 
     onMounted(async () => {
@@ -376,7 +402,7 @@ export default {
       if ((typeof idOfLastSelectedGroup !== 'undefined') && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу') {
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
+        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
       }
     });
 
@@ -396,11 +422,14 @@ export default {
       currentWeekNumber,
       rawLessonStringMode,
       datePickerDate,
+      selectedWeek,
       tab: ref('firstLessonTab'),
       filterFn,
       loadGroupSchedule,
       loadNumeratorLessons,
       loadDenominatorLessons,
+      loadNextWeekLessons,
+      loadPreviousWeekLessons,
       changeDateFromDatePicker,
       getScheduleCellStyle
     };
