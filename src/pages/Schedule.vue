@@ -89,6 +89,33 @@
             hide-pagination
             wrap-cells
           >
+            <template v-slot:body="props">
+              <q-tr :props="props" :key="props.row.rowNum">
+                <q-td><pre>{{props.cols}}</pre></q-td>
+                <q-td style="text-align: center; align-items: center">{{ props.row.time }}</q-td>
+                <q-td v-for="cell in props.row.days" :key="cell.day" :style="getColorOfCellFromType(cell[0])">
+                  <template v-if="cell.length > 1">
+                    <template v-if="rawLessonStringMode">
+                      {{ cell[0].rawLessonString }}
+                      {{ cell[1].rawLessonString }}
+                    </template>
+                    <template v-else>
+                      {{ cell[0].name}}
+                      {{ cell[1].name}}
+                    </template>
+
+                  </template>
+                  <template v-else>
+                    <template v-if="rawLessonStringMode">
+                      {{ cell[0].rawLessonString }}
+                    </template>
+                    <template v-else>
+                      {{ cell[0].name}}
+                    </template>
+                  </template>
+                </q-td>
+              </q-tr>
+            </template>
             <template v-slot:header="props">
               <q-th>{{ props.cols[0].label }}</q-th>
               <q-th>{{ props.cols[1].label }}<br>{{ mondayDate }}</q-th>
@@ -126,7 +153,8 @@ import {
   getTableColumns,
   getDateOfMonday,
   getDateString,
-  getTypeOfWeek, getNumberOfWeek
+  getTypeOfWeek, getNumberOfWeek,
+  getColorOfCellFromType
 } from "../composables/schedule/ScheduleTable"
 
 export default {
@@ -257,7 +285,9 @@ export default {
       }
     })
 
-    watch(selected, (newValue)=>{loadGroupSchedule(newValue)});
+    watch(selected, (newValue) => {
+      loadGroupSchedule(newValue)
+    });
 
     selectedDate.value = getDateOfMonday(new Date());
     //Schedule table end
@@ -276,7 +306,7 @@ export default {
         localStorage.setItem('rawLessonStringMode', 'false');
       }
 
-      if (typeof idOfLastSelectedGroup !== 'undefined' && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу' ) {
+      if ((typeof idOfLastSelectedGroup !== 'undefined') && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу') {
         console.log(idOfLastSelectedGroup)
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
@@ -305,7 +335,8 @@ export default {
       loadGroupSchedule,
       loadNumeratorLessons,
       loadDenominatorLessons,
-      changeDateFromDatePicker
+      changeDateFromDatePicker,
+      getColorOfCellFromType
     };
   },
 };

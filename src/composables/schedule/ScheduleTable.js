@@ -32,7 +32,7 @@ export function getTableRowsFromLessons(lessons, date) {
     rowObject['days'] = {}
     for (let indexOfDaysArray = 0; indexOfDaysArray < 6; indexOfDaysArray++) {
       let day = daysArray[indexOfDaysArray];
-      rowObject['days'][day] = {}
+      rowObject['days'][day] = []
     }
     rowsArray[indexOfTimeArray] = rowObject
   }
@@ -45,8 +45,15 @@ export function getTableRowsFromLessons(lessons, date) {
 
 
     for (let rowObject of rowsArray) {
+      if (lesson.day === 'FRIDAY' && time === '17:00') {
+        let x = 0;
+      }
       if (rowObject.time === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
-        rowObject['days'][day] = lesson;
+        if (lesson.name !== '') {
+          rowObject['days'][day].push(lesson);
+        } else if(rowObject['days'][day].length === 0) {
+          rowObject['days'][day].push(lesson);
+        }
       }
     }
   }
@@ -177,10 +184,11 @@ export function getNumberOfWeek(date) {
   return weekCounter;
 }
 
-function getColorOfCellFromType(dayObject) {
+export function getColorOfCellFromType(dayObject) {
+  console.log(dayObject)
   if (dayObject.typeEntity) {
     const typeName = dayObject.typeEntity.typeName;
-    let style = 'width: 250px;'
+    let style = 'width: 250px;text-align: center;'
     switch (typeName) {
       case 'LAB' : {
         style += 'background-color: rgba(169, 191, 90, 0.5);';
