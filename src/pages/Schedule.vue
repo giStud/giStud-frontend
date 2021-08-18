@@ -92,19 +92,49 @@
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
                 <q-td style="text-align: center; align-items: center; width: 100px">{{ props.row.time }}</q-td>
-                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="getScheduleColumnStyle(cell[0])">
+                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="getScheduleCellStyle(cell[0], cell.length > 1)">
                   <template v-if="cell.length > 1">
-                    <template v-if="rawLessonStringMode">
-                      {{ cell[0].rawLessonString }}
-                      {{ cell[1].rawLessonString }}
-                      <br> splitter weeks
-                    </template>
-                    <template v-else>
-                      {{ cell[0].name}}
-                      {{ cell[1].name}}
-                      <br> splitter weeks
-                    </template>
+<!--                    <q-splitter
+                      horizontal
+                      v-model="ratio"
+                      separator-style="background-color: rgb(224,224,224); height: 1px"
+                    >
+                      <template v-slot:before>
+                        <div :style="getScheduleCellStyle(cell[0]) + 'padding: 10px'">
+                          {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
+                        </div>
+                      </template>
+                      <template v-slot:after>
+                        <div :style="getScheduleCellStyle(cell[1]) + 'padding: 10px'">
+                          {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
+                        </div>
+                      </template>
+                    </q-splitter>-->
+<!--                    <q-tabs-->
+<!--                      v-model="tab"-->
+<!--                      swipeable-->
+<!--                      infinite-->
+<!--                      style="height: 20px"-->
+<!--                    >-->
+<!--                      <q-tab name="firstLessonTab" label="1" />-->
+<!--                      <q-tab name="secondLessonTab" label="2" />-->
+<!--                    </q-tabs>-->
 
+                    <q-tab-panels v-model="tab" animated swipeable infinite>
+                      <q-tab-panel name="firstLessonTab" style="padding: 0">
+                        <div :style="getScheduleCellStyle(cell[0]) + 'padding: 10px'">
+                          {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
+                          <div><q-badge color="blue" label="swipe"/></div>
+                        </div>
+                      </q-tab-panel>
+
+                      <q-tab-panel name="secondLessonTab" style="padding: 0">
+                        <div :style="getScheduleCellStyle(cell[1]) + 'padding: 10px'">
+                          {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
+                          <div><q-badge color="blue" label="swipe"/></div>
+                        </div>
+                      </q-tab-panel>
+                    </q-tab-panels>
                   </template>
                   <template v-else>
                     {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
@@ -149,7 +179,7 @@ import {
   getDateOfMonday,
   getDateString,
   getTypeOfWeek, getNumberOfWeek,
-  getScheduleColumnStyle
+  getScheduleCellStyle
 } from "../composables/schedule/ScheduleTable"
 
 const columns = [
@@ -346,7 +376,6 @@ export default {
       if ((typeof idOfLastSelectedGroup !== 'undefined') && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу') {
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-        console.log(selectedGroup)
         rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedDate.value);
       }
     });
@@ -367,12 +396,13 @@ export default {
       currentWeekNumber,
       rawLessonStringMode,
       datePickerDate,
+      tab: ref('firstLessonTab'),
       filterFn,
       loadGroupSchedule,
       loadNumeratorLessons,
       loadDenominatorLessons,
       changeDateFromDatePicker,
-      getScheduleColumnStyle
+      getScheduleCellStyle
     };
   },
 };
