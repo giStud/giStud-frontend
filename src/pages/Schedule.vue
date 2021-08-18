@@ -5,136 +5,75 @@
         <div class="col-12 content-end">
           <div class="">
             <div class="column">
-              <div class="col-12" style="margin-top: 30px">
-                <q-btn color="primary" label="Следующая неделя" @click="loadNextWeekLessons"
-                       style="margin-right: 8px;  box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
-                <q-btn color="primary" label="Предыдущая неделя" @click="loadPreviousWeekLessons"
-                       style="margin-right: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
-              </div>
-              <div class="row" style="height: 50px">
-                <!--                <div class="col-4" style="padding-top: 21px">-->
-                <!--                  <q-btn color="primary" label="Загрузить расписание" style="box-shadow: 0 0 10px rgba(0,0,0,0.5);" @click="loadGroupSchedule" />-->
-                <!--                </div>-->
-                <q-select
-                  rounded
-                  outlined
-                  v-model="selected"
-                  use-input
-                  hide-selected
-                  fill-input
-                  input-debounce="0"
-                  :options="filteredOptions"
-                  option-value="groupId"
-                  option-label="groupName"
-                  map-options
-                  emit-value
-                  @filter="filterFn"
-                  style="width: 250px; padding-bottom: 32px"
-                  transition-show="jump-up"
-                  transition-hide="jump-up"
-                  bottom-slots
-                >
+              <div class="col-12">
+                <q-select square borderless outlined v-model="selected" use-input hide-selected f
+                          ill-input :options="filteredOptions" option-value="groupId"
+                          option-label="groupName" map-options emit-value @filter="filterFn" transition-show="jump-up"
+                          transition-hide="jump-up" bottom-slots>
                   <template v-slot:no-option>
                     <q-item>
-                      <q-item-section class="text-grey">
-                        Не найдено
-                      </q-item-section>
+                      <q-item-section class="text-grey">Не найдено</q-item-section>
                     </q-item>
                   </template>
                   <template v-slot:append>
                     <q-icon name="search"/>
                   </template>
-                  <template v-slot:hint>
-                    Поиск группы
-                  </template>
                 </q-select>
-                <div class="col-4" style="padding-top: 31px; text-align: center; font-size: 18px">
-                  <div class="content-end">
-                    <span> {{ selectedWeek }} неделя, {{ currentWeekType }}</span>
-                  </div>
+              </div>
+
+              <div class="row main-second">
+                <div class="col-3" id="prev-week">
+                  <q-btn flat no-caps class="buttons-week" label="❮ Предыдущая неделя"
+                         @click="loadPreviousWeekLessons"/>
                 </div>
-                <div class="col-4" style="padding-top: 21px">
-                  <div class="row justify-end">
-
-                    <div>
-
-                      <div>
-                        <q-btn color="primary" label="Числитель" @click="loadNumeratorLessons"
-                               style="margin-right: 8px;  box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
-                        <q-btn color="primary" label="Знаменатель" @click="loadDenominatorLessons"
-                               style="margin-right: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.5);"/>
-                        <q-btn icon="today" color="primary" style="box-shadow: 0 0 10px rgba(0,0,0,0.5);">
-                          <q-popup-proxy transition-show="scale" transition-hide="scale">
-                            <q-date v-model="datePickerDate">
-                              <div class="row items-center justify-end q-gutter-sm">
-                                <q-btn label="Cancel" color="primary" flat v-close-popup/>
-                                <q-btn label="OK" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-btn>
-                      </div>
-                    </div>
-                  </div>
+                <div id="nav-date" class="col-6">
+                  <q-btn flat no-caps class="buttons-date" label="Числитель" @click="loadNumeratorLessons"/>
+                  <q-btn flat no-caps class="buttons-date" label="Знаменатель" @click="loadDenominatorLessons"/>
+                  <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
+                    <q-popup-proxy transition-show="scale" transition-hide="scale">
+                      <q-date v-model="datePickerDate">
+                        <div class="row items-center justify-end q-gutter-sm">
+                          <q-btn label="Cancel" color="primary" flat v-close-popup/>
+                          <q-btn label="OK" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-btn>
+                </div>
+                <div class="col-3" id="next-week">
+                  <q-btn flat no-caps class="buttons-week" label="Следующая неделя ❯" @click="loadNextWeekLessons"/>
                 </div>
               </div>
+
+
             </div>
           </div>
         </div>
         <div class="col-12">
-          <q-table
-            :rows="rows"
-            :columns="columns"
-            row-key="rowNum"
-            table-colspan="7"
-            :rows-per-page-options="[10,12]"
-            separator="cell"
-            hide-pagination
-            wrap-cells
-          >
+          <q-table id="main-table-rasp" flat :rows="rows" :columns="columns" row-key="rowNum" table-colspan="7"
+                   :rows-per-page-options="[10,12]" separator="cell" hide-pagination wrap-cells>
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
-                <q-td style="text-align: center; align-items: center; width: 100px">{{ props.row.time }}</q-td>
-                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="getScheduleCellStyle(cell[0], cell.length > 1)">
+                <q-td id="main-table-rasp-time">{{ props.row.time }}</q-td>
+                <q-td v-for="(cell) in props.row.days" :key="cell.day"
+                      :style="getScheduleCellStyle(cell[0], cell.length > 1)">
                   <template v-if="cell.length > 1">
-<!--                    <q-splitter
-                      horizontal
-                      v-model="ratio"
-                      separator-style="background-color: rgb(224,224,224); height: 1px"
-                    >
-                      <template v-slot:before>
-                        <div :style="getScheduleCellStyle(cell[0]) + 'padding: 10px'">
-                          {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
-                        </div>
-                      </template>
-                      <template v-slot:after>
-                        <div :style="getScheduleCellStyle(cell[1]) + 'padding: 10px'">
-                          {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
-                        </div>
-                      </template>
-                    </q-splitter>-->
-<!--                    <q-tabs-->
-<!--                      v-model="tab"-->
-<!--                      swipeable-->
-<!--                      infinite-->
-<!--                      style="height: 20px"-->
-<!--                    >-->
-<!--                      <q-tab name="firstLessonTab" label="1" />-->
-<!--                      <q-tab name="secondLessonTab" label="2" />-->
-<!--                    </q-tabs>-->
-
                     <q-tab-panels v-model="tab" animated swipeable infinite>
-                      <q-tab-panel name="firstLessonTab" style="padding: 0">
+                      <q-tab-panel name="firstLessonTab">
                         <div :style="getScheduleCellStyle(cell[0]) + 'padding: 10px'">
                           {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
-                          <div><q-badge color="blue" label="swipe"/></div>
+                          <div>
+                            <q-badge color="blue" label="swipe"/>
+                          </div>
                         </div>
                       </q-tab-panel>
 
-                      <q-tab-panel name="secondLessonTab" style="padding: 0">
+                      <q-tab-panel name="secondLessonTab">
                         <div :style="getScheduleCellStyle(cell[1]) + 'padding: 10px'">
                           {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
-                          <div><q-badge color="blue" label="swipe"/></div>
+                          <div>
+                            <q-badge color="blue" label="swipe"/>
+                          </div>
                         </div>
                       </q-tab-panel>
                     </q-tab-panels>
@@ -145,6 +84,7 @@
                 </q-td>
               </q-tr>
             </template>
+
             <template v-slot:header="props">
               <q-th>{{ props.cols[0].label }}</q-th>
               <q-th>{{ props.cols[1].label }}<br>{{ mondayDate }}</q-th>
@@ -154,18 +94,16 @@
               <q-th>{{ props.cols[5].label }}<br>{{ fridayDate }}</q-th>
               <q-th>{{ props.cols[6].label }}<br>{{ saturdayDate }}</q-th>
             </template>
+
             <template v-slot:top class="row justify-between items-center">
-              <div class="row-4 q-table__title">{{ title }}</div>
-
-              <q-space/>
-
-              <div class="row-4 order-last">
-                <q-toggle
-                  v-model="rawLessonStringMode"
-                  label="Отображение занятий без обработки: "
-                  left-label
-                />
+              <div class="col-12 row rasp-title">
+                <div class="col-4 q-table__title">{{ title }}</div>
+                <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя</div>
+                <div class="col-4" id="rawLessonStringMode">
+                  <q-toggle v-model="rawLessonStringMode" label="Отображение занятий без обработки: " left-label/>
+                </div>
               </div>
+
             </template>
           </q-table>
         </div>
@@ -450,4 +388,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="css">
+@import 'src/css/style.css';
+</style>

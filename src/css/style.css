@@ -1,6 +1,100 @@
-/*
-.{
-  color: rgba(238, 111, 111, 0.5);
-  background-color: rgba(242, 172, 41, 0.5);
+
+#select-group{
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 0;
 }
-*/
+#select-group-search{
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 0;
+}
+
+.main-second {
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  padding: 20px 20px 0 20px;
+}
+
+.main-second #current-week {
+  justify-content: center;
+  text-align: center;
+  font-size: 15px;
+}
+.main-second #nav-date {
+  justify-content: center;
+  text-align: center;
+}
+.main-second #next-week {
+  text-align: right;
+}
+
+.main-second #prev-week {
+  text-align: left;
+}
+
+.buttons-week {
+  transition-duration: 0.4s;
+  text-align: center;
+  font-size: 12px;
+  margin-bottom: 20px;
+  box-shadow: none;
+  text-decoration: none;
+  padding: 10px 10px;
+  display: inline-block;
+  background-color: white;
+  color: black;
+  border: 2px solid #1976d2;
+  width: 175px;
+  height: 40px;
+  justify-content: center;
+  border-radius: 0;
+}
+.buttons-week:hover {
+  background-color: #1976d2;
+  color: white;
+}
+
+.buttons-date {
+  transition-duration: 0.4s;
+  text-align: center;
+  font-size: 12px;
+  padding-top: 10px;
+  margin-bottom: 20px;
+  box-shadow: none;
+  text-decoration: none;
+  display: inline-block;
+  background-color: #1976d2;
+  color: white;
+  width: 100px;
+  height: 40px;
+  /*justify-content: center;*/
+  border-radius: 0;
+}
+
+.buttons-date #calendar {
+  width: 20px;
+}
+
+#main-table-rasp {
+  border-radius: 0;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+#main-table-rasp-time {
+  width: 50px;
+  text-align: center;
+}
+
+.rasp-title {
+}
+
+.rasp-title .q-table__title {
+  padding-top: 4px;
+}
+
+.rasp-title #selected-week {
+  padding-top: 11px;
+  text-align: center;
+}
+
+.rasp-title #rawLessonStringMode {
+  text-align: right;
+}
