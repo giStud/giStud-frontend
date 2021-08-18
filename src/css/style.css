@@ -65,8 +65,14 @@
   color: white;
   width: 100px;
   height: 40px;
-  /*justify-content: center;*/
   border-radius: 0;
+}
+
+.buttons-date:hover {
+  background-color: rgba(25, 118, 210, 0.71);
+}
+.buttons-date:active {
+  background-color: rgba(25, 118, 210, 0.71);
 }
 
 .buttons-date #calendar {
