@@ -276,7 +276,6 @@ export default {
     const title = ref('');
     const selectedDate = ref(null);
     const selectedWeek = ref(null);
-    const year = ref(new Date().getFullYear());
     const mondayDate = ref('');
     const tuesdayDate = ref('');
     const wednesdayDate = ref('');
@@ -323,6 +322,13 @@ export default {
       //selected date watcher setting the week value after updating date
       selectedDate.value = tempDate;
     }
+
+    watch(selectedDate, (newValue) => {
+      if (newValue !== null) {
+        localStorage.setItem('selectedDate', newValue.toString())
+        selectedWeek.value = getNumberOfWeek(newValue);
+      }
+    })
 
     const loadNumeratorLessons = () => {
       if (selectedWeek.value !== null) {
@@ -371,32 +377,39 @@ export default {
       }
     })
 
-    watch(selectedDate, (newValue) => {
-      console.log("selected date watcher")
-      selectedWeek.value = getNumberOfWeek(newValue);
-    })
-
     watch(selected, (newValue) => {
       loadGroupSchedule(newValue)
     });
 
-    if (selectedDate.value === null) {
-      selectedDate.value = getDateOfMonday(new Date());
-    }
+
     //Schedule table end
 
     onMounted(async () => {
       await store.dispatch('groups/getGroupNamesAction');
       options.value = store.getters['groups/getGroupNames'];
 
-      let mode1 = localStorage.getItem('rawLessonStringMode');
+      console.log(typeof new Date())
+
+      let rlsMode = localStorage.getItem('rawLessonStringMode');
+      let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
       let idOfLastSelectedGroup = localStorage.getItem('idOfLastLoadedGroup');
 
-      if (mode1 === 'true') {
+      if (rlsMode === 'true') {
         rawLessonStringMode.value = true;
       } else {
         rawLessonStringMode.value = false;
         localStorage.setItem('rawLessonStringMode', 'false');
+      }
+
+      if (dateFromStorage !== null) {
+        let currentDate = getDateOfMonday(new Date());
+        if (dateFromStorage < currentDate) {
+          selectedDate.value = currentDate;
+        } else {
+          selectedDate.value = dateFromStorage;
+        }
+      } else {
+        selectedDate.value = getDateOfMonday(new Date());
       }
 
       if ((typeof idOfLastSelectedGroup !== 'undefined') && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу') {
