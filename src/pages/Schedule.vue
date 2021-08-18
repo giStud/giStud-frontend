@@ -95,34 +95,8 @@
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
                 <q-td style="text-align: center; align-items: center; width: 100px">{{ props.row.time }}</q-td>
-                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="getScheduleCellStyle(cell[0], cell.length > 1)">
+                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="cell.length !== 0 ? getScheduleCellStyle(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
-<!--                    <q-splitter
-                      horizontal
-                      v-model="ratio"
-                      separator-style="background-color: rgb(224,224,224); height: 1px"
-                    >
-                      <template v-slot:before>
-                        <div :style="getScheduleCellStyle(cell[0]) + 'padding: 10px'">
-                          {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
-                        </div>
-                      </template>
-                      <template v-slot:after>
-                        <div :style="getScheduleCellStyle(cell[1]) + 'padding: 10px'">
-                          {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
-                        </div>
-                      </template>
-                    </q-splitter>-->
-<!--                    <q-tabs-->
-<!--                      v-model="tab"-->
-<!--                      swipeable-->
-<!--                      infinite-->
-<!--                      style="height: 20px"-->
-<!--                    >-->
-<!--                      <q-tab name="firstLessonTab" label="1" />-->
-<!--                      <q-tab name="secondLessonTab" label="2" />-->
-<!--                    </q-tabs>-->
-
                     <q-tab-panels v-model="tab" animated swipeable infinite>
                       <q-tab-panel name="firstLessonTab" style="padding: 0">
                         <div :style="getScheduleCellStyle(cell[0]) + 'padding: 10px'">
@@ -139,7 +113,7 @@
                       </q-tab-panel>
                     </q-tab-panels>
                   </template>
-                  <template v-else>
+                  <template v-else-if="cell.length !== 0">
                     {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                   </template>
                 </q-td>
@@ -182,7 +156,7 @@ import {
   getDateOfMonday,
   getDateString,
   getTypeOfWeek, getNumberOfWeek,
-  getScheduleCellStyle, getStartDateOfWeek
+  getScheduleCellStyle
 } from "../composables/schedule/ScheduleTable"
 
 const columns = [
