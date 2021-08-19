@@ -190,32 +190,32 @@ export function getScheduleCellColor(dayObject, splitterMode) {
           style += 'background-color: rgba(169, 191, 90, 0.5);';
           break;
         }
-        case 'LANGUAGE' : {
-          style += 'background-color: rgba(242, 172, 41, 0.5);';
-          break;
-        }
         case 'LECTURE' : {
           style += 'background-color: rgba(38, 180, 201, 0.5);';
           break;
         }
-        case 'LECTURE_AND_LAB' : {
-          style += 'background-color: rgba(128, 111, 111, 0.5);';
-          break;
-        }
-        case 'MILITARY_TRAINING' : {
-          style+= 'background-color: rgba(238, 111, 111, 0.5);'
+        case 'PRACTICE' : {
+          style += 'background-color: rgba(238, 111, 111, 0.5);';
           break;
         }
         case 'PE' : {
           style += 'background-color: rgba(238, 111, 111, 0.5);';
           break
         }
-        case 'PRACTICE' : {
-          style += 'background-color: rgba(238, 111, 111, 0.5);';
+        case 'LANGUAGE' : {
+          style += 'background-color: rgba(242, 172, 41, 0.5);';
+          break;
+        }
+        case 'LECTURE_AND_LAB' : {
+          style += 'background-color: rgba(128, 111, 111, 0.5);';
           break;
         }
         case 'PRACTICE_AND_LECTURE' : {
           style += 'background-color: rgba(238, 111, 111, 0.5);';
+          break;
+        }
+        case 'MILITARY_TRAINING' : {
+          style+= 'background-color: rgba(238, 111, 111, 0.5);'
           break;
         }
         case 'RELOCATION' : {

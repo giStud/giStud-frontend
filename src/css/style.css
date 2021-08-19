@@ -99,14 +99,24 @@
   width: auto;
   padding: 10px;
   margin: 0 0 0 0;
-  height: available;
+  justify-content: center;
 }
 
 #main-table-before-cell {
   width: auto;
   padding: 10px;
   margin: 0 0 0 0;
-  height: available;
+  justify-content: center;
+  text-align: center;
+}
+
+#lessons-type-info {
+  border: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+#lessons-type-table {
+  border-radius: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.18);
 }
 
 .rasp-title {

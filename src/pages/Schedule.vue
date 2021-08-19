@@ -48,27 +48,30 @@
           </div>
         </div>
         <div class="col-12">
-          <q-table id="main-table-rasp" flat :rows="rows" :columns="columns" row-key="rowNum" table-colspan="7"
+          <q-table id="main-table-rasp" flat :rows="scheduleRows" :columns="scheduleColumns" row-key="rowNum"
+                   table-colspan="7"
                    :rows-per-page-options="[10,12]" separator="cell" hide-pagination wrap-cells>
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
                 <q-td id="main-table-rasp-time">{{ props.row.time }}</q-td>
-                <q-td id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day" :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
+                <q-td id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day"
+                      :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
                     <div>
                       <q-splitter
-                        v-model="ratio"
+                        v-model="splitterRatio"
                         separator-style="background-color: rgb(224,224,224); height: 1px"
                         style="width: available;"
                         horizontal
                       >
                         <template v-slot:before>
-                          <div id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
+                          <div style="height: border-box" id="main-table-before-cell"
+                               :style="getScheduleCellColor(cell[0])">
                             {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                           </div>
                         </template>
                         <template v-slot:after>
-                          <div id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
+                          <div class="q-pa-md" id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
                             {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
                           </div>
                         </template>
@@ -104,6 +107,24 @@
             </template>
           </q-table>
         </div>
+        <div class="col-12">
+          <q-expansion-item
+            expand-separator
+            label="Цветовые обозначения типов занятий"
+            id="lessons-type-info"
+          >
+            <q-table
+              :rows="lessonTypesRows"
+              :columns="lessonTypesColumns"
+              row-key="type"
+              separator="cell"
+              hide-pagination
+              flat
+              :rows-per-page-options="[15,20]"
+              id="lessons-type-table"
+            />
+          </q-expansion-item>
+        </div>
       </div>
     </div>
   </q-page>
@@ -120,7 +141,7 @@ import {
   getScheduleCellColor
 } from "../composables/schedule/ScheduleTable"
 
-const columns = [
+const scheduleColumns = [
   {
     name: 'time',
     label: 'Время',
@@ -165,6 +186,65 @@ const columns = [
   }
 ]
 
+const lessonTypesColumns = [
+  {
+    name: 'color',
+    label: 'Цветовое обозначение',
+    align: 'center',
+    headerStyle: 'max-width: 160px',
+    style: row => row.color + 'width: 160px'
+  },
+  {
+    name: 'type',
+    label: 'Тип занятия',
+    align: 'left',
+    field: 'type'
+  }
+]
+
+const lessonTypesRows = [
+  {
+    color: 'background-color: rgba(169, 191, 90, 0.5);',
+    type: 'Лабораторная работа'
+  },
+  {
+    color: 'background-color: rgba(38, 180, 201, 0.5);',
+    type: 'Лекция'
+  },
+  {
+    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    type: 'Практика'
+  },
+  {
+    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    type: 'Физическая культура'
+  },
+  {
+    color: 'background-color: rgba(242, 172, 41, 0.5);',
+    type: 'Иностранный язык'
+  },
+  {
+    color: 'background-color: rgba(128, 111, 111, 0.5);',
+    type: 'Лекция и лабораторная работа'
+  },
+  {
+    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    type: 'Практика и лекция'
+  },
+  {
+    color: 'background-color: rgba(38, 180, 201, 0.5);',
+    type: 'Лабораторная работа и практика'
+  },
+  {
+    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    type: 'Военная подготовка'
+  },
+  {
+    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    type: 'Переезд'
+  }
+]
+
 export default {
   name: 'GroupSelectingLayout',
   components: {},
@@ -197,7 +277,7 @@ export default {
         });
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
         localStorage.setItem('idOfLastLoadedGroup', val);
-        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
+        scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
       } else {
         title.value = '';
         console.log('debil');
@@ -207,7 +287,7 @@ export default {
 
     //Schedule table start
     const rawLessonStringMode = ref(null)
-    const rows = ref([]);
+    const scheduleRows = ref([]);
     const title = ref('');
     const selectedDate = ref(null);
     const selectedWeek = ref(null);
@@ -307,7 +387,7 @@ export default {
         currentWeekType.value = getTypeOfWeek(newValue) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
-          rows.value = getTableRowsFromLessons(selectedGroup.lessons, newValue)
+          scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, newValue)
         }
       }
     })
@@ -350,15 +430,15 @@ export default {
       if ((typeof idOfLastSelectedGroup !== 'undefined') && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу') {
         const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-        rows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
+        scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
       }
     });
 
     return {
       filteredOptions,
       selected,
-      columns,
-      rows,
+      scheduleColumns,
+      scheduleRows,
       title,
       mondayDate,
       tuesdayDate,
@@ -371,6 +451,9 @@ export default {
       rawLessonStringMode,
       datePickerDate,
       selectedWeek,
+      splitterRatio: ref(50),
+      lessonTypesColumns,
+      lessonTypesRows,
       filterFn,
       loadGroupSchedule,
       loadNumeratorLessons,
