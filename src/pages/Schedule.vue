@@ -61,9 +61,7 @@
                       <q-splitter
                         v-model="splitterRatio"
                         separator-style="background-color: rgb(224,224,224); height: 1px"
-                        style="width: available;"
-                        horizontal
-                      >
+                        style="width: available;" horizontal>
                         <template v-slot:before>
                           <div style="height: border-box" id="main-table-before-cell"
                                :style="getScheduleCellColor(cell[0])">
