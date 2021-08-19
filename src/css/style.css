@@ -95,14 +95,14 @@
   justify-content: center;
 }
 
-#twin-lesson-after-cell {
+#main-table-after-cell {
   width: auto;
   padding: 10px;
   margin: 0 0 0 0;
   height: available;
 }
 
-#twin-lesson-before-cell {
+#main-table-before-cell {
   width: auto;
   padding: 10px;
   margin: 0 0 0 0;

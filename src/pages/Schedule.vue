@@ -60,15 +60,15 @@
                         v-model="ratio"
                         separator-style="background-color: rgb(224,224,224); height: 1px"
                         style="width: available;"
-                        class="row col-12"
+                        horizontal
                       >
                         <template v-slot:before>
-                          <div class="col-6" id="twin-lesson-before-cell" :style="getScheduleCellColor(cell[0])">
+                          <div id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
                             {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                           </div>
                         </template>
                         <template v-slot:after>
-                          <div class="col-6" id="twin-lesson-after-cell" :style="getScheduleCellColor(cell[1])">
+                          <div id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
                             {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
                           </div>
                         </template>
