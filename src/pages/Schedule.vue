@@ -27,8 +27,19 @@
                          @click="loadPreviousWeekLessons"/>
                 </div>
                 <div id="nav-date" class="col-6">
-                  <q-btn flat no-caps class="buttons-date active" label="Числитель" @click="loadNumeratorLessons"/>
-                  <q-btn flat no-caps class="buttons-date" label="Знаменатель" @click="loadDenominatorLessons"/>
+                  <q-btn-toggle
+                    v-model="numeratorButtonsToggle"
+                    no-caps
+                    unelevated
+                    toggle-color="primary"
+                    color="white"
+                    text-color="primary"
+                    @update:model-value="val => updateNumeratorsButton(val)"
+                    :options="[
+                      {label: 'Числитель', value: 'NUMERATOR'},
+                      {label: 'Знаменатель', value: 'DENOMINATOR'}
+                    ]"
+                  />
                   <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
                     <q-popup-proxy transition-show="scale" transition-hide="scale">
                       <q-date v-model="datePickerDate">
@@ -96,7 +107,7 @@
             <template v-slot:top class="row justify-between items-center">
               <div class="col-12 row rasp-title">
                 <div class="col-4 q-table__title">{{ title }}</div>
-                <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя</div>
+                <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{currentWeekType}}</div>
                 <div class="col-4" id="rawLessonStringMode">
                   <q-toggle v-model="rawLessonStringMode" label="Отображение занятий без обработки: " left-label/>
                 </div>
@@ -298,6 +309,7 @@ export default {
     const currentWeekType = ref('');
     const currentWeekNumber = ref(null);
     const datePickerDate = ref(new Date());
+    const numeratorButtonsToggle = ref(null);
 
     const updateHeadersDates = (date) => {
       if (date !== null) {
@@ -343,20 +355,15 @@ export default {
       }
     })
 
-    const loadNumeratorLessons = () => {
-      if (selectedWeek.value !== null) {
+    const updateNumeratorsButton = (val) => {
+      if (selectedWeek.value !== 0) {
+        const currentWeekType = getTypeOfWeek(selectedWeek.value);
 
-        if (getTypeOfWeek(selectedWeek.value) === 'DENOMINATOR') {
-          decrementWeek(1);
-        }
-      }
-    }
-
-    const loadDenominatorLessons = () => {
-      if (selectedWeek.value !== null) {
-
-        if (getTypeOfWeek(selectedWeek.value) === 'NUMERATOR') {
+        if (currentWeekType === 'NUMERATOR' && val === 'DENOMINATOR') {
           incrementWeek(1);
+        }
+        if (currentWeekType === 'DENOMINATOR' && val === 'NUMERATOR') {
+          decrementWeek(1);
         }
       }
     }
@@ -382,6 +389,8 @@ export default {
       //const date = getDateOfMonday(new Date(2020,10, 23))
       if (date !== null) {
         updateHeadersDates(date);
+
+        numeratorButtonsToggle.value = getTypeOfWeek(newValue);
         currentWeekType.value = getTypeOfWeek(newValue) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
@@ -450,12 +459,12 @@ export default {
       datePickerDate,
       selectedWeek,
       splitterRatio: ref(50),
+      numeratorButtonsToggle,
       lessonTypesColumns,
       lessonTypesRows,
       filterFn,
       loadGroupSchedule,
-      loadNumeratorLessons,
-      loadDenominatorLessons,
+      updateNumeratorsButton,
       loadNextWeekLessons,
       loadPreviousWeekLessons,
       changeDateFromDatePicker,
