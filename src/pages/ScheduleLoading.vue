@@ -13,6 +13,19 @@
         @failed="onFailed"
       />
     </div>
+    <div>
+      <q-uploader
+        field-name="zips"
+        method="POST"
+        :headers="headers"
+        url="http://localhost:8080/schedulesLoading/zips"
+        label="Загрузка архивов"
+        multiple
+        batch
+        style="max-width: 300px"
+        @failed="onFailed"
+      />
+    </div>
   </div>
 </template>
 
