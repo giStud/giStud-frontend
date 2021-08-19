@@ -61,7 +61,8 @@
         <div class="col-12">
           <q-table id="main-table-rasp" flat :rows="scheduleRows" :columns="scheduleColumns" row-key="rowNum"
                    table-colspan="7"
-                   :rows-per-page-options="[10,12]" separator="cell" hide-pagination wrap-cells>
+                   :rows-per-page-options="[10,12]" separator="cell" hide-pagination wrap-cells
+                   no-data-label="Для отображения расписания выберите группу">
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
                 <q-td id="main-table-rasp-time">{{ props.row.time }}</q-td>
