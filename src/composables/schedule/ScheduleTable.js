@@ -178,10 +178,10 @@ export function getNumberOfWeek(date) {
   return weekCounter;
 }
 
-export function getScheduleCellStyle(dayObject, splitterMode) {
+export function getScheduleCellColor(dayObject, splitterMode) {
   if (dayObject.typeEntity) {
     const typeName = dayObject.typeEntity.typeName;
-    let style = 'width: 250px; text-align: center;'
+    let style = '';//width: 250px; text-align: center;
     if (splitterMode) {
       style += 'padding: 0px;'
     } else {

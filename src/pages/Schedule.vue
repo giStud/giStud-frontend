@@ -6,8 +6,8 @@
           <div class="">
             <div class="column">
               <div class="col-12">
-                <q-select square borderless outlined v-model="selected" use-input hide-selected f
-                          ill-input :options="filteredOptions" option-value="groupId"
+                <q-select square borderless outlined v-model="selected" use-input hide-selected fill-input
+                          :options="filteredOptions" option-value="groupId"
                           option-label="groupName" map-options emit-value @filter="filterFn" transition-show="jump-up"
                           transition-hide="jump-up" bottom-slots>
                   <template v-slot:no-option>
@@ -53,27 +53,27 @@
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
                 <q-td id="main-table-rasp-time">{{ props.row.time }}</q-td>
-                <q-td v-for="(cell) in props.row.days" :key="cell.day" :style="cell.length !== 0 ? getScheduleCellStyle(cell[0], cell.length > 1) : ''">
+                <q-td id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day" :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
-                    <q-tab-panels v-model="tab" animated swipeable infinite>
-                      <q-tab-panel name="firstLessonTab">
-                        <div :style="getScheduleCellStyle(cell[0]) + 'padding: 10px'">
-                          {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
-                          <div>
-                            <q-badge color="blue" label="swipe"/>
+                    <div>
+                      <q-splitter
+                        v-model="ratio"
+                        separator-style="background-color: rgb(224,224,224); height: 1px"
+                        style="width: available;"
+                        class="row col-12"
+                      >
+                        <template v-slot:before>
+                          <div class="col-6" id="twin-lesson-before-cell" :style="getScheduleCellColor(cell[0])">
+                            {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                           </div>
-                        </div>
-                      </q-tab-panel>
-
-                      <q-tab-panel name="secondLessonTab">
-                        <div :style="getScheduleCellStyle(cell[1]) + 'padding: 10px'">
-                          {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
-                          <div>
-                            <q-badge color="blue" label="swipe"/>
+                        </template>
+                        <template v-slot:after>
+                          <div class="col-6" id="twin-lesson-after-cell" :style="getScheduleCellColor(cell[1])">
+                            {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
                           </div>
-                        </div>
-                      </q-tab-panel>
-                    </q-tab-panels>
+                        </template>
+                      </q-splitter>
+                    </div>
                   </template>
                   <template v-else-if="cell.length !== 0">
                     {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
@@ -110,14 +110,14 @@
 </template>
 
 <script>
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {
   getTableRowsFromLessons,
   getDateOfMonday,
   getDateString,
   getTypeOfWeek, getNumberOfWeek,
-  getScheduleCellStyle
+  getScheduleCellColor
 } from "../composables/schedule/ScheduleTable"
 
 const columns = [
@@ -371,7 +371,6 @@ export default {
       rawLessonStringMode,
       datePickerDate,
       selectedWeek,
-      tab: ref('firstLessonTab'),
       filterFn,
       loadGroupSchedule,
       loadNumeratorLessons,
@@ -379,7 +378,7 @@ export default {
       loadNextWeekLessons,
       loadPreviousWeekLessons,
       changeDateFromDatePicker,
-      getScheduleCellStyle
+      getScheduleCellColor
     };
   },
 };
