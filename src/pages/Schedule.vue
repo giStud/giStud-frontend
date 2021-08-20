@@ -7,6 +7,7 @@
             <div class="column">
               <div class="col-12">
                 <q-select square borderless outlined v-model="selected" use-input hide-selected fill-input
+                          label="Выберите группу"
                           :options="filteredOptions" option-value="groupId"
                           option-label="groupName" map-options emit-value @filter="filterFn" transition-show="jump-up"
                           transition-hide="jump-up" bottom-slots>
@@ -263,12 +264,15 @@ export default {
     const store = useStore();
 
     //Group selecting start
-    const selected = ref('Выберите группу');
+    const selected = ref(null);
     const options = ref([]);
     const filteredOptions = ref(options.value);
 
     const filterFn = (val, update, abort) => {
+      console.log(val)
+      console.log(update)
       update(() => {
+        console.log(val);
         const needle = val.toLocaleLowerCase();
         if (needle === '') {
           filteredOptions.value = options.value;
