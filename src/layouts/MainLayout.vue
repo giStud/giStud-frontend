@@ -1,15 +1,11 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <Header/>
-    </q-header>
-    
-    <q-footer elevated class="bg-grey-8 text-white">
-      <Footer/>
-    </q-footer>
+  <q-layout>
+    <Header/>
+
     <q-page-container>
       <router-view />
     </q-page-container>
+<!--    <Footer/>-->
   </q-layout>
 </template>
 
@@ -24,7 +20,7 @@ export default defineComponent({
 
   components: {
     Header,
-    Footer
+    // Footer
   },
 
   /*setup () {

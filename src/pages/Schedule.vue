@@ -6,7 +6,7 @@
           <div class="">
             <div class="column">
               <div class="col-12">
-                <q-select square borderless outlined clearable v-model="selected" use-input hide-selected fill-input
+                <q-select square borderless outlined v-model="selected" use-input hide-selected fill-input
                           label="Выберите группу"
                           :options="filteredOptions"
                           option-label="groupName" @filter="filterFn" transition-show="jump-up"
@@ -49,8 +49,8 @@
                     <q-popup-proxy @before-show="updateProxy" transition-show="scale" transition-hide="scale">
                       <q-date v-model="proxyDate">
                         <div class="row items-center justify-end q-gutter-sm">
-                          <q-btn label="Cancel" color="primary" flat v-close-popup/>
-                          <q-btn label="OK" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
+                          <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
+                          <q-btn label="Отмена" color="primary" flat v-close-popup/>
                         </div>
                       </q-date>
                     </q-popup-proxy>
@@ -124,7 +124,7 @@
         </div>
         <div class="col-12">
           <q-expansion-item
-            expand-separator
+            @after-show="scrollToElement('footer')"
             label="Цветовые обозначения типов занятий"
             id="lessons-type-info"
           >
@@ -143,6 +143,7 @@
       </div>
     </div>
   </q-page>
+  <div id="footer"></div>
 </template>
 
 <script>
@@ -155,49 +156,51 @@ import {
   getTypeOfWeek, getNumberOfWeek,
   getScheduleCellColor
 } from "../composables/schedule/ScheduleTable"
+import { scroll } from 'quasar'
+const { getScrollTarget, setVerticalScrollPosition } = scroll
 
 const scheduleColumns = [
   {
     name: 'time',
     label: 'Время',
     align: 'center',
-    headerStyle: 'max-width: 100px',
+    headerStyle: 'width: 120px',
   },
   {
     name: 'monday',
     label: 'Понедельник',
     align: 'center',
-    headerStyle: 'max-width: 250px',
+    headerStyle: 'width: 250px',
   },
   {
     name: 'tuesday',
     label: 'Вторник',
     align: 'center',
-    headerStyle: 'max-width: 250px',
+    headerStyle: 'width: 250px',
   },
   {
     name: 'wednesday',
     label: 'Среда',
     align: 'center',
-    headerStyle: 'max-width: 250px',
+    headerStyle: 'width: 250px',
   },
   {
     name: 'thursday',
     label: 'Четверг',
     align: 'center',
-    headerStyle: 'max-width: 250px',
+    headerStyle: 'width: 250px',
   },
   {
     name: 'friday',
     label: 'Пятница',
     align: 'center',
-    headerStyle: 'max-width: 250px',
+    headerStyle: 'width: 250px',
   },
   {
     name: 'saturday',
     label: 'Суббота',
     align: 'center',
-    headerStyle: 'max-width: 250px',
+    headerStyle: 'width: 250px',
   }
 ]
 
@@ -206,7 +209,7 @@ const lessonTypesColumns = [
     name: 'color',
     label: 'Цветовое обозначение',
     align: 'center',
-    headerStyle: 'max-width: 160px',
+    headerStyle: 'width: 160px',
     style: row => row.color + 'width: 160px'
   },
   {
@@ -267,6 +270,11 @@ function formatDate(date) {
   if (mm < 10) mm = '0' + mm;
   let yy = date.getFullYear();
   return yy + '/' + mm + '/' + dd;
+}
+
+function scrollToElement (el) {
+  const element = document.getElementById(el);
+  element.scrollIntoView({behavior: "smooth"});
 }
 
 export default {
@@ -494,6 +502,7 @@ export default {
         datePickerDate.value = proxyDate.value
       },
       proxyDate,
+      scrollToElement,
     };
   },
 };

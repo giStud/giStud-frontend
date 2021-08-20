@@ -1,6 +1,6 @@
 <template>
   <div>
-    <footer id="footer" class="text-center text-white" style="background-color: #0a4275;">
+    <footer id="footer" class="text-center text-white">
         <div class="container p-4 pb-0">
             <section class="">
                 <p class="d-flex justify-content-center align-items-center">
@@ -29,6 +29,6 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang="css">
+@import 'src/css/style.css';
 </style>

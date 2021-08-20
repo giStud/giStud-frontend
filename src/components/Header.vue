@@ -1,32 +1,40 @@
 <template>
-  <div class="q-pa-md">
-    <q-toolbar class="bg-primary text-white q-my-md shadow-2">
-      <q-btn flat round dense icon="menu" class="q-mr-sm" />
-      <q-separator dark vertical inset />
-      <q-btn :to="'/schedule'" stretch flat label="Расписание" />
+  <div class="q-pa-md" style="min-width: 1248px; padding-left: 24px; padding-right: 24px">
+      <q-toolbar class="bg-primary text-white">
+        <q-avatar id="logo" square>
+          <img src="../assets/logoWhiteGray.svg">
+        </q-avatar>
 
-      <q-space />
+        <q-separator class="separator" dark vertical inset/>
 
-      <template v-if="!loggedIn">
-        <q-separator dark vertical />
-        <q-btn :to="'/auth/login'" stretch flat label="Войти" />
-        <q-separator dark vertical />
-        <q-btn :to="'/auth/signup'" stretch flat label="Зарегистрироваться" />
-      </template>
-      <template v-else>
-        <q-separator dark vertical />
-        <q-btn stretch flat> {{ currentUser.username }}</q-btn>
-        <q-separator dark vertical />
-        <q-btn @click="logout" stretch flat label="Выйти" />
-      </template>
-    </q-toolbar>
+        <q-btn class="nav-btn" :to="'#'" stretch flat label="Главная"/>
+        <q-btn class="nav-btn" :to="'/schedule'" stretch flat label="Расписание"/>
+        <q-btn class="nav-btn" :to="'#'" stretch flat label="Доска объявлений"/>
+        <q-btn class="nav-btn" :to="'#'" stretch flat label="Почетные хейтеры"/>
+
+        <q-space/>
+
+        <template v-if="!loggedIn">
+          <q-separator dark vertical/>
+          <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch flat label="Войти"/>
+          <q-separator dark vertical/>
+          <q-btn class="nav-btn-auth" :to="'/auth/signup'" stretch flat label="Зарегистрироваться"/>
+        </template>
+        <template v-else>
+
+          <q-btn class="nav-btn-auth" stretch flat> {{ currentUser.username }}</q-btn>
+          <q-separator dark vertical/>
+          <q-btn class="nav-btn-auth" @click="logout" stretch flat label="Выйти"/>
+        </template>
+      </q-toolbar>
+
   </div>
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
+import {useStore} from "vuex";
+import {ref, computed, onMounted, onBeforeUnmount} from "vue";
+import {useRouter} from "vue-router";
 import EventBus from "../common/eventBus";
 
 export default {
