@@ -1,5 +1,5 @@
 export function getTableRowsFromLessons(lessons, week) {
-  const timeArray = [];
+  let timeArray = [];
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
   const numerator = getTypeOfWeek(week);
   let lessonsOfSelectedWeek = [];
@@ -16,6 +16,7 @@ export function getTableRowsFromLessons(lessons, week) {
     }
   }
   timeArray.sort();
+  timeArray = Array.from(new Set(timeArray));
   for (let time in timeArray) {
     let timeValue = timeArray[time];
     timeValue = timeValue.substr(0,5);
@@ -54,35 +55,7 @@ export function getTableRowsFromLessons(lessons, week) {
               dayArray.push(lesson);
             }
           } else {
-            if (lesson.name === 'testLesson') {
-              let obj = {
-                "lessonId": 9999,
-                "rawLessonString": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. A accusantium amet delectus",
-                "name": "testLesson",
-                "numerator": "FULL",
-                "time": "17:00:00",
-                "day": "FRIDAY",
-                "week": 4,
-                "typeEntity":
-                  {
-                    "typeId": 88,
-                    "typeName": "MILITARY_TRAINING"
-                  },
-                "audienceEntity":
-                  {
-                    "audienceId": 470,
-                    "x": null,
-                    "y": null,
-                    "z": null,
-                    "building": null,
-                    "audience": "UNKNOWN"
-                  }
-              }
-              dayArray.push(obj);
-            } else {
-              dayArray.push(lesson);
-            }
-
+            dayArray.push(lesson);
           }
         } else if(dayArray.length === 0) {
           dayArray.push(lesson);
