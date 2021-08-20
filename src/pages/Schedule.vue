@@ -35,22 +35,19 @@
                          @click="loadPreviousWeekLessons"/>
                 </div>
                 <div id="nav-date" class="col-6">
+
                   <q-btn-toggle
+                    class="buttons-date-numerator"
                     v-model="numeratorButtonsToggle"
                     no-caps
                     unelevated
                     toggle-color="primary"
-                    color="white"
-                    text-color="primary"
                     @update:model-value="val => updateNumeratorsButton(val)"
-                    :options="[
-                      {label: 'Числитель', value: 'NUMERATOR'},
-                      {label: 'Знаменатель', value: 'DENOMINATOR'}
-                    ]"
+                    :options="[{label: 'Числитель', value: 'NUMERATOR'},{label: 'Знаменатель', value: 'DENOMINATOR'}]"
                   />
                   <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
-                    <q-popup-proxy transition-show="scale" transition-hide="scale">
-                      <q-date v-model="datePickerDate">
+                    <q-popup-proxy @before-show="updateProxy" transition-show="scale" transition-hide="scale">
+                      <q-date v-model="proxyDate">
                         <div class="row items-center justify-end q-gutter-sm">
                           <q-btn label="Cancel" color="primary" flat v-close-popup/>
                           <q-btn label="OK" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
@@ -263,6 +260,15 @@ const lessonTypesRows = [
   }
 ]
 
+function formatDate(date) {
+  let dd = date.getDate();
+  if (dd < 10) dd = '0' + dd;
+  let mm = date.getMonth() + 1;
+  if (mm < 10) mm = '0' + mm;
+  let yy = date.getFullYear();
+  return yy + '/' + mm + '/' + dd;
+}
+
 export default {
   name: 'GroupSelectingLayout',
   components: {},
@@ -320,7 +326,8 @@ export default {
     const saturdayDate = ref('');
     const currentWeekType = ref('');
     const currentWeekNumber = ref(null);
-    const datePickerDate = ref(new Date());
+    const datePickerDate = ref(formatDate(new Date()));
+    const proxyDate = ref(new Date());
     const numeratorButtonsToggle = ref(null);
 
     const updateHeadersDates = (date) => {
@@ -389,6 +396,7 @@ export default {
     }
 
     const changeDateFromDatePicker = () => {
+      datePickerDate.value = proxyDate.value
       selectedDate.value = new Date(datePickerDate.value);
     }
 
@@ -478,7 +486,14 @@ export default {
       loadNextWeekLessons,
       loadPreviousWeekLessons,
       changeDateFromDatePicker,
-      getScheduleCellColor
+      getScheduleCellColor,
+      updateProxy() {
+        proxyDate.value = datePickerDate.value
+      },
+      save() {
+        datePickerDate.value = proxyDate.value
+      },
+      proxyDate,
     };
   },
 };

@@ -41,38 +41,46 @@
   display: inline-block;
   background-color: white;
   color: black;
-  border: 2px solid #1976d2;
+  border: 2px solid #1976D2;
   width: 175px;
   height: 40px;
   justify-content: center;
   border-radius: 0;
 }
 .buttons-week:hover {
-  background-color: #1976d2;
+  background-color: #1976D2;
   color: white;
+}
+
+.buttons-date-numerator {
+  text-align: center;
+  font-size: 11px;
+  height: 40px;
+  border-radius: 0;
+  border: 1px solid #1976D2;
 }
 
 .buttons-date {
   transition-duration: 0.4s;
   text-align: center;
   font-size: 12px;
-  padding-top: 10px;
-  margin-bottom: 20px;
   box-shadow: none;
   text-decoration: none;
-  display: inline-block;
-  background-color: #1976d2;
-  color: white;
+  border: 1px solid #1976D2;
+  border-left: white;
+  color: black;
   width: 100px;
   height: 40px;
   border-radius: 0;
 }
 
 .buttons-date:hover {
-  background-color: rgba(25, 118, 210, 0.71);
+  background-color: #1976D2;
+  color: white;
 }
 .buttons-date:active {
-  background-color: rgba(25, 118, 210, 0.71);
+  background-color: #1976D2;
+  color: white;
 }
 
 .buttons-date #calendar {
