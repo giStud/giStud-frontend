@@ -6,11 +6,18 @@
           <div class="">
             <div class="column">
               <div class="col-12">
-                <q-select square borderless outlined v-model="selected" use-input hide-selected fill-input
+                <q-select square borderless outlined clearable v-model="selected" use-input hide-selected fill-input
                           label="Выберите группу"
-                          :options="filteredOptions" option-value="groupId"
-                          option-label="groupName" map-options emit-value @filter="filterFn" transition-show="jump-up"
+                          :options="filteredOptions"
+                          option-label="groupName" @filter="filterFn" transition-show="jump-up"
                           transition-hide="jump-up" bottom-slots>
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section avatar>
+                        <q-item-label v-html="scope.opt.groupName" />
+                      </q-item-section>
+                    </q-item>
+                  </template>
                   <template v-slot:no-option>
                     <q-item>
                       <q-item-section class="text-grey">Не найдено</q-item-section>
@@ -269,28 +276,28 @@ export default {
     const filteredOptions = ref(options.value);
 
     const filterFn = (val, update, abort) => {
-      console.log(val)
-      console.log(update)
       update(() => {
-        console.log(val);
         const needle = val.toLocaleLowerCase();
         if (needle === '') {
           filteredOptions.value = options.value;
         } else {
-          filteredOptions.value = options.value.filter((v) =>
-            v.toLowerCase().includes(needle)
+          filteredOptions.value = options.value.filter((v) => {
+              return v.groupName.toLowerCase().includes(needle)
+          }
           );
         }
       });
     }
 
     const loadGroupSchedule = async (val) => {
-      if (val !== 'Выберите группу') {
+
+      if (val.groupName !== '') {
+        const selectedGroupId = val.groupId;
         const selectedGroup = await store.dispatch('schedule/getGroupById', {
-          grId: val,
+          grId: selectedGroupId,
         });
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-        localStorage.setItem('idOfLastLoadedGroup', val);
+        localStorage.setItem('idOfLastLoadedGroup', selectedGroupId);
         scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
       } else {
         title.value = '';
@@ -414,8 +421,6 @@ export default {
     onMounted(async () => {
       await store.dispatch('groups/getGroupNamesAction');
       options.value = store.getters['groups/getGroupNames'];
-
-      console.log(typeof new Date())
 
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
