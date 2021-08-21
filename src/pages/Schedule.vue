@@ -46,8 +46,8 @@
                     :options="[{label: 'Числитель', value: 'NUMERATOR'},{label: 'Знаменатель', value: 'DENOMINATOR'}]"
                   />
                   <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
-                    <q-popup-proxy @before-show="updateProxy" transition-show="scale" transition-hide="scale">
-                      <q-date v-model="proxyDate">
+                    <q-popup-proxy transition-show="scale" transition-hide="scale">
+                      <q-date v-model="datePickerDate">
                         <div class="row items-center justify-end q-gutter-sm">
                           <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
                           <q-btn label="Отмена" color="primary" flat v-close-popup/>
@@ -156,9 +156,6 @@ import {
   getTypeOfWeek, getNumberOfWeek,
   getScheduleCellColor
 } from "../composables/schedule/ScheduleTable"
-import {scroll} from 'quasar'
-
-const {getScrollTarget, setVerticalScrollPosition} = scroll
 
 const scheduleColumns = [
   {
@@ -336,7 +333,6 @@ export default {
     const currentWeekType = ref('');
     const currentWeekNumber = ref(null);
     const datePickerDate = ref(formatDate(new Date()));
-    const proxyDate = ref(new Date());
     const numeratorButtonsToggle = ref(null);
 
     const updateHeadersDates = (date) => {
@@ -405,7 +401,6 @@ export default {
     }
 
     const changeDateFromDatePicker = () => {
-      datePickerDate.value = proxyDate.value
       selectedDate.value = new Date(datePickerDate.value);
     }
 
@@ -496,13 +491,6 @@ export default {
       loadPreviousWeekLessons,
       changeDateFromDatePicker,
       getScheduleCellColor,
-      updateProxy() {
-        proxyDate.value = datePickerDate.value
-      },
-      save() {
-        datePickerDate.value = proxyDate.value
-      },
-      proxyDate,
       scrollToElement,
     };
   },

@@ -79,7 +79,7 @@
   font-size: 11px;
   height: 40px;
   border-radius: 0;
-  border: 2px solid #1976D2;
+  border: 1px solid #1976D2;
 }
 
 .buttons-date {
@@ -88,7 +88,7 @@
   font-size: 12px;
   box-shadow: none;
   text-decoration: none;
-  border: 2px solid #1976D2;
+  border: 1px solid #1976D2;
   border-left: white;
   color: black;
   width: 100px;
