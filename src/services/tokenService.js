@@ -28,7 +28,15 @@ class TokenService {
   }
 
   setUser(user) {
-    console.log(JSON.stringify(user));
+    /*
+    {
+      username: user.username,
+      email: user.email,
+      tokenType: user.tokenType,
+      accessToken: user.accessToken,
+      refreshToken: user.refreshToken
+    }
+     */
     localStorage.setItem("user", JSON.stringify(user));
   }
 

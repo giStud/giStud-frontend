@@ -2,7 +2,7 @@
   <q-page>
     <div class="flex column">
       <div class="column q-pa-lg q-col-gutter-y-md">
-        <div class="col-12 content-end">
+        <div class="col-12 content-end" style="padding: 0">
           <div class="">
             <div class="column">
               <div class="col-12">

@@ -7,7 +7,7 @@
 
         <q-separator class="separator" dark vertical inset/>
 
-        <q-btn class="nav-btn" :to="'#'" stretch flat label="Главная"/>
+        <q-btn class="nav-btn" :to="'/'" stretch flat label="Главная"/>
         <q-btn class="nav-btn" :to="'/schedule'" stretch flat label="Расписание"/>
         <q-btn class="nav-btn" :to="'#'" stretch flat label="Доска объявлений"/>
         <q-btn class="nav-btn" :to="'#'" stretch flat label="Почетные хейтеры"/>
@@ -16,7 +16,7 @@
 
         <template v-if="!loggedIn">
           <q-separator dark vertical/>
-          <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch flat label="Войти"/>
+          <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch  flat label="Войти"/>
           <q-separator dark vertical/>
           <q-btn class="nav-btn-auth" :to="'/auth/signup'" stretch flat label="Зарегистрироваться"/>
         </template>
@@ -51,14 +51,12 @@ export default {
     };
 
     onMounted(() => {
-      console.log("create event handler");
       EventBus.on("logout", () => {
         logout();
       });
     });
 
     onBeforeUnmount(() => {
-      console.log("delete event handler");
       EventBus.remove("logout");
     });
 

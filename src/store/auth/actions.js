@@ -3,7 +3,7 @@ import AuthService from '../../services/authService';
 export async function loginAction({ commit }, user) {
   try {
     const data = await AuthService.login(user);
-    commit('loginSuccessMutation', user);
+    commit('loginSuccessMutation', data);
     return data;
   } catch (e) {
     commit('loginFailureMutation');
