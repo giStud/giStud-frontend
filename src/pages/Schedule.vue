@@ -14,7 +14,7 @@
                   <template v-slot:option="scope">
                     <q-item v-bind="scope.itemProps">
                       <q-item-section avatar>
-                        <q-item-label v-html="scope.opt.groupName" />
+                        <q-item-label v-html="scope.opt.groupName"/>
                       </q-item-section>
                     </q-item>
                   </template>
@@ -74,19 +74,19 @@
                 <q-td id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day"
                       :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
-                    <div>
+                    <div style="height: 100%;">
                       <q-splitter
                         v-model="splitterRatio"
+                        id="main-table-splitter"
                         separator-style="background-color: rgb(224,224,224); height: 1px"
-                        style="width: available;" horizontal>
+                        horizontal>
                         <template v-slot:before>
-                          <div style="height: border-box" id="main-table-before-cell"
-                               :style="getScheduleCellColor(cell[0])">
+                          <div id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
                             {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                           </div>
                         </template>
                         <template v-slot:after>
-                          <div class="q-pa-md" id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
+                          <div id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
                             {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
                           </div>
                         </template>
@@ -113,7 +113,7 @@
             <template v-slot:top class="row justify-between items-center">
               <div class="col-12 row rasp-title">
                 <div class="col-4 q-table__title">{{ title }}</div>
-                <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{currentWeekType}}</div>
+                <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{ currentWeekType }}</div>
                 <div class="col-4" id="rawLessonStringMode">
                   <q-toggle v-model="rawLessonStringMode" label="Отображение занятий без обработки: " left-label/>
                 </div>
@@ -156,8 +156,9 @@ import {
   getTypeOfWeek, getNumberOfWeek,
   getScheduleCellColor
 } from "../composables/schedule/ScheduleTable"
-import { scroll } from 'quasar'
-const { getScrollTarget, setVerticalScrollPosition } = scroll
+import {scroll} from 'quasar'
+
+const {getScrollTarget, setVerticalScrollPosition} = scroll
 
 const scheduleColumns = [
   {
@@ -272,7 +273,7 @@ function formatDate(date) {
   return yy + '/' + mm + '/' + dd;
 }
 
-function scrollToElement (el) {
+function scrollToElement(el) {
   const element = document.getElementById(el);
   element.scrollIntoView({behavior: "smooth"});
 }
@@ -297,7 +298,7 @@ export default {
         } else {
           filteredOptions.value = options.value.filter((v) => {
               return v.groupName.toLowerCase().includes(needle)
-          }
+            }
           );
         }
       });

@@ -4,7 +4,7 @@
       <q-uploader
         field-name="files"
         method="POST"
-        :headers="headers"
+        :headers="getHeaders"
         url="http://localhost:8080/schedulesLoading"
         label="Загрузка расписания"
         multiple
@@ -17,7 +17,7 @@
       <q-uploader
         field-name="zips"
         method="POST"
-        :headers="headers"
+        :headers="getHeaders"
         url="http://localhost:8080/schedulesLoading/zips"
         label="Загрузка архивов"
         multiple
@@ -44,11 +44,13 @@ export default {
       }
     })
 
-    const headers = Object.entries(authHeader()).map(([key, value])=>{
-      return {name : key, value}
-    })
+    const getHeaders = ()=> {
+      return Object.entries(authHeader()).map(([key, value])=>{
+        return {name : key, value}
+      })
+    }
     return {
-      headers,
+      getHeaders,
       onFailed
     };
   },
