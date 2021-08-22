@@ -37,6 +37,7 @@
                 <div id="nav-date" class="col-6">
 
                   <q-btn-toggle
+                    fab
                     class="buttons-date-numerator"
                     v-model="numeratorButtonsToggle"
                     no-caps
