@@ -1,0 +1,102 @@
+body {
+  font-family: 'Play', sans-serif;
+  background-color: rgb(238, 238, 238);
+}
+
+#main {
+  min-width: 1200px;
+  margin: 24px;
+}
+
+/*region Left column*/
+#main-left-col {
+
+  height: 1000px;
+  padding: 0 5px 5px 0;
+}
+
+#news-by-our {
+  padding: 0 0 5px 0;
+  max-height: 400px;
+  height: 400px;
+}
+
+#box-universities {
+  background-color: #fff;
+  margin-top: 10px;
+  padding-top: 20px;
+  padding-bottom: 10px;
+}
+#box-universities .box-university {
+  border: 1px solid rgba(109, 109, 109, 0.21);
+  margin: 0 20px 10px 20px;
+  padding: 16px;
+}
+
+.box-university .img-university .img-university-src {
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.44);
+}
+
+.box-university .content-university {
+  margin: auto;
+  width: 50%;
+}
+
+.content-university .title-university {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.btn-university {
+  transition-duration: 0.4s;
+  background-color: #1976D2;
+  color: white;
+  margin-right: 5px;
+  text-align: center;
+  font-size: 12px;
+  border-radius: 0;
+}
+.btn-university:hover {
+  background-color: white;
+  color: #1976D2;
+}
+
+.separator {
+  margin: 20px;
+}
+/*endregion*/
+
+
+/*region Right column*/
+#main-right-col {
+  height: 1000px;
+  padding: 0 0 5px 5px;
+}
+
+#col-ads {
+  height: 400px;
+  max-height: 400px;
+  padding: 32px;
+  background-color: #fff;
+}
+
+#col-ads .col-ads {
+  margin-bottom: 5px;
+}
+
+#student-news {
+  background-color: #fff;
+  margin-top: 10px;
+  padding: 0 0 5px 0;
+}
+
+#student-news #header-news {
+  font-weight: bold;
+  color: black;
+}
+
+#student-news .list-title {
+  font-weight: bold;
+}
+/*endregion*/
