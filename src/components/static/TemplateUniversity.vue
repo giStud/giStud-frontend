@@ -16,7 +16,7 @@
           </p>
         </div>
         <div>
-          <q-btn flat no-caps class="btn-university">Перейти</q-btn>
+          <q-btn flat no-caps class="btn-university" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Перейти</q-btn>
           <q-btn flat no-caps class="btn-university">Официальный сайт</q-btn>
         </div>
       </div>

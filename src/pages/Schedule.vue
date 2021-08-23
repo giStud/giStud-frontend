@@ -16,7 +16,7 @@
                       <q-item v-bind="scope.itemProps">
                         <q-item-section>
                           <q-item-label v-html="scope.opt.univName"/>
-                          <q-item-label caption>{{scope.opt.city}}</q-item-label>
+                          <q-item-label caption>{{ scope.opt.city }}</q-item-label>
                         </q-item-section>
                       </q-item>
                     </template>
@@ -40,7 +40,7 @@
                       <q-item v-bind="scope.itemProps">
                         <q-item-section>
                           <q-item-label v-html="scope.opt.groupName"/>
-                          <q-item-label caption>{{scope.opt.faculty}}</q-item-label>
+                          <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
                         </q-item-section>
                       </q-item>
                     </template>
@@ -175,14 +175,15 @@
 </template>
 
 <script>
-import {computed, onMounted, ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {
-  getTableRowsFromLessons,
   getDateOfMonday,
   getDateString,
-  getTypeOfWeek, getNumberOfWeek,
-  getScheduleCellColor
+  getNumberOfWeek,
+  getScheduleCellColor,
+  getTableRowsFromLessons,
+  getTypeOfWeek
 } from "../composables/schedule/ScheduleTable"
 
 const scheduleColumns = [
@@ -306,8 +307,13 @@ function scrollToElement(el) {
 export default {
   name: 'GroupSelectingLayout',
   components: {},
-
-  setup() {
+  props: {
+    univName: {
+      type: String,
+      default: null
+    }
+  },
+  setup(props) {
     const store = useStore();
 
     //Group selecting start
@@ -355,6 +361,7 @@ export default {
         });
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
         localStorage.setItem('idOfLastLoadedGroup', selectedGroupId);
+        localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
         scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
       } else {
         title.value = '';
@@ -469,11 +476,13 @@ export default {
     })
 
     watch(univSelectValue, async (newValue) => {
-      console.log(newValue)
       const selectedUnivId = newValue.univId;
-      groupsSelectOptions.value = await store.dispatch('schedule/getGroupNamesByUnivAction', {
-        univId: selectedUnivId
-      })
+      if (selectedUnivId) {
+        groupsSelectOptions.value = await store.dispatch('schedule/getGroupNamesByUnivAction', {
+          univId: selectedUnivId
+        })
+        localStorage.setItem('lastLoadedUniv', JSON.stringify(newValue));
+      }
     })
 
     watch(groupSelectValue, (newValue) => {
@@ -484,13 +493,22 @@ export default {
     //Schedule table end
 
     onMounted(async () => {
-      //await store.dispatch('schedule/getGroupNamesAction');
-      //univSelectOptions.value = store.getters['schedule/getGroupNames'];
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
+
+      const univNameFromPath = props.univName;
+      if (univNameFromPath !== null) {
+        for (const univObject of univSelectOptions.value) {
+          if (univObject.univName === univNameFromPath) {
+            univSelectValue.value = univObject;
+          }
+        }
+      }
+
 
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
-      let idOfLastSelectedGroup = localStorage.getItem('idOfLastLoadedGroup');
+      let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
+      let lastLoadedGroup = localStorage.getItem('lastLoadedGroup');
 
       if (rlsMode === 'true') {
         rawLessonStringMode.value = true;
@@ -510,10 +528,11 @@ export default {
         selectedDate.value = getDateOfMonday(new Date());
       }
 
-      if ((typeof idOfLastSelectedGroup !== 'undefined') && idOfLastSelectedGroup !== null && idOfLastSelectedGroup !== 'Выберите группу') {
-        const selectedGroup = await store.dispatch('schedule/getGroupById', {grId: idOfLastSelectedGroup});
-        title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-        scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
+      if ((typeof lastLoadedUniv !== 'undefined') && lastLoadedUniv !== null) {
+        univSelectValue.value = JSON.parse(lastLoadedUniv);
+      }
+      if ((typeof lastLoadedGroup !== 'undefined') && lastLoadedGroup !== null) {
+        groupSelectValue.value = JSON.parse(lastLoadedGroup);
       }
     });
 

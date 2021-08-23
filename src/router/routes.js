@@ -7,7 +7,13 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Index.vue'), meta: {isAuth: false, isAdmin: false}},
-      {path: '/schedule', component: () => import('pages/Schedule'), meta: {isAuth: false, isAdmin: false}},
+      {
+        path: '/schedule',
+        name: 'schedule',
+        component: () => import('pages/Schedule'),
+        props: (route)=> ({ univName: route.query.univName}),
+        meta: {isAuth: false, isAdmin: false}
+      },
       {path: '/schedulesLoading', component: () => import('pages/ScheduleLoading.vue'), meta: {isAuth: true, isAdmin: true}}
     ]
   },
