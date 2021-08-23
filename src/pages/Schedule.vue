@@ -466,6 +466,14 @@ export default {
       }
     })
 
+    watch(univSelectValue, async (newValue) => {
+      console.log(newValue)
+      const selectedUnivId = newValue.univId;
+      groupsSelectOptions.value = await store.dispatch('schedule/getGroupNamesByUnivAction', {
+        univId: selectedUnivId
+      })
+    })
+
     watch(groupSelectValue, (newValue) => {
       loadGroupSchedule(newValue)
     });
@@ -476,9 +484,7 @@ export default {
     onMounted(async () => {
       //await store.dispatch('schedule/getGroupNamesAction');
       //univSelectOptions.value = store.getters['schedule/getGroupNames'];
-      console.log(await store.dispatch('schedule/getUniversitiesNamesAction'));
-      univSelectOptions.value = store.getters['schedule/getUnivNames'];
-      console.log(univSelectOptions.value);
+      univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
 
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));

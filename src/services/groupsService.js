@@ -7,8 +7,9 @@ class GroupService {
     return data;
   }
 
-  async getGroupNames() {
-    const {data} = await api.get("/groups/groupNames")
+  async getGroupNamesByUniv(univId) {
+    //TODO: check on SQL inject
+    const {data} = await api.get("/groups/groupNames?univId=" + univId);
     return data.groups;
   }
 
