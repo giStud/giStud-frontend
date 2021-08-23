@@ -360,7 +360,6 @@ export default {
           grId: selectedGroupId,
         });
         title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-        localStorage.setItem('idOfLastLoadedGroup', selectedGroupId);
         localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
         scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
       } else {

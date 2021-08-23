@@ -48,7 +48,7 @@
             />
 
             <div>
-              <q-btn label="Зарегистрироваться" type="submit" color="primary" />
+              <q-btn label="Зарегистрироваться" type="submit" color="primary"/>
               <q-btn
                 label="Очистить"
                 type="reset"
@@ -65,10 +65,11 @@
 </template>
 
 <script>
-import { useStore } from "vuex";
-import { ref, computed, onMounted } from "vue";
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
+import {useStore} from "vuex";
+import {ref, computed, onMounted} from "vue";
+import {useQuasar} from "quasar";
+import {useRouter} from "vue-router";
+import UtilsService from "../services/utilsService"
 
 export default {
   name: "Register",
@@ -100,9 +101,12 @@ export default {
       async handleRegister(user) {
         message.value = "";
         try {
-          const { data } = await store.dispatch("auth/registerAction", user);
+          const {data} = await store.dispatch("auth/registerAction", user);
           message.value = data;
-          const loginData = await store.dispatch("auth/loginAction", {username : user.username, password : user.password});
+          const loginData = await store.dispatch("auth/loginAction", {
+            username: user.username,
+            password: user.password
+          });
           console.log("loginData: " + loginData.data);
 
           $q.notify({
@@ -130,10 +134,8 @@ export default {
       },
 
       isValidEmail(val) {
-        const emailPattern =
-          /^(?=[a-zA-Z0-9@._%+-]{6,254}$)[a-zA-Z0-9._%+-]{1,64}@(?:[a-zA-Z0-9-]{1,63}\.){1,8}[a-zA-Z]{2,63}$/;
-        return emailPattern.test(val) || "Недопустимый email";
-      },
+        return UtilsService.isValidEmail(val);
+      }
     };
   },
 };

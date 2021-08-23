@@ -8,7 +8,7 @@
         <q-separator class="separator" dark vertical inset/>
 
         <q-btn class="nav-btn" :to="'/'" stretch flat label="Главная"/>
-        <q-btn class="nav-btn" :to="{name: 'schedule', params : {univName: 'all'}}" stretch flat label="Расписание"/>
+        <q-btn class="nav-btn" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}" stretch flat label="Расписание"/>
         <q-btn class="nav-btn" :to="'#'" stretch flat label="Доска объявлений"/>
         <q-btn class="nav-btn" :to="'#'" stretch flat label="Почетные хейтеры"/>
 
