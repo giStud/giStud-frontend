@@ -5,7 +5,7 @@
 
       <q-item>
         <q-item-section>
-          <q-item-label class="list-title" >Хуй1</q-item-label>
+          <q-item-label class="list-title" >Абоба1</q-item-label>
           <q-item-label lines="2">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit.
             Dolorem enim est fugiat ipsa libero officiis optio quibusdam.
@@ -15,7 +15,7 @@
 
       <q-item>
         <q-item-section>
-          <q-item-label class="list-title" >Хуй2</q-item-label>
+          <q-item-label class="list-title" >Абоба2</q-item-label>
           <q-item-label lines="2">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit.
             Dolorem enim est fugiat ipsa libero officiis optio quibusdam.
@@ -25,7 +25,7 @@
 
       <q-item>
         <q-item-section>
-          <q-item-label class="list-title" >Хуй3</q-item-label>
+          <q-item-label class="list-title" >Абоба3</q-item-label>
           <q-item-label lines="2">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit.
             Dolorem enim est fugiat ipsa libero officiis optio quibusdam.

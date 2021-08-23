@@ -1,7 +1,6 @@
 import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
-import groups from './groups'
 import schedule from './schedule'
 import auth from './auth'
 
@@ -18,7 +17,6 @@ export default store(function (/* { ssrContext } */) {
   const Store = createStore({
     modules: {
       auth,
-      groups,
       schedule
     },
 

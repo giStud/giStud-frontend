@@ -5,7 +5,7 @@
         field-name="files"
         method="POST"
         :headers="getHeaders"
-        url="http://localhost:8080/schedulesLoading"
+        url="http://localhost:8080/schedule/schedulesLoading"
         label="Загрузка расписания"
         multiple
         batch
@@ -18,7 +18,7 @@
         field-name="zips"
         method="POST"
         :headers="getHeaders"
-        url="http://localhost:8080/schedulesLoading/zips"
+        url="http://localhost:8080/schedule/schedulesLoading/zips"
         label="Загрузка архивов"
         multiple
         batch

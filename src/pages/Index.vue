@@ -31,7 +31,7 @@
 import {defineComponent} from 'vue';
 import LastNews from "components/static/LastNews";
 import MainNewsOur from "components/static/MainNewsOur";
-import TemplateUniversity from "components/TemplateUniversity";
+import TemplateUniversity from "components/static/TemplateUniversity";
 
 export default defineComponent({
   name: 'PageIndex',

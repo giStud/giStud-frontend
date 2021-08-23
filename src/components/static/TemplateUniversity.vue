@@ -3,7 +3,7 @@
 
     <div class="box-university col-12 row">
       <div class="col-5 img-university">
-        <q-img class="img-university-src" src="../assets/media/universities/VGTU/VGTU.jpg" loading="lazy" spinner-color="white" height="300px"/>
+        <q-img class="img-university-src" src="../../assets/media/universities/VGTU/VGTU.jpg" loading="lazy" spinner-color="white" height="300px"/>
       </div>
       <div class="col-7 content-university">
         <div>
@@ -24,13 +24,13 @@
 
     <div class="box-university col-12 row">
       <div class="col-5 img-university">
-        <q-img class="img-university-src" src="../assets/media/universities/VGTU/VGTU.jpg" loading="lazy" spinner-color="white" height="300px"/>
+        <q-img class="img-university-src" src="../../assets/media/universities/VGTU/VGTU.jpg" loading="lazy" spinner-color="white" height="300px"/>
       </div>
       <div class="col-7 content-university">
         <div>
           <span class="title-university">Ваш университет</span>
           <p>
-            Вы можете оставить заявку на добавление вашего вуза-хуйза.
+            Вы можете оставить заявку на добавление вашего вуза-гавнуза.
           </p>
         </div>
         <div>
@@ -49,5 +49,5 @@ export default {
 </script>
 
 <style lang="css">
-@import 'src/css/home.css';
+@import '../../css/home.css';
 </style>

@@ -5,28 +5,53 @@
         <div class="col-12 content-end" style="padding: 0">
           <div class="">
             <div class="column">
-              <div class="col-12">
-                <q-select square borderless outlined v-model="selected" use-input hide-selected fill-input
-                          label="Выберите группу"
-                          :options="filteredOptions"
-                          option-label="groupName" @filter="filterFn" transition-show="jump-up"
-                          transition-hide="jump-up" bottom-slots>
-                  <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                      <q-item-section avatar>
-                        <q-item-label v-html="scope.opt.groupName"/>
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">Не найдено</q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:append>
-                    <q-icon name="search"/>
-                  </template>
-                </q-select>
+              <div class="col-12 row">
+                <div class="col-6">
+                  <q-select square borderless outlined v-model="univSelectValue" use-input hide-selected fill-input
+                            label="Выберите университет"
+                            :options="univFilteredOptions"
+                            option-label="univName" @filter="filterUniversitiesFn" transition-show="jump-up"
+                            transition-hide="jump-up" bottom-slots>
+                    <template v-slot:option="scope">
+                      <q-item v-bind="scope.itemProps">
+                        <q-item-section avatar>
+                          <q-item-label v-html="scope.opt.univName"/>
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">Не найдено</q-item-section>
+                      </q-item>
+                    </template>
+                    <template v-slot:append>
+                      <q-icon name="search"/>
+                    </template>
+                  </q-select>
+                </div>
+                <div class="col-6">
+                  <q-select square borderless outlined v-model="groupSelectValue" use-input hide-selected fill-input
+                            label="Выберите группу"
+                            :options="groupsFilteredOptions"
+                            option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up"
+                            transition-hide="jump-up" bottom-slots>
+                    <template v-slot:option="scope">
+                      <q-item v-bind="scope.itemProps">
+                        <q-item-section avatar>
+                          <q-item-label v-html="scope.opt.groupName"/>
+                        </q-item-section>
+                      </q-item>
+                    </template>
+                    <template v-slot:no-option>
+                      <q-item>
+                        <q-item-section class="text-grey">Не найдено</q-item-section>
+                      </q-item>
+                    </template>
+                    <template v-slot:append>
+                      <q-icon name="search"/>
+                    </template>
+                  </q-select>
+                </div>
               </div>
 
               <div class="row main-second">
@@ -284,17 +309,34 @@ export default {
     const store = useStore();
 
     //Group selecting start
-    const selected = ref(null);
-    const options = ref([]);
-    const filteredOptions = ref(options.value);
+    const groupSelectValue = ref(null);
+    const univSelectValue = ref(null);
+    const univSelectOptions = ref([]);
+    const univFilteredOptions = ref(univSelectOptions.value);
+    const groupsSelectOptions = ref([]);
+    const groupsFilteredOptions = ref(groupsSelectOptions.value);
 
-    const filterFn = (val, update, abort) => {
+    const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
         const needle = val.toLocaleLowerCase();
         if (needle === '') {
-          filteredOptions.value = options.value;
+          univFilteredOptions.value = univSelectOptions.value;
         } else {
-          filteredOptions.value = options.value.filter((v) => {
+          univFilteredOptions.value = univSelectOptions.value.filter((v) => {
+              return v.univName.toLowerCase().includes(needle)
+            }
+          );
+        }
+      });
+    }
+
+    const filterGroupsFn = (val, update, abort) => {
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        if (needle === '') {
+          groupsFilteredOptions.value = groupsSelectOptions.value;
+        } else {
+          groupsFilteredOptions.value = groupsSelectOptions.value.filter((v) => {
               return v.groupName.toLowerCase().includes(needle)
             }
           );
@@ -424,7 +466,7 @@ export default {
       }
     })
 
-    watch(selected, (newValue) => {
+    watch(groupSelectValue, (newValue) => {
       loadGroupSchedule(newValue)
     });
 
@@ -432,8 +474,11 @@ export default {
     //Schedule table end
 
     onMounted(async () => {
-      await store.dispatch('groups/getGroupNamesAction');
-      options.value = store.getters['groups/getGroupNames'];
+      //await store.dispatch('schedule/getGroupNamesAction');
+      //univSelectOptions.value = store.getters['schedule/getGroupNames'];
+      console.log(await store.dispatch('schedule/getUniversitiesNamesAction'));
+      univSelectOptions.value = store.getters['schedule/getUnivNames'];
+      console.log(univSelectOptions.value);
 
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
@@ -465,8 +510,10 @@ export default {
     });
 
     return {
-      filteredOptions,
-      selected,
+      univFilteredOptions,
+      groupsFilteredOptions,
+      groupSelectValue,
+      univSelectValue,
       scheduleColumns,
       scheduleRows,
       title,
@@ -485,7 +532,8 @@ export default {
       numeratorButtonsToggle,
       lessonTypesColumns,
       lessonTypesRows,
-      filterFn,
+      filterUniversitiesFn,
+      filterGroupsFn,
       loadGroupSchedule,
       updateNumeratorsButton,
       loadNextWeekLessons,
