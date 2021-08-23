@@ -14,8 +14,9 @@
                             transition-hide="jump-up" bottom-slots>
                     <template v-slot:option="scope">
                       <q-item v-bind="scope.itemProps">
-                        <q-item-section avatar>
+                        <q-item-section>
                           <q-item-label v-html="scope.opt.univName"/>
+                          <q-item-label caption>{{scope.opt.city}}</q-item-label>
                         </q-item-section>
                       </q-item>
                     </template>
@@ -37,8 +38,9 @@
                             transition-hide="jump-up" bottom-slots>
                     <template v-slot:option="scope">
                       <q-item v-bind="scope.itemProps">
-                        <q-item-section avatar>
+                        <q-item-section>
                           <q-item-label v-html="scope.opt.groupName"/>
+                          <q-item-label caption>{{scope.opt.faculty}}</q-item-label>
                         </q-item-section>
                       </q-item>
                     </template>
