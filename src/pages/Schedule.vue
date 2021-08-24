@@ -494,16 +494,6 @@ export default {
     onMounted(async () => {
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
 
-      const univNameFromPath = props.univName;
-      if (univNameFromPath !== null) {
-        for (const univObject of univSelectOptions.value) {
-          if (univObject.univName === univNameFromPath) {
-            univSelectValue.value = univObject;
-          }
-        }
-      }
-
-
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
@@ -532,6 +522,15 @@ export default {
       }
       if ((typeof lastLoadedGroup !== 'undefined') && lastLoadedGroup !== null) {
         groupSelectValue.value = JSON.parse(lastLoadedGroup);
+      }
+
+      const univNameFromPath = props.univName;
+      if (univNameFromPath !== null) {
+        for (const univObject of univSelectOptions.value) {
+          if (univObject.univName === univNameFromPath) {
+            univSelectValue.value = univObject;
+          }
+        }
       }
     });
 

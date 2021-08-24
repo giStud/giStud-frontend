@@ -1,5 +1,5 @@
 import {api} from "boot/axios"
-import authHeader from "./authHeader";
+import authHeader from "../auth/authHeader";
 
 class GroupService {
   async getGroups() {

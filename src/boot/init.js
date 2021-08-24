@@ -1,5 +1,5 @@
 import { boot } from 'quasar/wrappers'
-import setupInterceptors from "src/services/setupInterceptors";
+import setupInterceptors from "src/services/other/setupInterceptors";
 
 // "async" is optional;
 // more info on params: https://v2.quasar.dev/quasar-cli/boot-files

@@ -25,6 +25,13 @@ const routes = [
       {path: 'signup', component: () => import('components/Registration'), meta: {isAuth: false, isAdmin: false}}
     ]
   },
+  {
+    path: "/admin",
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/Admin.vue'), meta: {isAuth: true, isAdmin: true}}
+    ]
+  },
   // {
   //   path: "/profile",
   //   // lazy-loaded

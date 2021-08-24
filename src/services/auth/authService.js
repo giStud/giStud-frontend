@@ -1,6 +1,6 @@
 import { api } from "boot/axios";
 import TokenService from "./tokenService";
-import authHeader from "src/services/authHeader";
+import authHeader from "src/services/auth/authHeader";
 
 class AuthService {
   async login(user) {

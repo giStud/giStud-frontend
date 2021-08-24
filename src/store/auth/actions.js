@@ -1,4 +1,4 @@
-import AuthService from '../../services/authService';
+import AuthService from '../../services/auth/authService';
 
 export async function loginAction({ commit }, user) {
   try {

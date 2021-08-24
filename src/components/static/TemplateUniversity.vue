@@ -85,8 +85,8 @@
 
 <script>
 import {ref, watch} from "vue";
-import UtilsService from "../../services/utilsService"
-import UnivRequestService from "../../services/univRequestService"
+import UtilsService from "../../services/other/utilsService"
+import UnivRequestService from "../../services/other/univRequestService"
 
 export default {
 

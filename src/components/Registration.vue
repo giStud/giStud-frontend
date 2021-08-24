@@ -69,7 +69,7 @@ import {useStore} from "vuex";
 import {ref, computed, onMounted} from "vue";
 import {useQuasar} from "quasar";
 import {useRouter} from "vue-router";
-import UtilsService from "../services/utilsService"
+import UtilsService from "../services/other/utilsService"
 
 export default {
   name: "Register",

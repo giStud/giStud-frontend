@@ -1,6 +1,6 @@
 import {api} from 'boot/axios'
 import EventBus from "src/common/eventBus";
-import TokenService from "./tokenService"
+import TokenService from "../auth/tokenService"
 
 const setup = (store) => {
   api.interceptors.response.use(

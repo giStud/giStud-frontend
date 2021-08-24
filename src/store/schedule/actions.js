@@ -1,5 +1,5 @@
-import GroupService from '../../services/groupsService';
-import UniversityService from '../../services/universityService';
+import GroupService from '../../services/schedule/groupsService';
+import UniversityService from '../../services/schedule/universityService';
 
 export async function getGroupByNameAndUnivAction({commit}, {groupName}) {
   try {

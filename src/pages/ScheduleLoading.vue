@@ -30,8 +30,8 @@
 </template>
 
 <script>
-import authHeader from "../services/authHeader";
-import TokenService from "src/services/tokenService";
+import authHeader from "../services/auth/authHeader";
+import TokenService from "src/services/auth/tokenService";
 import {useStore} from "vuex";
 
 export default {
