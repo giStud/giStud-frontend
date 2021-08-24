@@ -32,3 +32,8 @@ export function refreshTokensAction({commit}, accessToken, refreshToken) {
   commit('refreshTokensMutation', accessToken, refreshToken)
 }
 
+export async function getUserRolesAction({commit}, userId) {
+  const data = await AuthService.getUserRolesById(userId)
+  commit('userRolesMutation', data)
+}
+

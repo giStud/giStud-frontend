@@ -23,5 +23,9 @@ export function registerFailureMutation(state) {
 
 export function refreshTokensMutation(state, accessToken, refreshToken) {
     state.loggedIn = true
-    state.user = {...state.user, accessToken : accessToken, refreshToken : refreshToken}
+    state.user = {...state.user, accessToken, refreshToken}
+}
+
+export function userRolesMutation(state, roles) {
+  state.user = {...state.user, roles}
 }
