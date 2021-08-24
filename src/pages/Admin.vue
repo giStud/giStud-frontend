@@ -2,15 +2,18 @@
   <q-page>
     <div class="q-pa-md">
       <q-table
-        title="Treats"
+        title="Заявки по универу"
         :rows="univRequestsRows"
         :columns="univRequestsColumns"
-        row-key="id"
-        hide-header
-        hide-bottom
+        row-key="requestId"
         selection="multiple"
+        separator="cell"
         v-model:selected="selectedRows"
+        wrap-cells
       />
+    </div>
+    <div class="q-pa-md">
+      <q-btn color="primary" label="Удалить выбранные записи" @click="deleteSelectedRows"/>
     </div>
   </q-page>
 </template>
@@ -25,7 +28,7 @@ const univRequestsColumns = [
     required: true,
     label: 'Id',
     align: 'center',
-    field: 'id',
+    field: 'requestId',
     sortable: true
   },
   {
@@ -33,6 +36,7 @@ const univRequestsColumns = [
     required: true,
     label: 'Текст',
     align: 'center',
+    headerStyle : 'width: 500px',
     field: 'text',
     sortable: true
   },
@@ -49,7 +53,7 @@ const univRequestsColumns = [
     required: true,
     label: 'Время создания',
     align: 'center',
-    field: 'time',
+    field: 'createdTime',
     sortable: true
   }
 ]
@@ -58,16 +62,26 @@ export default {
   name: "Admin",
   setup() {
     const univRequestsRows = ref([]);
+    const selectedRows = ref([])
     onMounted(async ()=> {
       univRequestsRows.value = await UnivRequestService.getUnivRequests();
       console.log(univRequestsRows.value)
     })
 
-    const selectedRows = ref([])
+    const deleteSelectedRows = async () => {
+      if (selectedRows.value.length > 0) {
+        for (let selected of selectedRows.value) {
+          await UnivRequestService.deleteUnivRequestById(selected.requestId)
+        }
+        univRequestsRows.value = await UnivRequestService.getUnivRequests();
+      }
+    }
+
     return {
       selectedRows,
       univRequestsRows,
-      univRequestsColumns
+      univRequestsColumns,
+      deleteSelectedRows
     }
   }
 }

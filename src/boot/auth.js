@@ -19,7 +19,7 @@ export default boot(async ({store, router} ) => {
       next();
     }
 
-    if (auth && !loggedIn && !admin) {
+    if (auth && !loggedIn) {
       next('/auth/login');
     }
 

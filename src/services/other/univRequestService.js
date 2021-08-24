@@ -11,7 +11,17 @@ class UnivRequestService {
 
   async getUnivRequests() {
     try {
-      const {data} = await api.get("/univRequests/list", {headers: authHeader()})
+      const {data} = await api.get("/univRequests", {headers: authHeader()})
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async deleteUnivRequestById(univId) {
+    try {
+      console.log(univId)
+      const {data} = await api.delete("/univRequests/" + univId, {headers: authHeader()})
       return data;
     } catch (e) {
       throw e;
