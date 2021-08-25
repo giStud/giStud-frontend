@@ -419,13 +419,6 @@ export default {
       selectedDate.value = tempDate;
     }
 
-    watch(selectedDate, (newValue) => {
-      if (newValue !== null) {
-        localStorage.setItem('selectedDate', newValue.toString())
-        selectedWeek.value = getNumberOfWeek(newValue);
-      }
-    })
-
     const updateNumeratorsButton = (val) => {
       if (selectedWeek.value !== 0) {
         const currentWeekType = getTypeOfWeek(selectedWeek.value);
@@ -448,7 +441,7 @@ export default {
     }
 
     const changeDateFromDatePicker = () => {
-      selectedDate.value = new Date(datePickerDate.value);
+      selectedDate.value = getDateOfMonday(new Date(datePickerDate.value));
     }
 
     watch(rawLessonStringMode, (newValue) => {
@@ -483,6 +476,14 @@ export default {
     watch(groupSelectValue, (newValue) => {
       loadGroupSchedule(newValue)
     });
+
+    watch(selectedDate, (newValue) => {
+      if (newValue !== null) {
+        localStorage.setItem('selectedDate', newValue.toString())
+        selectedWeek.value = getNumberOfWeek(newValue);
+      }
+    })
+
 
 
     //Schedule table end

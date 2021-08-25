@@ -19,7 +19,8 @@ const routes = [
   },
   {
     path: "/auth",
-    component: () => import('layouts/AuthLayout.vue'),
+    //component: () => import('layouts/AuthLayout.vue'),
+    component: () => import('layouts/MainLayout.vue'),
     children: [
       {path: 'login', component: () => import('components/Login'), meta: {isAuth: false, isAdmin: false}},
       {path: 'signup', component: () => import('components/Registration'), meta: {isAuth: false, isAdmin: false}}
