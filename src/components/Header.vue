@@ -14,18 +14,18 @@
 
         <q-space/>
 
-<!--        <template v-if="!loggedIn">-->
-<!--          <q-separator dark vertical/>-->
-<!--          <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch  flat label="Войти"/>-->
-<!--          <q-separator dark vertical/>-->
-<!--          <q-btn class="nav-btn-auth" :to="'/auth/signup'" stretch flat label="Зарегистрироваться"/>-->
-<!--        </template>-->
-<!--        <template v-else>-->
+        <template v-if="!loggedIn">
+          <q-separator dark vertical/>
+          <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch  flat label="Войти"/>
+          <q-separator dark vertical/>
+          <q-btn class="nav-btn-auth" :to="'/auth/signup'" stretch flat label="Зарегистрироваться"/>
+        </template>
+        <template v-else>
 
-<!--          <q-btn class="nav-btn-auth" stretch flat> {{ currentUser.username }}</q-btn>-->
-<!--          <q-separator dark vertical/>-->
-<!--          <q-btn class="nav-btn-auth" @click="logout" stretch flat label="Выйти"/>-->
-<!--        </template>-->
+          <q-btn class="nav-btn-auth" stretch flat> {{ currentUser.username }}</q-btn>
+          <q-separator dark vertical/>
+          <q-btn class="nav-btn-auth" @click="logout" stretch flat label="Выйти"/>
+        </template>
       </q-toolbar>
 
   </div>

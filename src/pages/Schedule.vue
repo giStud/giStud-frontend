@@ -185,6 +185,7 @@ import {
   getTableRowsFromLessons,
   getTypeOfWeek
 } from "../composables/schedule/ScheduleTable"
+import ModalWindow from "components/ModalWindow";
 
 const scheduleColumns = [
   {
@@ -302,7 +303,9 @@ function scrollToElement(el) {
 
 export default {
   name: 'GroupSelectingLayout',
-  components: {},
+  components: {
+    // ModalWindow
+  },
   props: {
     univName: {
       type: String,
