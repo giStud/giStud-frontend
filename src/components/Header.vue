@@ -8,24 +8,24 @@
         <q-separator class="separator" dark vertical inset/>
 
         <q-btn class="nav-btn" :to="'/'" stretch flat label="Главная"/>
-        <q-btn class="nav-btn" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}" stretch flat label="Расписание"/>
-        <q-btn class="nav-btn" :to="'#'" stretch flat label="Доска объявлений"/>
-        <q-btn class="nav-btn" :to="'#'" stretch flat label="Почетные хейтеры"/>
+        <q-btn class="nav-btn"  :to="'/schedule'" stretch flat label="Расписание"/>
+<!--        <q-btn class="nav-btn" :to="'#'" stretch flat label="Доска объявлений"/>-->
+<!--        <q-btn class="nav-btn" :to="'#'" stretch flat label="Почетные хейтеры"/>-->
 
         <q-space/>
 
-        <template v-if="!loggedIn">
-          <q-separator dark vertical/>
-          <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch  flat label="Войти"/>
-          <q-separator dark vertical/>
-          <q-btn class="nav-btn-auth" :to="'/auth/signup'" stretch flat label="Зарегистрироваться"/>
-        </template>
-        <template v-else>
+<!--        <template v-if="!loggedIn">-->
+<!--          <q-separator dark vertical/>-->
+<!--          <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch  flat label="Войти"/>-->
+<!--          <q-separator dark vertical/>-->
+<!--          <q-btn class="nav-btn-auth" :to="'/auth/signup'" stretch flat label="Зарегистрироваться"/>-->
+<!--        </template>-->
+<!--        <template v-else>-->
 
-          <q-btn class="nav-btn-auth" stretch flat> {{ currentUser.username }}</q-btn>
-          <q-separator dark vertical/>
-          <q-btn class="nav-btn-auth" @click="logout" stretch flat label="Выйти"/>
-        </template>
+<!--          <q-btn class="nav-btn-auth" stretch flat> {{ currentUser.username }}</q-btn>-->
+<!--          <q-separator dark vertical/>-->
+<!--          <q-btn class="nav-btn-auth" @click="logout" stretch flat label="Выйти"/>-->
+<!--        </template>-->
       </q-toolbar>
 
   </div>
@@ -70,4 +70,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+
+</style>

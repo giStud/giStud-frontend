@@ -160,39 +160,42 @@ export function getScheduleCellColor(dayObject, splitterMode) {
     } else {
       switch (typeName) {
         case 'LAB' : {
-          style += 'background-color: rgba(169, 191, 90, 0.5);';
+          style += 'background-color: rgba(204,220,236,0.9);';
           break;
         }
         case 'LECTURE' : {
-          style += 'background-color: rgba(38, 180, 201, 0.5);';
+          style += 'background-color: rgba(213,218,175,0.9);';
           break;
         }
         case 'PRACTICE' : {
-          style += 'background-color: rgba(238, 111, 111, 0.5);';
+          style += 'background-color: rgba(248,201,201,0.9);';
           break;
         }
         case 'PE' : {
-          style += 'background-color: rgba(238, 111, 111, 0.5);';
+          style += 'background-color: rgba(97,100,122,0.6);';
           break
         }
         case 'LANGUAGE' : {
-          style += 'background-color: rgba(242, 172, 41, 0.5);';
+          style += 'background-color: rgba(201,177,222,0.9);';
           break;
         }
         case 'LECTURE_AND_LAB' : {
-          style += 'background-color: rgba(128, 111, 111, 0.5);';
+          style += 'background-color: rgba(195,236,198,0.9);';
           break;
         }
         case 'PRACTICE_AND_LECTURE' : {
-          style += 'background-color: rgba(238, 111, 111, 0.5);';
+          style += 'background-color: rgba(253,237,185,0.9);';
+          break;
+        }
+        case 'PRACTICE_AND_LAB' : {
+          style+= 'background-color: rgba(191,253,222,0.9);'
           break;
         }
         case 'MILITARY_TRAINING' : {
-          style+= 'background-color: rgba(238, 111, 111, 0.5);'
+          style+= 'background-color: rgba(203,182,155,0.9);'
           break;
         }
         case 'RELOCATION' : {
-          style += 'background-color: rgba(238, 111, 111, 0.5);';
           break;
         }
       }

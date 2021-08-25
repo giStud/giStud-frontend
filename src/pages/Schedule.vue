@@ -249,44 +249,40 @@ const lessonTypesColumns = [
 
 const lessonTypesRows = [
   {
-    color: 'background-color: rgba(169, 191, 90, 0.5);',
+    color: 'background-color: rgba(204,220,236,0.9);',
     type: 'Лабораторная работа'
   },
   {
-    color: 'background-color: rgba(38, 180, 201, 0.5);',
+    color: 'background-color: rgba(213,218,175,0.9);',
     type: 'Лекция'
   },
   {
-    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    color: 'background-color: rgba(248,201,201,0.9);',
     type: 'Практика'
   },
   {
-    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    color: 'background-color: rgba(97,100,122,0.6);',
     type: 'Физическая культура'
   },
   {
-    color: 'background-color: rgba(242, 172, 41, 0.5);',
+    color: 'background-color: rgba(201,177,222,0.9);',
     type: 'Иностранный язык'
   },
   {
-    color: 'background-color: rgba(128, 111, 111, 0.5);',
+    color: 'background-color: rgba(195,236,198,0.9);',
     type: 'Лекция и лабораторная работа'
   },
   {
-    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    color: 'background-color: rgba(253,237,185,0.9);',
     type: 'Практика и лекция'
   },
   {
-    color: 'background-color: rgba(38, 180, 201, 0.5);',
+    color: 'background-color: rgba(191,253,222,0.9);',
     type: 'Лабораторная работа и практика'
   },
   {
-    color: 'background-color: rgba(238, 111, 111, 0.5);',
+    color: 'background-color:  rgba(203,182,155,0.9);',
     type: 'Военная подготовка'
-  },
-  {
-    color: 'background-color: rgba(238, 111, 111, 0.5);',
-    type: 'Переезд'
   }
 ]
 
@@ -571,6 +567,6 @@ export default {
 };
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 @import 'src/css/style.css';
 </style>

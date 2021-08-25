@@ -17,15 +17,14 @@
           </p>
         </div>
         <div>
-          <q-btn flat no-caps class="btn-university" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Перейти
-          </q-btn>
-          <q-btn flat no-caps class="btn-university">Официальный сайт</q-btn>
+          <q-btn flat no-caps class="btn-university" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Расписание</q-btn>
+          <q-btn flat no-caps class="btn-university" @click="url('https://cchgeu.ru/')">Официальный сайт</q-btn>
         </div>
       </div>
     </div>
     <div class="box-university col-12 row">
       <div class="col-5 img-university">
-        <q-img class="img-university-src" src="../../assets/media/universities/VGTU/VGTU.jpg" loading="lazy"
+        <q-img class="img-university-src" src="../../assets/media/universities/unknown.jpg" loading="lazy"
                spinner-color="white" height="300px"/>
       </div>
       <div class="col-7 content-university">
@@ -97,6 +96,10 @@ export default {
     const sendButtonModel = ref(true);
     const univRequestDialog = ref(false);
 
+    const url = (string) => {
+      window.open(string);
+    };
+
     watch(requestDialogEmail, (newValue)=> {
       sendButtonModel.value = !validateInputs(newValue, requestDialogText.value);
     })
@@ -128,7 +131,8 @@ export default {
       isValidEmail(val) {
         return UtilsService.isValidEmail(val);
       },
-      sendUnivRequest
+      sendUnivRequest,
+      url
     }
   }
 }

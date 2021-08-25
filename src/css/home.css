@@ -10,7 +10,6 @@ body {
 
 /*region Left column*/
 #main-left-col {
-
   height: 1000px;
   padding: 0 5px 5px 0;
 }
@@ -93,10 +92,12 @@ body {
 
 #student-news #header-news {
   font-weight: bold;
+  font-size: 25px;
   color: black;
 }
 
 #student-news .list-title {
   font-weight: bold;
+  /*cursor: pointer;*/
 }
 /*endregion*/

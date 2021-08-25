@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex-center">
+  <q-page class="flex-center" style=" background-color: rgb(238, 238, 238)">
     <div class="row " id="main">
       <div id="main-left-col" class="col-9">
 
@@ -45,6 +45,6 @@ export default defineComponent({
 
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 @import 'src/css/home.css';
 </style>
