@@ -71,6 +71,7 @@ body {
 
 .buttons-week:hover {
   background-color: #1976D2;
+  color: white;
 }
 
 .buttons-date-numerator {

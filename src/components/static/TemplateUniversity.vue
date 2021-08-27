@@ -24,7 +24,7 @@
         <div class="text-h6 text-bold">Ваш университет</div>
         <div class="text-subtitle2">Вы можете оставить заявку на добавление вашего вуза.</div>
       </q-card-section>
-      <q-card-section>
+      <q-card-section class="q-py-xs">
         <q-btn flat no-caps class="btn-university" @click="univRequestDialog = true">Оставить заявку</q-btn>
         <q-dialog v-model="univRequestDialog">
           <q-card style="min-width: 350px">
