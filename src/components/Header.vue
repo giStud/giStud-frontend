@@ -2,28 +2,26 @@
   <div class="q-pa-md" style="min-width: 1248px; padding-left: 24px; padding-right: 24px">
       <q-toolbar class="bg-primary text-white">
         <q-avatar id="logo" square>
-          <img src="../assets/logoWhiteGray.svg">
+          <img src="../assets/logo.svg">
         </q-avatar>
 
-        <q-separator class="separator" dark vertical inset/>
+        <q-separator dark vertical inset/>
 
         <q-btn class="nav-btn" :to="'/'" stretch flat label="Главная"/>
         <q-btn class="nav-btn"  :to="'/schedule'" stretch flat label="Расписание"/>
-<!--        <q-btn class="nav-btn" :to="'#'" stretch flat label="Доска объявлений"/>-->
-<!--        <q-btn class="nav-btn" :to="'#'" stretch flat label="Почетные хейтеры"/>-->
 
         <q-space/>
 
         <template v-if="!loggedIn">
-          <q-separator dark vertical/>
+          <q-separator dark vertical inset/>
           <q-btn class="nav-btn-auth" :to="'/auth/login'" stretch  flat label="Войти"/>
-          <q-separator dark vertical/>
+          <q-separator dark vertical inset/>
           <q-btn class="nav-btn-auth" :to="'/auth/signup'" stretch flat label="Зарегистрироваться"/>
         </template>
         <template v-else>
 
           <q-btn class="nav-btn-auth" stretch flat> {{ currentUser.username }}</q-btn>
-          <q-separator dark vertical/>
+          <q-separator dark vertical inset/>
           <q-btn class="nav-btn-auth" @click="logout" stretch flat label="Выйти"/>
         </template>
       </q-toolbar>

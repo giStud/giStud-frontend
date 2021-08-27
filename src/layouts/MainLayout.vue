@@ -1,11 +1,9 @@
 <template>
   <q-layout>
     <Header/>
-
     <q-page-container>
       <router-view />
     </q-page-container>
-<!--    <Footer/>-->
   </q-layout>
 </template>
 
