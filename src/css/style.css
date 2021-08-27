@@ -138,28 +138,28 @@ body {
   height: 100%;
 }
 
-#main-table-after-cell {
-  height: 100%;
+#main-table-before-cell {
+  height: 50%;
   width: auto;
   padding: 10px;
   margin: 0 0 0 0;
   justify-content: center;
   text-align: center;
-  align-items: center;
   vertical-align: center;
   horiz-align: center;
+  align-items: center;
 }
 
-#main-table-before-cell {
-  height: 100%;
+#main-table-after-cell {
+  height: 50%;
   width: auto;
   padding: 10px;
   margin: 0 0 0 0;
   justify-content: center;
   text-align: center;
+  align-items: center;
   vertical-align: center;
   horiz-align: center;
-  align-items: center;
 }
 
 #lessons-type-info {

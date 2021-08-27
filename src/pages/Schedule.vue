@@ -102,23 +102,16 @@
                 <q-td id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day"
                       :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
-                    <div style="height: 100%;">
-                      <q-splitter
-                        v-model="splitterRatio"
-                        id="main-table-splitter"
-                        separator-style="background-color: rgb(224,224,224); height: 1px"
-                        horizontal>
-                        <template v-slot:before>
-                          <div id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
-                            {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
-                          </div>
-                        </template>
-                        <template v-slot:after>
-                          <div id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
-                            {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
-                          </div>
-                        </template>
-                      </q-splitter>
+                    <div class="col-12" style="height: 100%;">
+                      <q-list>
+                        <q-item id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
+                          {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
+                        </q-item>
+                        <q-separator/>
+                        <q-item id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
+                          {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
+                        </q-item>
+                      </q-list>
                     </div>
                   </template>
                   <template v-else-if="cell.length !== 0">
