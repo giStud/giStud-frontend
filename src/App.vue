@@ -7,6 +7,10 @@ import {useStore} from "vuex";
 
 export default defineComponent({
   name: "App",
-
+  setup() {
+    onMounted(()=> {
+      console.log(process.env.API)
+    })
+  }
 });
 </script>

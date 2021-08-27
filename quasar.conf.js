@@ -51,6 +51,9 @@ module.exports = configure(function (ctx) {
     build: {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
+      env: {
+        API: ctx.dev ? 'http://localhost:8080' : 'http://95.181.153.109:25565'
+      },
       // transpile: false,
 
       // Add dependencies for transpiling with Babel (Array of string/regex)
