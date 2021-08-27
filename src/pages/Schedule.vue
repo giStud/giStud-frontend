@@ -5,7 +5,7 @@
         <div class="col-12 content-end" style="padding: 0">
           <div class="">
             <div class="column">
-              <div class="col-12 row">
+              <div class="row">
                 <div class="col-6">
                   <q-select square borderless outlined v-model="univSelectValue" use-input hide-selected fill-input
                             label="Выберите университет"
@@ -75,7 +75,7 @@
                   />
                   <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
                     <q-popup-proxy transition-show="scale" transition-hide="scale">
-                      <q-date v-model="datePickerDate">
+                      <q-date v-model="datePickerDate" :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
                         <div class="row items-center justify-end q-gutter-sm">
                           <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
                           <q-btn label="Отмена" color="primary" flat v-close-popup/>
