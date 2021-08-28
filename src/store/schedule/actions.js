@@ -29,7 +29,11 @@ export async function getUniversitiesNamesAction({commit}) {
 }
 
 export async function getGroupNamesByUnivAction({commit}, {univId}) {
-  const data = await GroupService.getGroupNamesByUniv(univId)
-  commit('setGroupNames', data)
-  return data;
+  try {
+    const data = await GroupService.getGroupNamesByUniv(univId)
+    commit('setGroupNames', data)
+    return data;
+  } catch (e) {
+    throw e;
+  }
 }

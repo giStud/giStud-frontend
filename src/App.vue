@@ -9,7 +9,7 @@ export default defineComponent({
   name: "App",
   setup() {
     onMounted(()=> {
-      console.log(process.env.API)
+      //console.log(process.env.API)
     })
   }
 });

@@ -9,18 +9,12 @@ class GroupService {
 
   async getGroupNamesByUniv(univId) {
     //TODO: check on SQL inject
-    const {data} = await api.get("/groups/groupNames?univId=" + univId);
-    return data.groups;
-  }
-
-  async getGroupByNameAndUniv(groupName) {
     try {
-      const {data} = await api.get("/groups/group?groupName=" + groupName/*, {headers: authHeader()}*/)
-      return data;
+      const {data} = await api.get("/groups/groupNames?univId=" + univId);
+      return data.groups;
     } catch (e) {
-      throw e
+      throw e;
     }
-
   }
 
   async getGroupById(grId) {
@@ -28,7 +22,7 @@ class GroupService {
       const {data} = await api.get("/groups/" + grId)
       return data;
     } catch (e) {
-      throw e
+      throw e;
     }
   }
 }

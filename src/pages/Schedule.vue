@@ -75,7 +75,8 @@
                   />
                   <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
                     <q-popup-proxy transition-show="scale" transition-hide="scale">
-                      <q-date v-model="datePickerDate" :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
+                      <q-date v-model="datePickerDate"
+                              :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
                         <div class="row items-center justify-end q-gutter-sm">
                           <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
                           <q-btn label="Отмена" color="primary" flat v-close-popup/>
@@ -103,7 +104,7 @@
                       :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
                     <div class="col-12" style="height: 100%;">
-                      <q-list>
+                      <q-list style="height: 100%">
                         <q-item id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
                           {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                         </q-item>
@@ -345,19 +346,24 @@ export default {
     }
 
     const loadGroupSchedule = async (val) => {
-
-      if (val.groupName !== '') {
-        const selectedGroupId = val.groupId;
-        const selectedGroup = await store.dispatch('schedule/getGroupById', {
-          grId: selectedGroupId,
-        });
-        title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-        localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
-        scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
-      } else {
-        title.value = '';
-        console.log('debil');
+      try {
+        if (val !== null && val.groupName !== '') {
+          const selectedGroupId = val.groupId;
+          const selectedGroup = await store.dispatch('schedule/getGroupById', {
+            grId: selectedGroupId,
+          });
+          title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
+          localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
+          scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
+        } else {
+          title.value = '';
+          console.log('Find deleted group');
+        }
+      } catch (e) {
+        localStorage.removeItem("lastLoadedGroup");
+        groupSelectValue.value = null;
       }
+
     }
     //Group selecting end
 
@@ -460,13 +466,19 @@ export default {
     })
 
     watch(univSelectValue, async (newValue) => {
-      const selectedUnivId = newValue.univId;
-      if (selectedUnivId) {
-        groupsSelectOptions.value = await store.dispatch('schedule/getGroupNamesByUnivAction', {
-          univId: selectedUnivId
-        })
-        localStorage.setItem('lastLoadedUniv', JSON.stringify(newValue));
+      try {
+        let selectedUnivId;
+        if (newValue !== null && (selectedUnivId = newValue.univId)) {
+          groupsSelectOptions.value = await store.dispatch('schedule/getGroupNamesByUnivAction', {
+            univId: selectedUnivId
+          })
+          localStorage.setItem('lastLoadedUniv', JSON.stringify(newValue));
+        }
+      } catch (e) {
+        localStorage.removeItem("lastLoadedUniv");
+        univSelectValue.value = null;
       }
+
     })
 
     watch(groupSelectValue, (newValue) => {
@@ -479,7 +491,6 @@ export default {
         selectedWeek.value = getNumberOfWeek(newValue);
       }
     })
-
 
 
     //Schedule table end
