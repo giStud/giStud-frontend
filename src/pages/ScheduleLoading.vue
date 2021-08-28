@@ -5,7 +5,7 @@
         field-name="files"
         method="POST"
         :headers="getHeaders"
-        :url="process.env.API + '/schedule/schedulesLoading'"
+        :url="apiPath + '/schedule/schedulesLoading'"
         label="Загрузка расписания"
         multiple
         batch
@@ -18,7 +18,7 @@
         field-name="zips"
         method="POST"
         :headers="getHeaders"
-        :url="process.env.API + '/schedule/schedulesLoading/zips'"
+        :url="apiPath + '/schedule/schedulesLoading/zips'"
         label="Загрузка архивов"
         multiple
         batch
@@ -33,6 +33,7 @@
 import authHeader from "../services/auth/authHeader";
 import TokenService from "src/services/auth/tokenService";
 import {useStore} from "vuex";
+import {computed, onMounted} from "vue";
 
 export default {
   setup() {
@@ -51,7 +52,8 @@ export default {
     }
     return {
       getHeaders,
-      onFailed
+      onFailed,
+      apiPath : computed(()=> process.env.API)
     };
   },
 };
