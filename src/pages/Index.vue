@@ -32,14 +32,12 @@ import {useMeta} from 'quasar'
 //
 
 const meta = {
-  script: [{type: 'application/javascript',
-    innerHTML:  `window.yaContextCb=window.yaContextCb||[];
-     window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})`
-  }, {
+  script: {
+    ads: {
       type: 'application/javascript',
-      src: `https://yandex.ru/ads/system/context.js`
+      innerHTML: `window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})`
     }
-  ]
+  }
 }
 
 export default defineComponent({
@@ -49,13 +47,11 @@ export default defineComponent({
     MainNewsOur,
     TemplateUniversity,
   },
-    setup() {
-    useMeta(()=> meta)
+  setup() {
+    useMeta(() => meta)
     return {}
   }
 })
-
-
 
 
 </script>
