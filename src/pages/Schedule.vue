@@ -386,7 +386,7 @@ export default {
 
     const updateHeadersDates = (date) => {
       if (date !== null) {
-        let tempDate = new Date(date);
+        let tempDate = getDateOfMonday(new Date(date));
         mondayDate.value = getDateString(tempDate);
         tempDate.setDate(tempDate.getDate() + 1);
 

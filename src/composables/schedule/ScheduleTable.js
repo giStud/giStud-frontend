@@ -172,7 +172,7 @@ export function getScheduleCellColor(dayObject, splitterMode) {
           break;
         }
         case 'PE' : {
-          style += 'background-color: rgba(97,100,122,0.6);';
+          style += 'background-color: rgba(41, 58, 128, 0.4)';
           break
         }
         case 'LANGUAGE' : {
