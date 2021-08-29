@@ -9,7 +9,7 @@
       <div id="main-right-col" class="col-3">
         <div id="col-ads">
           <div class="col-ads">
-            <span>Тут могла быть ваша реклама1</span>
+            <div id="yandex_rtb_R-A-1273406-1"></div>
           </div>
           <div class="col-ads">
             <span>Тут могла быть ваша реклама2</span>
@@ -24,10 +24,23 @@
 </template>
 
 <script>
-import {defineComponent, onMounted} from 'vue';
+import {defineComponent} from 'vue';
 import LastNews from "components/static/LastNews";
 import MainNewsOur from "components/static/MainNewsOur";
 import TemplateUniversity from "components/static/TemplateUniversity";
+import {useMeta} from 'quasar'
+//
+
+const meta = {
+  script: [{type: 'application/javascript',
+    innerHTML:  `window.yaContextCb=window.yaContextCb||[];
+     window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})`
+  }, {
+      type: 'application/javascript',
+      src: `https://yandex.ru/ads/system/context.js`
+    }
+  ]
+}
 
 export default defineComponent({
   name: 'PageIndex',
@@ -36,43 +49,13 @@ export default defineComponent({
     MainNewsOur,
     TemplateUniversity,
   },
-
-  setup() {
-    const appendYaMetrix = ()=> {
-      console.log("Вызвал")
-      const yaDiv = document.getElementById('yandex_rtb_XXXXXX')
-
-      const yaScript = document.createElement('script')
-      yaScript.setAttribute('type', 'text/javascript')
-      yaScript.innerHTML = `(function(w, d, n, s, t) {
-        w[n] = w[n] || [];
-        w[n].push(function() {
-            Ya.Context.AdvManager.render({
-                blockId: "XXXXXX",
-                renderTo: "yandex_rtb_XXXXXXX",
-                horizontalAlign: false,
-                async: true
-            });
-        });
-        t = d.getElementsByTagName("script")[0];
-        s = d.createElement("script");
-        s.type = "text/javascript";
-        s.src = "//an.yandex.ru/system/context.js";
-        s.async = true;
-        t.parentNode.insertBefore(s, t);
-    })(this, this.document, "yandexContextAsyncCallbacks");`
-
-      document.head.appendChild(yaScript)
-    }
-
-    onMounted(()=> {
-      appendYaMetrix()
-    })
-    return {
-
-    }
+    setup() {
+    useMeta(()=> meta)
+    return {}
   }
 })
+
+
 
 
 </script>
