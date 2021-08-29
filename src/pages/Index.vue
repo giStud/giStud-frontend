@@ -9,7 +9,7 @@
       <div id="main-right-col" class="col-3">
         <div id="col-ads">
           <div class="col-ads">
-            <div id="col-ads-1"></div>
+            <div id="yandex_rtb_R-A-1273406-1"></div>
           </div>
           <div class="col-ads">
             <span>Тут могла быть ваша реклама2</span>
@@ -31,14 +31,14 @@ import TemplateUniversity from "components/static/TemplateUniversity";
 import {useMeta} from 'quasar'
 //
 
-// const meta = {
-//   script: {
-//     ads: {
-//       type: 'application/javascript',
-//       innerHTML: `window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})`
-//     }
-//   }
-// }
+const meta = {
+  script: {
+    ads: {
+      type: 'application/javascript',
+      innerHTML: `window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})`
+    }
+  }
+}
 
 export default defineComponent({
   name: 'PageIndex',
@@ -48,8 +48,7 @@ export default defineComponent({
     TemplateUniversity,
   },
   setup() {
-    // useMeta(() => meta)
-    //window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})
+    useMeta(() => meta)
     return {}
   }
 })
