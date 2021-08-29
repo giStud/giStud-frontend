@@ -2,7 +2,7 @@
   <div id="box-universities">
 
     <q-card flat square class="box-university my-card">
-      <q-parallax src="../../assets/media/universities/VGTU/VGTU.jpg" :height="300" speed="0.4"/>
+      <q-parallax src="../../assets/media/universities/VGTU/VGTU.jpg" :height="300" :speed="0.4"/>
       <q-card-section>
         <div class="text-h6 text-bold">Воронежский государственный технический университет</div>
         <div class="text-subtitle2"> Воронежский государственный архитектурно-строительный университет — существовавшее
@@ -19,7 +19,7 @@
     <!--  new box box-university  -->
 
     <q-card flat square class="box-university my-card">
-      <q-parallax src="../../assets/media/universities/unknown.jpg" :height="300" speed="0.4"/>
+      <q-parallax src="../../assets/media/universities/unknown.jpg" :height="300" :speed="0.4"/>
       <q-card-section>
         <div class="text-h6 text-bold">Ваш университет</div>
         <div class="text-subtitle2">Вы можете оставить заявку на добавление вашего вуза.</div>
