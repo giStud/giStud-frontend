@@ -34,11 +34,16 @@ import {useMeta} from 'quasar'
 //
 
 const meta = {
+  title: 'Главная',
   script: {
     ads: {
       type: 'application/javascript',
       innerHTML: `window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})`
     }
+  },
+  meta: {
+    description: { name: 'description', content: 'giStud описание' },
+    keywords: { name: 'keywords', content: 'gistud' },
   }
 }
 

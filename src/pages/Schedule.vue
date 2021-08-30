@@ -184,20 +184,26 @@ import ModalWindow from "components/ModalWindow";
 import {useMeta} from 'quasar'
 
 const meta = {
+  title: 'Расписание',
   script: {
-    ads: {
+    yandexMetrika: {
       type: 'application/javascript',
       innerHTML: `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+       m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-   ym(84689620, "init", {
+        ym(84689620, "init", {
         clickmap:true,
         trackLinks:true,
         accurateTrackBounce:true
-   });`
+      });`
     }
+  },
+  meta: {
+    description: { name: 'description', content: 'Расписание университетов' },
+    keywords: { name: 'keywords', content: 'gistud' },
   }
+
 }
 
 const scheduleColumns = [
