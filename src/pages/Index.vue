@@ -7,15 +7,15 @@
         <div class="separator"></div>
       </div>
       <div id="main-right-col" class="col-3">
-        <div id="col-ads">
+        <div id="col-ads" class="q-pa-md">
+          <q-card flat class="col-ads">
+            <div id="yandex_rtb_R-A-1273406-1"></div>
+          </q-card>
           <q-card flat class="col-ads">
             <q-card-section>
-              <div id="yandex_rtb_R-A-1273406-1"></div>
+              <div> 123 </div>
             </q-card-section>
           </q-card>
-          <div class="col-ads">
-            <span>Тут могла быть ваша реклама2</span>
-          </div>
         </div>
         <div id="student-news">
           <LastNews/>
