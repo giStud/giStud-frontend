@@ -1,8 +1,8 @@
 {
-  "name": "gistud-frontend",
+  "name": "GISTUD - Информационный студенческий сервис",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Gistud-frontend",
+  "description": "Удобная информация вашего университета: студенческие новости, раписание и многое другое",
+  "productName": "GISTUD",
   "author": "CamperGit <sashchenkodmitrii@mail.ru>",
   "private": true,
   "scripts": {
