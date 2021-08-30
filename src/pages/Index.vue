@@ -8,8 +8,10 @@
       </div>
       <div id="main-right-col" class="col-3">
         <div id="col-ads">
-          <q-card class="col-ads">
-            <div id="yandex_rtb_R-A-1273406-1"></div>
+          <q-card flat class="col-ads">
+            <q-card-section>
+              <div id="yandex_rtb_R-A-1273406-1"></div>
+            </q-card-section>
           </q-card>
           <div class="col-ads">
             <span>Тут могла быть ваша реклама2</span>

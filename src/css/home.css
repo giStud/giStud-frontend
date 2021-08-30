@@ -75,13 +75,13 @@ body {
 
 #col-ads {
   height: 400px;
-  max-height: 400px;
   padding: 32px;
   background-color: #fff;
 }
 
 #col-ads .col-ads {
   margin-bottom: 5px;
+  border: none;
 }
 
 #student-news {
