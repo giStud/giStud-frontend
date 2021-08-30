@@ -73,6 +73,10 @@ body {
   padding: 0 0 5px 5px;
 }
 
+#static-ads {
+  cursor: pointer;
+}
+
 #col-ads {
   background-color: #fff;
 }

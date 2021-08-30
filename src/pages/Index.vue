@@ -11,10 +11,12 @@
           <q-card flat class="col-ads">
             <div id="yandex_rtb_R-A-1273406-1"></div>
           </q-card>
-          <q-card flat class="col-ads">
-            <q-card-section>
-              <div> 123 </div>
-            </q-card-section>
+          <q-card id="static-ads" @click="getAdsStatic('https://vk.com/studiotag')" flat class="col-ads q-pa-md">
+            <q-img src="https://cdn.discordapp.com/attachments/317672589457883136/881961544546660383/tagstudio.jpg">
+              <div class="absolute-bottom text-left">
+                <span>Закажи дизайн тут!</span>
+              </div>
+            </q-img>
           </q-card>
         </div>
         <div id="student-news">
@@ -56,7 +58,12 @@ export default defineComponent({
   },
   setup() {
     useMeta(() => meta)
-    return {}
+    const getAdsStatic = (string) => {
+      window.open(string);
+    }
+    return {
+      getAdsStatic
+    }
   }
 })
 

@@ -1,7 +1,8 @@
 <template>
   <div id="news-by-our" class="q-pa-md">
-    <q-carousel animated v-model="slide" arrows navigation infinite>
-      <q-carousel-slide :name="1" img-src="https://i.imgur.com/JZwkYX1.jpg"/>
+    <q-carousel :autoplay="10000" animated v-model="slide" arrows navigation infinite>
+      <q-carousel-slide :name="1" img-src="../../assets/media/news/1.jpg"/>
+      <q-carousel-slide :name="2" img-src="../../assets/media/news/2.jpg"/>
     </q-carousel>
   </div>
 </template>
