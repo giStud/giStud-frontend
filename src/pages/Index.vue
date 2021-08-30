@@ -34,7 +34,7 @@ import {useMeta} from 'quasar'
 //
 
 const meta = {
-  title: 'Главная',
+  title: 'Главная - GISTUD',
   script: {
     ads: {
       type: 'application/javascript',
@@ -42,8 +42,8 @@ const meta = {
     }
   },
   meta: {
-    description: { name: 'description', content: 'giStud описание' },
-    keywords: { name: 'keywords', content: 'gistud' },
+    description: { name: 'description', content: 'Главная страница - GISTUD | Удобная информация вашего университета: студенческие новости, раписание и многое другое' },
+    keywords: { name: 'keywords', content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud' },
   }
 }
 

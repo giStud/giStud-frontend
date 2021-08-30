@@ -149,9 +149,9 @@ module.exports = configure(function (ctx) {
       },
 
       manifest: {
-        name: `Gistud-frontend`,
-        short_name: `Gistud-frontend`,
-        description: `A Quasar Framework app`,
+        name: `GISTUD - Информационный студенческий сервис`,
+        short_name: `GISTUD`,
+        description: `Удобная информация вашего университета: студенческие новости, раписание и многое другое`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',

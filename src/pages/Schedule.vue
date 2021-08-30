@@ -184,7 +184,7 @@ import ModalWindow from "components/ModalWindow";
 import {useMeta} from 'quasar'
 
 const meta = {
-  title: 'Расписание',
+  title: 'Расписание - GISTUD',
   script: {
     yandexMetrika: {
       type: 'application/javascript',
@@ -200,8 +200,8 @@ const meta = {
     }
   },
   meta: {
-    description: { name: 'description', content: 'Расписание университетов' },
-    keywords: { name: 'keywords', content: 'gistud' },
+    description: { name: 'description', content: 'Расписание занятий - GISTUD | Удобная информация вашего университета: студенческие новости, раписание и многое другое' },
+    keywords: { name: 'keywords', content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud' },
   }
 
 }
