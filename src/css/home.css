@@ -77,6 +77,10 @@ body {
   cursor: pointer;
 }
 
+#static-ads:hover {
+  background: rgb(65, 89, 213);
+}
+
 #col-ads {
   background-color: #fff;
 }
