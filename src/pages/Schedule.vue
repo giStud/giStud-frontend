@@ -256,6 +256,7 @@ const lessonTypesColumns = [
     name: 'color',
     label: 'Цветовое обозначение',
     align: 'center',
+    field: 'example',
     headerStyle: 'width: 160px',
     style: row => row.color + 'width: 160px'
   },
@@ -281,7 +282,7 @@ const lessonTypesRows = [
     type: 'Практика'
   },
   {
-    color: 'background-color: rgba(97,100,122,0.6);',
+    color: 'background-color: rgba(41, 58, 128, 0.4);',
     type: 'Физическая культура'
   },
   {
@@ -303,6 +304,10 @@ const lessonTypesRows = [
   {
     color: 'background-color:  rgba(203,182,155,0.9);',
     type: 'Военная подготовка'
+  },
+  {
+    color: 'background-color:  rgba(227,176,0,0.4);',
+    type: 'Переезд',
   }
 ]
 

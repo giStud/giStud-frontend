@@ -196,6 +196,7 @@ export function getScheduleCellColor(dayObject, splitterMode) {
           break;
         }
         case 'RELOCATION' : {
+          style+= 'background-color: rgba(195,171,7,0.4);'
           break;
         }
       }
