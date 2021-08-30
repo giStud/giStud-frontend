@@ -2,7 +2,7 @@
   "name": "GISTUD - Информационный студенческий сервис",
   "version": "0.0.1",
   "description": "Удобная информация вашего университета: студенческие новости, раписание и многое другое",
-  "productName": "GISTUD",
+  "productName": "GISTUD - Информационный студенческий сервис",
   "author": "CamperGit <sashchenkodmitrii@mail.ru>",
   "private": true,
   "scripts": {
