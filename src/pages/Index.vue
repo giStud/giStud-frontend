@@ -7,7 +7,7 @@
         <div class="separator"></div>
       </div>
       <div id="main-right-col" class="col-3">
-        <div id="col-ads" class="q-pa-md">
+        <div id="col-ads" class="q-pa-xs">
           <q-card flat class="col-ads">
             <div id="yandex_rtb_R-A-1273406-1"></div>
           </q-card>
