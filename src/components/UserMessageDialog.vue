@@ -29,6 +29,7 @@
 import {ref, watch} from "vue";
 import UtilsService from "src/services/other/utilsService";
 import UnivRequestService from "src/services/other/userMessagesService";
+import {useQuasar} from "quasar";
 
 export default {
   name: "UserMessageDialog",
@@ -36,6 +37,7 @@ export default {
     url: String
   },
   setup(props) {
+    const $q = useQuasar();
     const requestDialogEmail = ref('');
     const requestDialogText = ref('');
     const sendButtonModel = ref(true);
@@ -61,6 +63,12 @@ export default {
 
     const sendUserMessage = (email, text) => {
       UnivRequestService.createUserMessage(email, text, props.url)
+      $q.notify({
+        color: "green-4",
+        textColor: "white",
+        icon: "cloud_done",
+        message: "Сообщение успешно отправлено",
+      });
     }
 
     return {

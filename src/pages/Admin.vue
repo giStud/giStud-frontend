@@ -21,6 +21,8 @@
 <script>
 import {onMounted, ref} from "vue";
 import UserMessagesService from "../services/other/userMessagesService"
+import {getDateString} from "src/composables/schedule/ScheduleTable";
+import UtilsService from "../services/other/utilsService"
 
 const univRequestsColumns = [
   {
@@ -49,11 +51,25 @@ const univRequestsColumns = [
     sortable: true
   },
   {
+    name: 'type',
+    required: true,
+    label: 'Тип сообщения',
+    align: 'center',
+    field: 'type',
+    sortable: true
+  },
+  {
     name: 'createdTime',
     required: true,
     label: 'Время создания',
     align: 'center',
-    field: 'createdTime',
+    field: (row)=> {
+      let result = '';
+      const date = new Date(row.createdTime);
+      result += getDateString(date) + '\t';
+      result += UtilsService.getTimeString(date);
+      return result;
+    },
     sortable: true
   }
 ]
