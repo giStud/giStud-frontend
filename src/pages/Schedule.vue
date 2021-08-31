@@ -137,6 +137,15 @@
                 <div class="col-4 q-table__title">{{ title }}</div>
                 <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{ currentWeekType }}</div>
                 <div class="col-4" id="rawLessonStringMode">
+                  <q-icon  size="1.3rem" class="q-mr-sm" name="help_outline">
+                    <q-tooltip class="text-body2"  transition-show="flip-right" transition-hide="flip-left">
+                      Данный режим отображает занятия также,
+                      <br>
+                      как они выглядят в файле расписания, то есть
+                      <br>
+                      добавляются типы занятий/недели/аудитории без обработки.
+                    </q-tooltip>
+                  </q-icon>
                   <q-toggle v-model="rawLessonStringMode" label="Отображение занятий без обработки: " left-label/>
                 </div>
               </div>

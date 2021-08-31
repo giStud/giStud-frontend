@@ -20,7 +20,7 @@
 
 <script>
 import {onMounted, ref} from "vue";
-import UnivRequestService from "../services/other/univRequestService"
+import UserMessagesService from "../services/other/userMessagesService"
 
 const univRequestsColumns = [
   {
@@ -64,16 +64,16 @@ export default {
     const univRequestsRows = ref([]);
     const selectedRows = ref([])
     onMounted(async ()=> {
-      univRequestsRows.value = await UnivRequestService.getUnivRequests();
+      univRequestsRows.value = await UserMessagesService.getUserMessages();
       console.log(univRequestsRows.value)
     })
 
     const deleteSelectedRows = async () => {
       if (selectedRows.value.length > 0) {
         for (let selected of selectedRows.value) {
-          await UnivRequestService.deleteUnivRequestById(selected.requestId)
+          await UserMessagesService.deleteUserMessageById(selected.requestId)
         }
-        univRequestsRows.value = await UnivRequestService.getUnivRequests();
+        univRequestsRows.value = await UserMessagesService.getUserMessages();
       }
     }
 
