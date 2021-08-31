@@ -11,10 +11,14 @@ const routes = [
         path: '/schedule',
         name: 'schedule',
         component: () => import('pages/Schedule'),
-        props: (route)=> ({ univName: route.query.univName}),
+        props: (route) => ({univName: route.query.univName}),
         meta: {isAuth: false, isAdmin: false}
       },
-      {path: '/schedulesLoading', component: () => import('pages/ScheduleLoading.vue'), meta: {isAuth: true, isAdmin: true}}
+      {
+        path: '/schedulesLoading',
+        component: () => import('pages/ScheduleLoading.vue'),
+        meta: {isAuth: true, isAdmin: true}
+      }
     ]
   },
   {
@@ -31,6 +35,13 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Admin.vue'), meta: {isAuth: true, isAdmin: true}}
+    ]
+  },
+  {
+    path: "/news",
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      {path: '', component: () => import('pages/News.vue'), meta: {isAuth: false, isAdmin: false}}
     ]
   },
   // {
