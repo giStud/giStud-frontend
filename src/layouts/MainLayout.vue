@@ -1,6 +1,7 @@
 <template>
   <q-layout>
-    <Header/>
+    <Header class="mobile-hide"/>
+    <mobileHeader class="desktop-hide"/>
     <q-page-container>
       <router-view />
     </q-page-container>
@@ -11,6 +12,7 @@
 
 import { defineComponent, ref } from 'vue'
 import Header from '../components/Header.vue'
+import mobileHeader from '../components/mobile/mobileHeader.vue'
 import Footer from '../components/Footer.vue'
 
 export default defineComponent({
@@ -18,6 +20,7 @@ export default defineComponent({
 
   components: {
     Header,
+    mobileHeader,
     // Footer
   },
 

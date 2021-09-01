@@ -1,15 +1,15 @@
 <template>
   <q-dialog>
-    <q-card style="min-width: 350px">
+    <q-card square >
       <q-card-section>
         <slot name="title"></slot>
       </q-card-section>
-      <q-card-section style="width: 460px">
+      <q-card-section class="content-center">
         <div>
-          <q-input style="margin-bottom: 5px" filled type="text" v-model="requestDialogEmail"
+          <q-input square style="margin-bottom: 5px" filled type="text" v-model="requestDialogEmail"
                    label="Email адрес *" lazy-rules
                    :rules="[(val) => !!val || 'Поле не может быть пустым', isValidEmail]" autofocus/>
-          <q-input input-style="resize: none;" counter filled rows="10" type="textarea"
+          <q-input square input-style="resize: none;" counter filled rows="10" type="textarea"
                    v-model="requestDialogText" label="Текст *" lazy-rules
                    :rules="[(val) => (!!val && val.length >= 6 && val.length <= 500) || 'Текст сообщения не может быть меньше 6 символов или больше 500']"
                    autofocus/>
@@ -33,7 +33,7 @@ import {useQuasar} from "quasar";
 
 export default {
   name: "UserMessageDialog",
-  props : {
+  props: {
     url: String
   },
   setup(props) {

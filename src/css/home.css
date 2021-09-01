@@ -14,7 +14,7 @@ body {
   padding: 0 5px 5px 0;
 }
 
-#news-by-our {
+.news-by-our {
   padding: 0 0 5px 0;
   max-height: 400px;
   height: 400px;

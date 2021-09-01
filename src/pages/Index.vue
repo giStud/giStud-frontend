@@ -1,6 +1,6 @@
 <template>
   <q-page class="flex-center" style=" background-color: rgb(238, 238, 238)">
-    <div class="row " id="main">
+    <div class="row mobile-hide" id="main">
       <div id="main-left-col" class="col-9">
         <MainNewsOur/>
         <TemplateUniversity/>
@@ -24,6 +24,19 @@
         </div>
       </div>
     </div>
+
+    <div class="row desktop-hide">
+      <q-card square flat >
+        <MainNewsOur/>
+        <div style="height: 20px;" ></div>
+        <q-card flat class="col-ads">
+          <div id="yandex_rtb_R-A-1273406-1"></div>
+        </q-card>
+        <div style="height: 20px;" ></div>
+        <TemplateUniversity/>
+      </q-card>
+    </div>
+
   </q-page>
 </template>
 
