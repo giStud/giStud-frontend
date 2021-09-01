@@ -11,7 +11,12 @@ export function getTableRowsFromLessons(lessons, week) {
   }
 
   for (let lesson of lessonsOfSelectedWeek) {
-    timeArray.push(lesson.time);
+    if (lesson.day === 'MONDAY') {
+      timeArray.push(lesson.time);
+    }
+    if (lesson.day === 'TUESDAY') {
+      timeArray.push(lesson.time);
+    }
   }
   timeArray.sort();
   timeArray = Array.from(new Set(timeArray));
