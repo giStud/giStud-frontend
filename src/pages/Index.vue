@@ -11,7 +11,7 @@
           <q-card flat class="col-ads">
             <div id="yandex_rtb_R-A-1273406-1"></div>
           </q-card>
-          <q-card square id="static-ads" @click="getAdsStatic('https://vk.com/studiotag')" flat class="col-ads q-pa-xs">
+          <q-card square id="static-ads" @click="getAdsStatic('https://vk.com/studiotag')" flat class="col-ads">
             <q-img src="https://cdn.discordapp.com/attachments/317672589457883136/881961544546660383/tagstudio.jpg">
               <div class="absolute-bottom text-left">
                 <span>Закажи дизайн тут!</span>
@@ -40,7 +40,8 @@ const meta = {
   script: {
     ads: {
       type: 'application/javascript',
-      innerHTML: `window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})`
+      innerHTML: `window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-1', blockId: 'R-A-1273406-1'})})
+                  window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-L01WVCCRS6');`
     }
   },
   meta: {
