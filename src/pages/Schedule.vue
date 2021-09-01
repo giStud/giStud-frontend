@@ -20,6 +20,11 @@
                         </q-item-section>
                       </q-item>
                     </template>
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="2000" transition-show="scale" transition-hide="scale">
+                      <div style="text-align: center">
+                        Из выпадающего списка выберите ваш университет
+                      </div>
+                    </q-tooltip>
                     <template v-slot:no-option>
                       <q-item>
                         <q-item-section class="text-grey">Не найдено</q-item-section>
@@ -44,6 +49,11 @@
                         </q-item-section>
                       </q-item>
                     </template>
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="2000" transition-show="scale" transition-hide="scale">
+                      <div style="text-align: center">
+                        Из выпадающего списка выберите вашу группу
+                      </div>
+                    </q-tooltip>
                     <template v-slot:no-option>
                       <q-item>
                         <q-item-section class="text-grey">Не найдено</q-item-section>
@@ -72,7 +82,13 @@
                     toggle-color="primary"
                     @update:model-value="val => updateNumeratorsButton(val)"
                     :options="[{label: 'Числитель', value: 'NUMERATOR'},{label: 'Знаменатель', value: 'DENOMINATOR'}]"
-                  />
+                  >
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="1000" transition-show="scale" transition-hide="scale">
+                      <div style="text-align: center">
+                        Числитель - номер нечетной недели (прим. 1,3,5) Знаменатель - номер четной недели (прим. 2,4,6)
+                      </div>
+                    </q-tooltip>
+                  </q-btn-toggle>
                   <q-btn id="calendar" flat no-caps class="buttons-date" icon="today">
                     <q-popup-proxy transition-show="scale" transition-hide="scale">
                       <q-date v-model="datePickerDate"
@@ -138,9 +154,9 @@
                 <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{ currentWeekType }}</div>
                 <div class="col-4" id="rawLessonStringMode">
                   <q-icon  size="1.3rem" class="q-mr-sm" name="help_outline">
-                    <q-tooltip max-width="400px" class="text-body2"  transition-show="scale" transition-hide="scale">
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary"  transition-show="scale" transition-hide="scale">
                      <div style="text-align: center">
-                       Данный режим отображает занятия также, как они выглядят в файле расписания, без форматирования.
+                       Данный режим отображает занятия также, как они выглядят в файле расписания, без форматирования
                      </div>
                     </q-tooltip>
                   </q-icon>
