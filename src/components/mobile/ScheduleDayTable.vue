@@ -11,11 +11,11 @@
             <div style="height: 100%;">
               <q-list style="height: 100%">
                 <q-item :style="getScheduleCellColor(props.row.lessons[0])">
-                  {{ rawLessonStringMode ? props.row.lessons.lessons[0].rawLessonString : props.row.lessons[0].name }}
+                  {{ rawLessonStringMode ? props.row.lessons[0].rawLessonString : props.row.lessons[0].name }}
                 </q-item>
                 <q-separator/>
                 <q-item :style="getScheduleCellColor(props.row.lessons[1])">
-                  {{ rawLessonStringMode ? props.row.lessons.lessons[1].rawLessonString : props.row.lessons[1].name }}
+                  {{ rawLessonStringMode ? props.row.lessons[1].rawLessonString : props.row.lessons[1].name }}
                 </q-item>
               </q-list>
             </div>
