@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md" style="max-width: 500px">
+  <div class="q-pa-md">
     <q-list>
       <q-item-label id="header-news" header>Последние новости</q-item-label>
 

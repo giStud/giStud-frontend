@@ -13,14 +13,14 @@
               <q-item-section style="color: black; font-weight: bold">МЕНЮ</q-item-section>
             </q-item>
             <q-separator/>
-            <q-item :to="'/'" clickable>
-              <q-item-section style="color: black">Главная</q-item-section>
+            <q-item class="qitem-menu" style="color: black" :to="'/'" clickable>
+              <q-item-section>Главная</q-item-section>
             </q-item>
-            <q-item :to="'/schedule'" clickable>
-              <q-item-section style="color: black">Расписание</q-item-section>
+            <q-item class="qitem-menu" style="color: black" :to="'/schedule'" clickable>
+              <q-item-section>Расписание</q-item-section>
             </q-item>
             <q-separator/>
-            <q-item @click="dialogModel = true" style="color: black" flat clickable>
+            <q-item class="qitem-menu" style="color: black" @click="dialogModel = true" flat clickable>
               <q-item-section style="color: black">Нашли ошибку?
                 <UserMessageDialog v-model="dialogModel" :url="'/userMessages/bug'">
                   <template v-slot:title>
@@ -82,6 +82,6 @@ export default {
 };
 </script>
 
-<style scoped>
-
+<style lang="css" scoped>
+@import 'src/css/home.css';
 </style>

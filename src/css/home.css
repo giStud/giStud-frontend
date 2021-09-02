@@ -3,6 +3,15 @@ body {
   background-color: rgb(238, 238, 238);
 }
 
+.qitem-menu {
+  text-decoration: none
+}
+
+.qitem-menu:hover {
+  transition-duration: 0.4s;
+  background-color: #1976D2;
+}
+
 #main {
   min-width: 1200px;
   margin: 24px;
