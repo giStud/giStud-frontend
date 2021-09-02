@@ -228,23 +228,23 @@
           </div>
         </div>
         <div class="col-12">
-          <q-table id="main-table-rasp" flat :rows="scheduleRows" :columns="scheduleColumns" row-key="rowNum"
+          <q-table style="border-color: #959595;" id="main-table-rasp" flat :rows="scheduleRows" :columns="scheduleColumns" row-key="rowNum"
                    table-colspan="7"
                    :rows-per-page-options="[10,12]" separator="cell" hide-pagination wrap-cells
                    no-data-label="Для отображения расписания выберите группу">
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
-                <q-td id="main-table-rasp-time">{{ props.row.time }}</q-td>
-                <q-td id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day"
+                <q-td style="border-color: #959595;" id="main-table-rasp-time">{{ props.row.time }}</q-td>
+                <q-td style="border-color: #959595;" id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day"
                       :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
                     <div class="col-12" style="height: 100%;">
                       <q-list style="height: 100%">
-                        <q-item id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
+                        <q-item style="border-color: #959595;" id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
                           {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                         </q-item>
                         <q-separator/>
-                        <q-item id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
+                        <q-item style="border-color: #959595;" id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
                           {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
                         </q-item>
                       </q-list>
@@ -258,17 +258,17 @@
             </template>
 
             <template v-slot:header="props">
-              <q-th>{{ props.cols[0].label }}</q-th>
-              <q-th>{{ props.cols[1].label }}<br>{{ mondayDate }}</q-th>
-              <q-th>{{ props.cols[2].label }}<br>{{ tuesdayDate }}</q-th>
-              <q-th>{{ props.cols[3].label }}<br>{{ wednesdayDate }}</q-th>
-              <q-th>{{ props.cols[4].label }}<br>{{ thursdayDate }}</q-th>
-              <q-th>{{ props.cols[5].label }}<br>{{ fridayDate }}</q-th>
-              <q-th>{{ props.cols[6].label }}<br>{{ saturdayDate }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[0].label }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[1].label }}<br>{{ mondayDate }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[2].label }}<br>{{ tuesdayDate }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[3].label }}<br>{{ wednesdayDate }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[4].label }}<br>{{ thursdayDate }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[5].label }}<br>{{ fridayDate }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[6].label }}<br>{{ saturdayDate }}</q-th>
             </template>
 
             <template v-slot:top class="row justify-between items-center">
-              <div class="col-12 row rasp-title">
+              <div  class="col-12 row rasp-title">
                 <div class="col-4 q-table__title">{{ title }}</div>
                 <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{ currentWeekType }}</div>
                 <div class="col-4" id="rawLessonStringMode">
@@ -362,43 +362,43 @@ const scheduleColumns = [
     name: 'time',
     label: 'Время',
     align: 'center',
-    headerStyle: 'width: 120px',
+    headerStyle: 'width: 120px;',
   },
   {
     name: 'monday',
     label: 'Понедельник',
     align: 'center',
-    headerStyle: 'width: 250px',
+    headerStyle: 'width: 250px;',
   },
   {
     name: 'tuesday',
     label: 'Вторник',
     align: 'center',
-    headerStyle: 'width: 250px',
+    headerStyle: 'width: 250px;',
   },
   {
     name: 'wednesday',
     label: 'Среда',
     align: 'center',
-    headerStyle: 'width: 250px',
+    headerStyle: 'width: 250px;',
   },
   {
     name: 'thursday',
     label: 'Четверг',
     align: 'center',
-    headerStyle: 'width: 250px',
+    headerStyle: 'width: 250px;',
   },
   {
     name: 'friday',
     label: 'Пятница',
     align: 'center',
-    headerStyle: 'width: 250px',
+    headerStyle: 'width: 250px;',
   },
   {
     name: 'saturday',
     label: 'Суббота',
     align: 'center',
-    headerStyle: 'width: 250px',
+    headerStyle: 'width: 250px;',
   }
 ]
 
