@@ -69,7 +69,12 @@
         </div>
 
         <div id="schedule-table-mobile">
-          <!---todo--->
+          <ScheduleDayTable :day="'Понедельник'" :date="mondayDate" :rows="mobileMondayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable :day="'Вторник'" :date="tuesdayDate" :rows="mobileTuesdayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable :day="'Среда'" :date="wednesdayDate" :rows="mobileWednesdayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable :day="'Четверг'" :date="thursdayDate" :rows="mobileThursdayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable :day="'Пятница'" :date="fridayDate" :rows="mobileFridayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable :day="'Суббота'" :date="saturdayDate" :rows="mobileSaturdayTableRows" :rls-mode="rawLessonStringMode"/>
         </div>
 
       </div>
@@ -283,9 +288,11 @@ import {
   getNumberOfWeek,
   getScheduleCellColor,
   getTableRowsFromLessons,
-  getTypeOfWeek
+  getTypeOfWeek,
+  getTableRowsFromLessonsMobile
 } from "../composables/schedule/ScheduleTable"
 import ModalWindow from "components/ModalWindow";
+import ScheduleDayTable from "components/mobile/ScheduleDayTable";
 import {useMeta} from 'quasar'
 
 const meta = {
@@ -439,7 +446,8 @@ function scrollToElement(el) {
 export default {
   name: 'GroupSelectingLayout',
   components: {
-    // ModalWindow
+    // ModalWindow,
+    ScheduleDayTable
   },
   props: {
     univName: {
@@ -458,6 +466,13 @@ export default {
     const univFilteredOptions = ref(univSelectOptions.value);
     const groupsSelectOptions = ref([]);
     const groupsFilteredOptions = ref(groupsSelectOptions.value);
+
+    const mobileMondayTableRows = ref([]);
+    const mobileTuesdayTableRows = ref([]);
+    const mobileWednesdayTableRows = ref([]);
+    const mobileThursdayTableRows = ref([]);
+    const mobileFridayTableRows = ref([]);
+    const mobileSaturdayTableRows = ref([]);
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -497,6 +512,12 @@ export default {
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
           localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
           scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
+          mobileMondayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'MONDAY');
+          mobileTuesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'TUESDAY');
+          mobileWednesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'WEDNESDAY');
+          mobileThursdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'THURSDAY');
+          mobileFridayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'FRIDAY');
+          mobileSaturdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'SATURDAY');
         } else {
           title.value = '';
           console.log('Find deleted group');
@@ -603,6 +624,12 @@ export default {
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, newValue)
+          mobileMondayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'MONDAY');
+          mobileTuesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'TUESDAY');
+          mobileWednesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'WEDNESDAY');
+          mobileThursdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'THURSDAY');
+          mobileFridayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'FRIDAY');
+          mobileSaturdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'SATURDAY');
         }
       }
     })
@@ -703,6 +730,12 @@ export default {
       numeratorButtonsToggle,
       lessonTypesColumns,
       lessonTypesRows,
+      mobileMondayTableRows,
+      mobileTuesdayTableRows,
+      mobileWednesdayTableRows,
+      mobileThursdayTableRows,
+      mobileFridayTableRows,
+      mobileSaturdayTableRows,
       filterUniversitiesFn,
       filterGroupsFn,
       loadGroupSchedule,
