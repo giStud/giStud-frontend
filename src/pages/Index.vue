@@ -31,7 +31,9 @@
         <div style="height: 20px;"></div>
         <q-card flat square class="q-pa-xs">
           <q-card flat class="col-ads">
+            <q-card-section>
             <div id="yandex_rtb_R-A-1273406-2"></div>
+              </q-card-section>
           </q-card>
           <q-card>
             <q-card-section>

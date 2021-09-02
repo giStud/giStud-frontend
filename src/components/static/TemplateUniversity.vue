@@ -21,7 +21,7 @@
         <q-btn flat no-caps class="btn-university mobile-hide" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Расписание</q-btn>
         <q-btn flat no-caps class="btn-university mobile-hide" @click="url('https://cchgeu.ru/')">Официальный сайт</q-btn>
 
-        <div style="text-align: center">
+        <div class="desktop-hide" style="text-align: center">
           <q-btn flat no-caps class="btn-university" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Расписание</q-btn>
           <q-btn flat no-caps class="btn-university" @click="url('https://cchgeu.ru/')">Официальный сайт</q-btn>
         </div>
