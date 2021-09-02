@@ -65,11 +65,11 @@ export default {
     rlsMode: Boolean
   },
   setup(props) {
-    const {rows, rlsMode} = toRefs(props)
+    const {rows, rlsMode, date} = toRefs(props)
 
     return {
-      dateString: ref(props.date),
       dayString: ref(props.day),
+      dateString: ref(date),
       rowsArray: ref(rows),
       rawLessonStringMode: ref(rlsMode),
       scheduleColumns,
