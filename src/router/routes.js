@@ -34,7 +34,7 @@ const routes = [
     path: "/admin",
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {path: '', component: () => import('pages/Admin.vue'), meta: {isAuth: true, isAdmin: true}}
+      {path: '', component: () => import('pages/Admin.vue'), meta: {isAuth: false, isAdmin: false}} //todo  ВСЕ НА ТРУ
     ]
   },
   {
