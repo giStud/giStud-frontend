@@ -3,7 +3,14 @@
 
     <q-card flat square class="box-university my-card">
       <q-parallax src="../../assets/media/universities/VGTU/VGTU.jpg" :height="300" :speed="0.4"/>
-      <q-card-section>
+      <q-card-section class="mobile-hide">
+        <div class="text-h6 text-bold">Воронежский государственный технический университет</div>
+        <div class="text-subtitle2"> Воронежский государственный архитектурно-строительный университет — существовавшее
+          самостоятельно до лета 2016 года высшее учебное заведение города Воронежа. В настоящее время объединён с
+          Воронежским государственным техническим университетом.
+        </div>
+      </q-card-section>
+      <q-card-section class="desktop-hide" style="text-align: center">
         <div class="text-h6 text-bold">Воронежский государственный технический университет</div>
         <div class="text-subtitle2"> Воронежский государственный архитектурно-строительный университет — существовавшее
           самостоятельно до лета 2016 года высшее учебное заведение города Воронежа. В настоящее время объединён с
@@ -11,8 +18,13 @@
         </div>
       </q-card-section>
       <q-card-section class="q-py-xs">
-        <q-btn flat no-caps class="btn-university" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Расписание</q-btn>
-        <q-btn flat no-caps class="btn-university" @click="url('https://cchgeu.ru/')">Официальный сайт</q-btn>
+        <q-btn flat no-caps class="btn-university mobile-hide" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Расписание</q-btn>
+        <q-btn flat no-caps class="btn-university mobile-hide" @click="url('https://cchgeu.ru/')">Официальный сайт</q-btn>
+
+        <div style="text-align: center">
+          <q-btn flat no-caps class="btn-university" :to="{name: 'schedule', query : {univName: 'ВГТУ'}}">Расписание</q-btn>
+          <q-btn flat no-caps class="btn-university" @click="url('https://cchgeu.ru/')">Официальный сайт</q-btn>
+        </div>
       </q-card-section>
     </q-card>
 
@@ -20,12 +32,19 @@
 
     <q-card flat square class="box-university my-card">
       <q-parallax src="../../assets/media/universities/unknown.jpg" :height="300" :speed="0.4"/>
-      <q-card-section>
+      <q-card-section class="mobile-hide">
+        <div class="text-h6 text-bold">Ваш университет</div>
+        <div class="text-subtitle2">Вы можете оставить заявку на добавление вашего вуза.</div>
+      </q-card-section>
+      <q-card-section class="desktop-hide" style="text-align: center">
         <div class="text-h6 text-bold">Ваш университет</div>
         <div class="text-subtitle2">Вы можете оставить заявку на добавление вашего вуза.</div>
       </q-card-section>
       <q-card-section class="q-py-xs">
-        <q-btn flat no-caps class="btn-university" @click="dialogModel = true">Оставить заявку</q-btn>
+        <q-btn flat no-caps class="btn-university mobile-hide" @click="dialogModel = true">Оставить заявку</q-btn>
+        <div style="text-align: center">
+          <q-btn flat no-caps class="btn-university desktop-hide" @click="dialogModel = true">Оставить заявку</q-btn>
+        </div>
         <UserMessageDialog v-model="dialogModel" :url="'/userMessages/univRequest'">
           <template v-slot:title>
             <div class="text-h6">Введите текст вашей заявки</div>
@@ -43,7 +62,7 @@ import UserMessageDialog from "components/UserMessageDialog";
 export default {
 
   name: "TemplateUniversity",
-  components : {
+  components: {
     UserMessageDialog
   },
   setup() {
