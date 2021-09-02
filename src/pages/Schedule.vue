@@ -1,11 +1,88 @@
 <template>
   <q-page>
-    <div class="flex column">
+    <!--MOBILE-->
+    <div class="desktop-hide">
+      <div class="q-pa-sm">
+        <q-select square borderless outlined v-model="univSelectValue" use-input hide-selected fill-input
+                  label="Выберите университет" :options="univFilteredOptions" option-label="univName"
+                  @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots>
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section>
+                <q-item-label v-html="scope.opt.univName"/>
+                <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">Не найдено</q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-select>
+        <q-select style="margin-top: -15px" square borderless outlined v-model="groupSelectValue" use-input
+                  hide-selected fill-input label="Выберите группу" :options="groupsFilteredOptions"
+                  option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up" transition-hide="jump-up"
+                  bottom-slots>
+          <template v-slot:option="scope">
+            <q-item v-bind="scope.itemProps">
+              <q-item-section>
+                <q-item-label v-html="scope.opt.groupName"/>
+                <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
+              </q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:no-option>
+            <q-item>
+              <q-item-section class="text-grey">Не найдено</q-item-section>
+            </q-item>
+          </template>
+          <template v-slot:append>
+            <q-icon name="search"/>
+          </template>
+        </q-select>
+      </div>
+      <div id="main-schedule-mobile">
+        <div id="mobile-buttons-week" style="text-align: center">
+          <q-btn flat no-caps style="width: 200px;" class="bg-primary border-radius-inherit q-mx-sm" color="white"
+                 label="❮ Предыдущая неделя" @click="loadPreviousWeekLessons"/>
+          <q-btn flat no-caps style="width: 200px;" class="bg-primary border-radius-inherit q-mx-sm" color="white"
+                 label="Следующая неделя ❯" @click="loadNextWeekLessons"/>
+        </div>
+        <div class="q-my-lg" style="text-align: center">
+        </div>
+        <div class="q-my-lg" style="text-align: center">
+          <q-btn color="white" flat no-caps class="buttons-date bg-primary border-radius-inherit" icon="today">
+            <q-popup-proxy transition-show="scale" transition-hide="scale">
+              <q-date v-model="datePickerDate"
+                      :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
+                <div class="row items-center justify-end q-gutter-sm">
+                  <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
+                  <q-btn label="Отмена" color="primary" flat v-close-popup/>
+                </div>
+              </q-date>
+            </q-popup-proxy>
+          </q-btn>
+        </div>
+
+        <div id="schedule-table-mobile">
+          <!---todo--->
+        </div>
+
+      </div>
+    </div>
+
+    <!--DESKTOP-->
+    <div class="flex column mobile-hide">
       <div class="column q-pa-lg q-col-gutter-y-md">
         <div class="col-12 content-end" style="padding: 0">
           <div class="">
             <div class="column">
               <div class="row">
+
                 <div class="col-6">
                   <q-select square borderless outlined v-model="univSelectValue" use-input hide-selected fill-input
                             label="Выберите университет"
@@ -20,7 +97,8 @@
                         </q-item-section>
                       </q-item>
                     </template>
-                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="2000" transition-show="scale" transition-hide="scale">
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="2000" transition-show="scale"
+                               transition-hide="scale">
                       <div style="text-align: center">
                         Из выпадающего списка выберите ваш университет
                       </div>
@@ -35,6 +113,7 @@
                     </template>
                   </q-select>
                 </div>
+
                 <div class="col-6">
                   <q-select square borderless outlined v-model="groupSelectValue" use-input hide-selected fill-input
                             label="Выберите группу"
@@ -49,7 +128,8 @@
                         </q-item-section>
                       </q-item>
                     </template>
-                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="2000" transition-show="scale" transition-hide="scale">
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="2000" transition-show="scale"
+                               transition-hide="scale">
                       <div style="text-align: center">
                         Из выпадающего списка выберите вашу группу
                       </div>
@@ -83,7 +163,8 @@
                     @update:model-value="val => updateNumeratorsButton(val)"
                     :options="[{label: 'Числитель', value: 'NUMERATOR'},{label: 'Знаменатель', value: 'DENOMINATOR'}]"
                   >
-                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="1000" transition-show="scale" transition-hide="scale">
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary" :delay="1000" transition-show="scale"
+                               transition-hide="scale">
                       <div style="text-align: center">
                         Числитель - номер нечетной недели (прим. 1,3,5) Знаменатель - номер четной недели (прим. 2,4,6)
                       </div>
@@ -153,11 +234,12 @@
                 <div class="col-4 q-table__title">{{ title }}</div>
                 <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{ currentWeekType }}</div>
                 <div class="col-4" id="rawLessonStringMode">
-                  <q-icon  size="1.3rem" class="q-mr-sm" name="help_outline">
-                    <q-tooltip max-width="400px" class="text-body2 bg-primary"  transition-show="scale" transition-hide="scale">
-                     <div style="text-align: center">
-                       Данный режим отображает занятия также, как они выглядят в файле расписания, без форматирования
-                     </div>
+                  <q-icon size="1.3rem" class="q-mr-sm" name="help_outline">
+                    <q-tooltip max-width="400px" class="text-body2 bg-primary" transition-show="scale"
+                               transition-hide="scale">
+                      <div style="text-align: center">
+                        Данный режим отображает занятия также, как они выглядят в файле расписания, без форматирования
+                      </div>
                     </q-tooltip>
                   </q-icon>
                   <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
@@ -188,7 +270,7 @@
       </div>
     </div>
   </q-page>
-  <div><img src="https://mc.yandex.ru/watch/84689620" style="position:absolute; left:-9999px;" alt="" /></div>
+  <div><img src="https://mc.yandex.ru/watch/84689620" style="position:absolute; left:-9999px;" alt=""/></div>
   <div id="footer"></div>
 </template>
 
@@ -223,8 +305,14 @@ const meta = {
     }
   },
   meta: {
-    description: { name: 'description', content: 'Расписание занятий - GISTUD | Удобная информация вашего университета: студенческие новости, раписание и многое другое' },
-    keywords: { name: 'keywords', content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud' },
+    description: {
+      name: 'description',
+      content: 'Расписание занятий - GISTUD | Удобная информация вашего университета: студенческие новости, раписание и многое другое'
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud'
+    },
   }
 
 }
