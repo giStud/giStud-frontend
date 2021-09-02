@@ -228,9 +228,9 @@ export function getNumberOfWeek(date) {
 export function getScheduleCellColor(dayObject, splitterMode) {
   if (dayObject.typeEntity) {
     const typeName = dayObject.typeEntity.typeName;
-    let style = '';//width: 250px; text-align: center;
+    let style = 'border-color: #959595; ';//width: 250px; text-align: center;
     if (splitterMode) {
-      style += 'padding: 0px;'
+      style += 'padding: 0px; '
     } else {
       switch (typeName) {
         case 'LAB' : {

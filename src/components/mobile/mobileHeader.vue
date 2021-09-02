@@ -6,22 +6,26 @@
       </q-avatar>
       <q-space/>
       <q-btn flat @click="menuMobile = !menuMobile" round dense icon="menu"/>
-      <q-drawer side="right" v-model="menuMobile" :width="150" :breakpoint="500" overlay bordered class="bg-white shadow-24">
+      <q-drawer side="right" v-model="menuMobile" :width="200" :breakpoint="500" overlay bordered class="bg-white shadow-24">
         <q-scroll-area class="fit">
           <q-list>
             <q-item>
-              <q-item-section style="color: black; font-weight: bold">МЕНЮ</q-item-section>
+              <q-item-section style="text-align: center; color: black; font-size: large; font-weight: bold">Меню</q-item-section>
             </q-item>
             <q-separator/>
             <q-item class="qitem-menu" style="color: black" :to="'/'" clickable>
-              <q-item-section>Главная</q-item-section>
+              <q-item-section avatar><q-icon name="home"/></q-item-section>
+              <q-item-section style="margin-left: -20px;" class="q-px-none">Главная</q-item-section>
             </q-item>
             <q-item class="qitem-menu" style="color: black" :to="'/schedule'" clickable>
-              <q-item-section>Расписание</q-item-section>
+              <q-item-section avatar><q-icon name="backup_table"/></q-item-section>
+
+              <q-item-section style="margin-left: -20px;">Расписание</q-item-section>
             </q-item>
             <q-separator/>
             <q-item class="qitem-menu" style="color: black" @click="dialogModel = true" flat clickable>
-              <q-item-section style="color: black">Нашли ошибку?
+              <q-item-section avatar><q-icon name="bug_report"/></q-item-section>
+              <q-item-section style="color: black;margin-left: -20px">Нашли ошибку?
                 <UserMessageDialog v-model="dialogModel" :url="'/userMessages/bug'">
                   <template v-slot:title>
                     <div>Введите описание вашей ошибки</div>

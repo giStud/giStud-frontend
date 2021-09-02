@@ -46,37 +46,70 @@
         </q-select>
       </div>
       <div id="main-schedule-mobile">
-        <div id="mobile-buttons-week" style="text-align: center">
-          <q-btn flat no-caps style="width: 200px;" class="bg-primary border-radius-inherit q-mx-sm" color="white"
-                 label="❮ Предыдущая неделя" @click="loadPreviousWeekLessons"/>
-          <q-btn flat no-caps style="width: 200px;" class="bg-primary border-radius-inherit q-mx-sm" color="white"
-                 label="Следующая неделя ❯" @click="loadNextWeekLessons"/>
+        <div class="row justify-center" id="mobile-buttons-week" style="text-align: center">
+          <q-btn icon="west" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm" color="black"
+                 @click="loadPreviousWeekLessons"/>
+
+          <div style="padding-top: 20px" class="q-mx-lg">
+            <span>{{ selectedWeek }} неделя, {{ currentWeekType }}</span>
+          </div>
+
+          <q-btn icon="east" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm" color="black"
+                  @click="loadNextWeekLessons"/>
         </div>
         <div class="q-my-lg" style="text-align: center">
         </div>
         <div class="q-my-lg" style="text-align: center">
-          <q-btn color="white" flat no-caps class="buttons-date bg-primary border-radius-inherit" icon="today">
-            <q-popup-proxy transition-show="scale" transition-hide="scale">
-              <q-date v-model="datePickerDate"
-                      :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
-                <div class="row items-center justify-end q-gutter-sm">
-                  <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
-                  <q-btn label="Отмена" color="primary" flat v-close-popup/>
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-btn>
+
         </div>
 
-        <div id="schedule-table-mobile">
-          <ScheduleDayTable :day="'Понедельник'" :date="mondayDate" :rows="mobileMondayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable :day="'Вторник'" :date="tuesdayDate" :rows="mobileTuesdayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable :day="'Среда'" :date="wednesdayDate" :rows="mobileWednesdayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable :day="'Четверг'" :date="thursdayDate" :rows="mobileThursdayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable :day="'Пятница'" :date="fridayDate" :rows="mobileFridayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable :day="'Суббота'" :date="saturdayDate" :rows="mobileSaturdayTableRows" :rls-mode="rawLessonStringMode"/>
+        <div id="schedule-table-mobile" class="q-pa-sm">
+
+          <div class="row q-px-sm" style="width: 100%; margin-bottom: -20px">
+            <div style="width: 50%; text-align: left;">
+              <q-btn class="" color="black" round flat no-caps icon="today">
+                <q-popup-proxy transition-show="scale" transition-hide="scale">
+                  <q-date v-model="datePickerDate"
+                          :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
+                    <div class="row items-center justify-end q-gutter-sm">
+                      <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
+                      <q-btn label="Отмена" color="primary" flat v-close-popup/>
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-btn>
+            </div>
+
+            <div style="width: 50%; text-align: right;">
+              <q-toggle style="font-size: 12px; margin-bottom: -20px;" v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
+            </div>
+          </div>
+
+
+          <ScheduleDayTable class="q-my-lg" :day="'Понедельник'" :date="mondayDate" :rows="mobileMondayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Вторник'" :date="tuesdayDate" :rows="mobileTuesdayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Среда'" :date="wednesdayDate" :rows="mobileWednesdayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Четверг'" :date="thursdayDate" :rows="mobileThursdayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Пятница'" :date="fridayDate" :rows="mobileFridayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Суббота'" :date="saturdayDate" :rows="mobileSaturdayTableRows" :rls-mode="rawLessonStringMode"/>
         </div>
 
+        <q-page-sticky position="bottom-right" :offset="[8, 8]">
+          <q-btn @click="legendDialog = true" style="height: 8px; width: 8px;" round icon="menu_book" color="primary" />
+        </q-page-sticky>
+        <q-dialog full-width  v-model="legendDialog" square>
+          <q-card>
+              <q-table
+                :rows="lessonTypesRows"
+                :columns="lessonTypesColumnsMobile"
+                row-key="type"
+                separator="cell"
+                hide-pagination
+                flat
+                :rows-per-page-options="[15,20]"
+              />
+          </q-card>
+        </q-dialog>
       </div>
     </div>
 
@@ -385,6 +418,22 @@ const lessonTypesColumns = [
     field: 'type'
   }
 ]
+const lessonTypesColumnsMobile = [
+  {
+    name: 'color',
+    label: 'Цвет',
+    align: 'center',
+    field: 'example',
+    headerStyle: 'width: 40px',
+    style: row => row.color + 'width: 40px'
+  },
+  {
+    name: 'type',
+    label: 'Тип занятия',
+    align: 'left',
+    field: 'type'
+  }
+]
 
 const lessonTypesRows = [
   {
@@ -473,6 +522,7 @@ export default {
     const mobileThursdayTableRows = ref([]);
     const mobileFridayTableRows = ref([]);
     const mobileSaturdayTableRows = ref([]);
+    const legendDialog = ref(false);
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -729,6 +779,7 @@ export default {
       splitterRatio: ref(50),
       numeratorButtonsToggle,
       lessonTypesColumns,
+      lessonTypesColumnsMobile,
       lessonTypesRows,
       mobileMondayTableRows,
       mobileTuesdayTableRows,
@@ -745,6 +796,7 @@ export default {
       changeDateFromDatePicker,
       getScheduleCellColor,
       scrollToElement,
+      legendDialog,
     };
   },
 };
