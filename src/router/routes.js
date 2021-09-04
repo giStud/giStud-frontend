@@ -14,11 +14,6 @@ const routes = [
         props: (route) => ({univName: route.query.univName}),
         meta: {isAuth: false, isAdmin: false}
       },
-      {
-        path: '/schedulesLoading',
-        component: () => import('pages/ScheduleLoading.vue'),
-        meta: {isAuth: true, isAdmin: true}
-      }
     ]
   },
   {
@@ -34,7 +29,7 @@ const routes = [
     path: "/admin",
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {path: '', component: () => import('pages/Admin.vue'), meta: {isAuth: false, isAdmin: false}} //todo  ВСЕ НА ТРУ
+      {path: '', component: () => import('pages/Admin.vue'), meta: {isAuth: true, isAdmin: true}} //todo  ВСЕ НА ТРУ
     ]
   },
   {

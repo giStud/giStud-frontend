@@ -11,6 +11,8 @@
           <q-tab name="bugs" icon="warning" label="Баги"/>
           <q-separator/>
           <q-tab name="news" icon="format_size" label="Новости"/>
+          <q-separator/>
+          <q-tab name="schedule" icon="schedule" label="Загрузка расписания"/>
 
         </q-tabs>
       </template>
@@ -63,9 +65,24 @@
               />
             </div>
             <div class="q-pa-md">
-              <q-btn color="primary" no-caps label="Добавить" @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText)"/>
+              <q-btn color="primary" no-caps label="Добавить"
+                     @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText)"/>
             </div>
-            <div v-html="newsExample">
+          </q-tab-panel>
+
+          <q-tab-panel name="schedule">
+            <div class="text-h4 q-mb-md">Загрузка расписания</div>
+            <div>
+              <div class="q-pa-md">
+                <q-uploader bordered flat square field-name="files" method="POST" :headers="getHeaders"
+                            :url="apiPath + '/schedule/schedulesLoading'" label="Загрузка расписания" multiple batch
+                            @failed="onFailed"/>
+              </div>
+              <div class="q-pa-md">
+                <q-uploader bordered flat square field-name="zips" method="POST" :headers="getHeaders"
+                            :url="apiPath + '/schedule/schedulesLoading/zips'" label="Загрузка архивов" multiple batch
+                            @failed="onFailed"/>
+              </div>
             </div>
           </q-tab-panel>
 
@@ -78,12 +95,15 @@
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import UserMessagesService from "../services/other/userMessagesService"
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 import UtilsService from "../services/other/utilsService"
-import NewsService from  "../services/other/newsService"
+import NewsService from "../services/other/newsService"
 import {useQuasar} from "quasar";
+import {useStore} from "vuex";
+import TokenService from "src/services/auth/tokenService";
+import authHeader from "src/services/auth/authHeader";
 
 const newsEditorFonts = {
   arial: 'Arial',
@@ -188,6 +208,19 @@ const univRequestsColumns = [{
 export default {
   name: "Admin",
   setup() {
+    const store = useStore();
+    const onFailed = ((info) => {
+      if (info.xhr.status === 401) {
+        const {accessToken, refreshToken} = TokenService.refreshTokens()
+        store.dispatch('auth/refreshTokensAction', accessToken, refreshToken);
+      }
+    })
+
+    const getHeaders = () => {
+      return Object.entries(authHeader()).map(([key, value]) => {
+        return {name: key, value}
+      })
+    }
     const $q = useQuasar();
     const univRequestsRows = ref([]);
     const selectedUserMessagesRows = ref([])
@@ -201,13 +234,13 @@ export default {
       }
     }
 
+    const tab = ref('');
     const newsRows = ref([]);
     const selectedNewsRows = ref([])
     const newsTitle = ref('');
     const newsShortText = ref('');
     const newsImgSrc = ref('');
     const newsText = ref('');
-    const newsExample = ref('');
 
     const handleNewsCreating = async (title, img, shortText, fullText) => {
       try {
@@ -233,13 +266,13 @@ export default {
       }
     }
 
-    onMounted( async () => {
+    onMounted(async () => {
+      tab.value = localStorage.getItem("adminCurrentTab");
       univRequestsRows.value = await UserMessagesService.getUserMessages();
       newsRows.value = await NewsService.getNews();
-      newsExample.value = newsRows.value[1].shortText;
     })
 
-      const newsToolbar = [
+    const newsToolbar = [
       [
         {
           label: $q.lang.editor.align,
@@ -255,65 +288,68 @@ export default {
           options: ['left', 'center', 'right', 'justify']
         }
       ],
-        ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
-        ['token', 'hr', 'link', 'custom_btn'],
-        ['print', 'fullscreen'],
-        [
-          {
-            label: $q.lang.editor.formatting,
-            icon: $q.iconSet.editor.formatting,
-            list: 'no-icons',
-            options: [
-              'p',
-              'h1',
-              'h2',
-              'h3',
-              'h4',
-              'h5',
-              'h6',
-              'code'
-            ]
-          },
-          {
-            label: $q.lang.editor.fontSize,
-            icon: $q.iconSet.editor.fontSize,
-            fixedLabel: true,
-            fixedIcon: true,
-            list: 'no-icons',
-            options: [
-              'size-1',
-              'size-2',
-              'size-3',
-              'size-4',
-              'size-5',
-              'size-6',
-              'size-7'
-            ]
-          },
-          {
-            label: $q.lang.editor.defaultFont,
-            icon: $q.iconSet.editor.font,
-            fixedIcon: true,
-            list: 'no-icons',
-            options: [
-              'default_font',
-              'arial',
-              'arial_black',
-              'comic_sans',
-              'courier_new',
-              'impact',
-              'lucida_grande',
-              'times_new_roman',
-              'verdana'
-            ]
-          },
-          'removeFormat'
-        ],
-        ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
+      ['bold', 'italic', 'strike', 'underline', 'subscript', 'superscript'],
+      ['token', 'hr', 'link', 'custom_btn'],
+      ['print', 'fullscreen'],
+      [
+        {
+          label: $q.lang.editor.formatting,
+          icon: $q.iconSet.editor.formatting,
+          list: 'no-icons',
+          options: [
+            'p',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'h6',
+            'code'
+          ]
+        },
+        {
+          label: $q.lang.editor.fontSize,
+          icon: $q.iconSet.editor.fontSize,
+          fixedLabel: true,
+          fixedIcon: true,
+          list: 'no-icons',
+          options: [
+            'size-1',
+            'size-2',
+            'size-3',
+            'size-4',
+            'size-5',
+            'size-6',
+            'size-7'
+          ]
+        },
+        {
+          label: $q.lang.editor.defaultFont,
+          icon: $q.iconSet.editor.font,
+          fixedIcon: true,
+          list: 'no-icons',
+          options: [
+            'default_font',
+            'arial',
+            'arial_black',
+            'comic_sans',
+            'courier_new',
+            'impact',
+            'lucida_grande',
+            'times_new_roman',
+            'verdana'
+          ]
+        },
+        'removeFormat'
+      ],
+      ['quote', 'unordered', 'ordered', 'outdent', 'indent'],
 
-        ['undo', 'redo'],
-        ['viewsource']
-      ]
+      ['undo', 'redo'],
+      ['viewsource']
+    ]
+    watch(tab, (val) => {
+      localStorage.setItem("adminCurrentTab", val)
+    });
 
     return {
       selectedUserMessagesRows,
@@ -328,12 +364,14 @@ export default {
       newsText,
       newsEditorFonts,
       newsToolbar,
-      newsExample,
       deleteSelectedUserMessagesRows,
       handleNewsCreating,
       deleteSelectedNewsRows,
-      tab: ref('bugs'),
+      tab,
       splitterModel: ref(10),
+      getHeaders,
+      onFailed,
+      apiPath: computed(() => process.env.API),
     }
   }
 }
