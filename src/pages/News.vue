@@ -42,7 +42,7 @@
                 <q-btn flat color="primary">Читать</q-btn>
                 <div>
                   <q-icon color="black" name="event"/>
-                  <span> 01.09.2021</span>
+                  <span> {{getDateString(new Date(itemNews.date))}}</span>
                 </div>
               </q-card-actions>
               <div class="news-p bg-none"></div>
@@ -68,6 +68,7 @@
 <script>
 import {computed, onMounted, ref} from 'vue'
 import NewsService from '../services/other/newsService.js'
+import {getDateString} from "src/composables/schedule/ScheduleTable";
 
 export default {
   name: 'News',
@@ -81,6 +82,7 @@ export default {
 
     return {
       news,
+      getDateString
     }
   }
 }
