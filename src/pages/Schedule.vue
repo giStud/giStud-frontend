@@ -1,8 +1,17 @@
 <template>
   <q-page>
+    <div id="top-adw" :class="customClass('main-row q-mt-sm', 'q-mt-md q-px-sm')" class="q-mb-none" :style="customStyle('min-width: 1250px', '')">
+      <q-card square flat class="bg-none">
+        <q-card-section class="q-px-none">
+          <div id="yandex_rtb_R-A-1273406-3"></div>
+        </q-card-section>
+      </q-card>
+
+    </div>
     <!--MOBILE-->
     <div class="desktop-hide">
-      <div class="q-pa-sm">
+      <div class="q-pa-sm q-mt-none">
+
         <q-select square borderless outlined v-model="univSelectValue" use-input hide-selected fill-input
                   label="Выберите университет" :options="univFilteredOptions" option-label="univName"
                   @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots>
@@ -47,15 +56,17 @@
       </div>
       <div id="main-schedule-mobile">
         <div class="row justify-center" id="mobile-buttons-week" style="text-align: center">
-          <q-btn icon="west" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm" color="black"
+          <q-btn icon="west" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm"
+                 color="black"
                  @click="loadPreviousWeekLessons"/>
 
           <div style="padding-top: 20px" class="q-mx-lg">
             <span>{{ selectedWeek }} неделя, {{ currentWeekType }}</span>
           </div>
 
-          <q-btn icon="east" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm" color="black"
-                  @click="loadNextWeekLessons"/>
+          <q-btn icon="east" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm"
+                 color="black"
+                 @click="loadNextWeekLessons"/>
         </div>
         <div class="q-my-lg" style="text-align: center">
         </div>
@@ -81,33 +92,40 @@
             </div>
 
             <div style="width: 50%; text-align: right;">
-              <q-toggle style="font-size: 12px; margin-bottom: -20px;" v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
+              <q-toggle style="font-size: 12px; margin-bottom: -20px;" v-model="rawLessonStringMode"
+                        label="Режим без обработки: " left-label/>
             </div>
           </div>
 
 
-          <ScheduleDayTable class="q-my-lg" :day="'Понедельник'" :date="mondayDate" :rows="mobileMondayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Вторник'" :date="tuesdayDate" :rows="mobileTuesdayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Среда'" :date="wednesdayDate" :rows="mobileWednesdayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Четверг'" :date="thursdayDate" :rows="mobileThursdayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Пятница'" :date="fridayDate" :rows="mobileFridayTableRows" :rls-mode="rawLessonStringMode"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Суббота'" :date="saturdayDate" :rows="mobileSaturdayTableRows" :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Понедельник'" :date="mondayDate" :rows="mobileMondayTableRows"
+                            :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Вторник'" :date="tuesdayDate" :rows="mobileTuesdayTableRows"
+                            :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Среда'" :date="wednesdayDate" :rows="mobileWednesdayTableRows"
+                            :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Четверг'" :date="thursdayDate" :rows="mobileThursdayTableRows"
+                            :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Пятница'" :date="fridayDate" :rows="mobileFridayTableRows"
+                            :rls-mode="rawLessonStringMode"/>
+          <ScheduleDayTable class="q-my-lg" :day="'Суббота'" :date="saturdayDate" :rows="mobileSaturdayTableRows"
+                            :rls-mode="rawLessonStringMode"/>
         </div>
 
         <q-page-sticky position="bottom-right" :offset="[8, 8]">
-          <q-btn @click="legendDialog = true" style="height: 8px; width: 8px;" round icon="menu_book" color="primary" />
+          <q-btn @click="legendDialog = true" style="height: 8px; width: 8px;" round icon="menu_book" color="primary"/>
         </q-page-sticky>
-        <q-dialog full-width  v-model="legendDialog" square>
+        <q-dialog full-width v-model="legendDialog" square>
           <q-card>
-              <q-table
-                :rows="lessonTypesRows"
-                :columns="lessonTypesColumnsMobile"
-                row-key="type"
-                separator="cell"
-                hide-pagination
-                flat
-                :rows-per-page-options="[15,20]"
-              />
+            <q-table
+              :rows="lessonTypesRows"
+              :columns="lessonTypesColumnsMobile"
+              row-key="type"
+              separator="cell"
+              hide-pagination
+              flat
+              :rows-per-page-options="[15,20]"
+            />
           </q-card>
         </q-dialog>
       </div>
@@ -228,23 +246,27 @@
           </div>
         </div>
         <div class="col-12">
-          <q-table style="border-color: #959595;" id="main-table-rasp" flat :rows="scheduleRows" :columns="scheduleColumns" row-key="rowNum"
+          <q-table style="border-color: #959595;" id="main-table-rasp" flat :rows="scheduleRows"
+                   :columns="scheduleColumns" row-key="rowNum"
                    table-colspan="7"
                    :rows-per-page-options="[10,12]" separator="cell" hide-pagination wrap-cells
                    no-data-label="Для отображения расписания выберите группу">
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
                 <q-td style="border-color: #959595;" id="main-table-rasp-time">{{ props.row.time }}</q-td>
-                <q-td style="border-color: #959595;" id="main-table-lesson-cell" v-for="(cell) in props.row.days" :key="cell.day"
+                <q-td style="border-color: #959595;" id="main-table-lesson-cell" v-for="(cell) in props.row.days"
+                      :key="cell.day"
                       :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
                     <div class="col-12" style="height: 100%;">
                       <q-list style="height: 100%">
-                        <q-item style="border-color: #959595;" id="main-table-before-cell" :style="getScheduleCellColor(cell[0])">
+                        <q-item style="border-color: #959595;" id="main-table-before-cell"
+                                :style="getScheduleCellColor(cell[0])">
                           {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                         </q-item>
                         <q-separator/>
-                        <q-item style="border-color: #959595;" id="main-table-after-cell" :style="getScheduleCellColor(cell[1])">
+                        <q-item style="border-color: #959595;" id="main-table-after-cell"
+                                :style="getScheduleCellColor(cell[1])">
                           {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
                         </q-item>
                       </q-list>
@@ -259,16 +281,34 @@
 
             <template v-slot:header="props">
               <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[0].label }}</q-th>
-              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[1].label }}<br>{{ mondayDate }}</q-th>
-              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[2].label }}<br>{{ tuesdayDate }}</q-th>
-              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[3].label }}<br>{{ wednesdayDate }}</q-th>
-              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[4].label }}<br>{{ thursdayDate }}</q-th>
-              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[5].label }}<br>{{ fridayDate }}</q-th>
-              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{ props.cols[6].label }}<br>{{ saturdayDate }}</q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{
+                  props.cols[1].label
+                }}<br>{{ mondayDate }}
+              </q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{
+                  props.cols[2].label
+                }}<br>{{ tuesdayDate }}
+              </q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{
+                  props.cols[3].label
+                }}<br>{{ wednesdayDate }}
+              </q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{
+                  props.cols[4].label
+                }}<br>{{ thursdayDate }}
+              </q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{
+                  props.cols[5].label
+                }}<br>{{ fridayDate }}
+              </q-th>
+              <q-th style="border-color: #959595; border-top: 1px solid #959595">{{
+                  props.cols[6].label
+                }}<br>{{ saturdayDate }}
+              </q-th>
             </template>
 
             <template v-slot:top class="row justify-between items-center">
-              <div  class="col-12 row rasp-title">
+              <div class="col-12 row rasp-title">
                 <div class="col-4 q-table__title">{{ title }}</div>
                 <div class="col-4" id="selected-week"> {{ selectedWeek }} неделя, {{ currentWeekType }}</div>
                 <div class="col-4" id="rawLessonStringMode">
@@ -327,21 +367,16 @@ import {
 import ModalWindow from "components/ModalWindow";
 import ScheduleDayTable from "components/mobile/ScheduleDayTable";
 import {useMeta} from 'quasar'
+import {customClass, customStyle} from "src/services/other/tools";
 
 const meta = {
   title: 'Расписание - GISTUD',
   script: {
     yandexMetrika: {
       type: 'application/javascript',
-      innerHTML: `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-       m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-        ym(84689620, "init", {
-        clickmap:true,
-        trackLinks:true,
-        accurateTrackBounce:true
-      });`
+      innerHTML: `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(84689620, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true});
+                  window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-3', blockId: 'R-A-1273406-3'})})
+    `
     }
   },
   meta: {
@@ -562,12 +597,12 @@ export default {
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
           localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
           scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
-          mobileMondayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'MONDAY');
-          mobileTuesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'TUESDAY');
-          mobileWednesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'WEDNESDAY');
-          mobileThursdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'THURSDAY');
-          mobileFridayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'FRIDAY');
-          mobileSaturdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons,  selectedWeek.value, 'SATURDAY');
+          mobileMondayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'MONDAY');
+          mobileTuesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'TUESDAY');
+          mobileWednesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'WEDNESDAY');
+          mobileThursdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'THURSDAY');
+          mobileFridayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'FRIDAY');
+          mobileSaturdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'SATURDAY');
         } else {
           title.value = '';
           console.log('Find deleted group');
@@ -674,12 +709,12 @@ export default {
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, newValue)
-          mobileMondayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'MONDAY');
-          mobileTuesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'TUESDAY');
-          mobileWednesdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'WEDNESDAY');
-          mobileThursdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'THURSDAY');
-          mobileFridayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'FRIDAY');
-          mobileSaturdayTableRows.value =getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'SATURDAY');
+          mobileMondayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'MONDAY');
+          mobileTuesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'TUESDAY');
+          mobileWednesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'WEDNESDAY');
+          mobileThursdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'THURSDAY');
+          mobileFridayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'FRIDAY');
+          mobileSaturdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'SATURDAY');
         }
       }
     })
@@ -797,6 +832,8 @@ export default {
       getScheduleCellColor,
       scrollToElement,
       legendDialog,
+      customStyle,
+      customClass,
     };
   },
 };
@@ -804,4 +841,22 @@ export default {
 
 <style lang="css" scoped>
 @import 'src/css/style.css';
+
+.bg-none {
+  background-color: rgb(238, 238, 238);
+}
+
+.border {
+  border: 1px solid black;
+}
+
+#top-adw {
+  margin-bottom: 10px;
+}
+
+.main-row {
+  padding-right: 24px;
+  padding-left: 24px;
+
+}
 </style>
