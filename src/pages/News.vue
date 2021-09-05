@@ -23,8 +23,8 @@
                   </div>
                 </q-card-section>
                 <q-card-section class="col-6">
-<!--                  <q-img height="250px" :src="itemNews.imgSrc"/>-->
-                  <q-skeleton square height="250px"/>
+                  <q-img height="250px" :src="itemNews.imgSrc"/>
+<!--                  <q-skeleton square height="250px"/>-->
                 </q-card-section>
               </q-card-section>
               <!--MOBILE-->
@@ -62,6 +62,7 @@
           <q-card-section>
             <div class="text-h6"> {{ newsTitle }}</div>
           </q-card-section>
+          <q-separator/>
           <q-card-section v-html="newsText" style="max-height: 50vh" class="scroll"></q-card-section>
         </q-card>
       </q-dialog>
@@ -84,14 +85,14 @@
 import {computed, onMounted, ref} from 'vue'
 import NewsService from '../services/other/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
-import { useQuasar } from 'quasar'
+
+import {customClass, customStyle} from "src/services/other/tools";
 
 export default {
   name: 'News',
 
-
   setup() {
-    const $q = useQuasar();
+
     const news = ref([]);
     const newsTitle = ref("");
     const newsText = ref("");
@@ -104,35 +105,6 @@ export default {
       newsTitle.value = title;
       newsText.value = text;
     };
-
-    const customStyle = (desktop, mobile) => {
-
-      let styleValid = ''
-      if ($q.platform.is.desktop) {
-
-        styleValid += desktop;
-      }
-      if ($q.platform.is.mobile) {
-        styleValid += mobile;
-      }
-      console.log(styleValid);
-      return styleValid;
-    }
-
-    const customClass = (desktop, mobile) => {
-
-      let styleValid = ''
-      if ($q.platform.is.desktop) {
-
-        styleValid += desktop;
-      }
-      if ($q.platform.is.mobile) {
-        styleValid += mobile;
-      }
-      console.log(styleValid);
-      return styleValid;
-    }
-
     return {
       news,
       getDateString,

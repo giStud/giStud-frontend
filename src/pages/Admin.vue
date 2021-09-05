@@ -61,7 +61,6 @@
                 :dense="$q.screen.lt.md"
                 :toolbar="newsToolbar"
                 :fonts="newsEditorFonts"
-                style="height: 500px"
               />
             </div>
             <div class="q-pa-md">
@@ -132,31 +131,7 @@ const newsColumns = [{
   headerStyle: 'width: 500px',
   field: 'title',
   sortable: true
-}, {
-  name: 'shortContent',
-  required: true,
-  label: 'Краткий текст',
-  align: 'center',
-  headerStyle: 'width: 500px',
-  field: 'shortText',
-  sortable: true
-}, {
-  name: 'content',
-  required: true,
-  label: 'Основной текст',
-  align: 'center',
-  headerStyle: 'width: 500px',
-  field: 'fullText',
-  sortable: true
-}, {
-  name: 'img',
-  required: true,
-  label: 'Ссылка на картинку',
-  align: 'center',
-  headerStyle: 'width: 500px',
-  field: 'imgSrc',
-  sortable: true
-},
+}
 ]
 
 const univRequestsColumns = [{
