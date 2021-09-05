@@ -23,6 +23,11 @@
               <q-item-section style="margin-left: -20px;">Расписание</q-item-section>
             </q-item>
             <q-separator/>
+            <q-item class="qitem-menu" style="color: black" @click="donate" flat clickable>
+              <q-item-section avatar><q-icon name="account_balance_wallet"/></q-item-section>
+              <q-item-section style="color: black;margin-left: -20px"><b>Поддержать проект</b></q-item-section>
+            </q-item>
+            <q-separator/>
             <q-item class="qitem-menu" style="color: black" @click="dialogModel = true" flat clickable>
               <q-item-section avatar><q-icon name="bug_report"/></q-item-section>
               <q-item-section style="color: black;margin-left: -20px">Нашли ошибку?
@@ -64,6 +69,10 @@ export default {
       router.push("/");
     };
 
+    const donate = () => {
+      window.open("https://boosty.to/gistud.info");
+    };
+
     onMounted(() => {
       EventBus.on("logout", () => {
         logout();
@@ -79,7 +88,8 @@ export default {
       currentUser: computed(() => store.state.auth.user),
       dialogModel,
       menuMobile,
-      logout
+      logout,
+      donate
 
     };
   },
