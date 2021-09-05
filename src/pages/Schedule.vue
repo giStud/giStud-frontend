@@ -389,7 +389,6 @@ const meta = {
       content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud'
     },
   }
-
 }
 
 const scheduleColumns = [
@@ -791,7 +790,7 @@ export default {
         }
       }
     });
-
+    useMeta(() => meta);
     return {
       univFilteredOptions,
       groupsFilteredOptions,

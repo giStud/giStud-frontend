@@ -21,3 +21,7 @@ export function customClass(desktop, mobile) {
   }
   return styleValid;
 }
+
+export function goUrl(url) {
+  window.open(url);
+}

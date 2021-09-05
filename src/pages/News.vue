@@ -1,9 +1,9 @@
 <template>
   <q-page>
     <div id="top-adw" class="main-row q-mt-md" :style="customStyle('min-width: 1250px', '')">
-      <q-card square flat class="bg-none border">
+      <q-card square flat class="bg-none">
         <q-card-section class="q-px-none">
-          <!--Реклама-->
+          <div id="yandex_rtb_R-A-1273406-4"></div>
         </q-card-section>
       </q-card>
 
@@ -40,7 +40,7 @@
               </q-card-section>
               <q-separator/>
               <q-card-actions class="justify-between">
-                <q-btn @click="getNews(itemNews.title, itemNews.fullText)" flat id="btn-read">Читать</q-btn>
+                <q-btn @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)" flat id="btn-read">Читать</q-btn>
                 <div>
                   <q-icon size="16px" color="black" name="event"/>
                   <span class="q-pl-sm"> {{getDateString(new Date(itemNews.date))}}</span>
@@ -55,12 +55,14 @@
       <q-dialog v-model="newsDialog" square >
         <q-card style="max-width: 657px">
           <q-card-section style="color: white" class="row bg-primary">
-            <q-btn icon="feed" flat round dense/>
+            <div :class="customClass('text-h6', 'text-h6')"> Источник:</div>
+            <q-btn class="q-ma-sm " :style="customStyle('font-size: 8px','font-size: 8px')" icon="fas fa-external-link-alt" @click="goUrl(src)" flat round dense />
             <q-space />
-            <q-btn icon="close" flat round dense v-close-popup />
+
+            <q-btn :style="customStyle('','font-size: 10px')" icon="close" flat round dense v-close-popup />
           </q-card-section>
           <q-card-section>
-            <div class="text-h6"> {{ newsTitle }}</div>
+            <div class="text-h6">{{ newsTitle }}</div>
           </q-card-section>
           <q-separator/>
           <q-card-section v-html="newsText" style="max-height: 50vh" class="scroll"></q-card-section>
@@ -68,10 +70,10 @@
       </q-dialog>
 
       <div class="col-3 q-pl-sm bg-none mobile-hide">
-        <q-card square flat class="bg-none border">
+        <q-card square flat class="bg-none">
           <q-card class="bg-none">
             <q-card-section>
-              <!--Реклама-->
+              <div id="yandex_rtb_R-A-1273406-5"></div>
             </q-card-section>
           </q-card>
         </q-card>
@@ -86,24 +88,50 @@ import {computed, onMounted, ref} from 'vue'
 import NewsService from '../services/other/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 
-import {customClass, customStyle} from "src/services/other/tools";
+import {customClass, customStyle, goUrl} from "src/services/other/tools";
+import {useMeta} from "quasar";
+
+const meta = {
+  title: 'Расписание - GISTUD',
+  script: {
+    yandexMetrika: {
+      type: 'application/javascript',
+      innerHTML: `window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-4', blockId: 'R-A-1273406-4'})});
+                  window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-5', blockId: 'R-A-1273406-5'})})
+    `
+    }
+  },
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Лента новостей - GISTUD | Удобная информация вашего университета: студенческие новости, расписание и многое другое'
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud'
+    },
+  }
+}
 
 export default {
   name: 'News',
 
   setup() {
-
+    useMeta(() => meta);
     const news = ref([]);
     const newsTitle = ref("");
     const newsText = ref("");
     const newsDialog = ref(false);
+    const src = ref("");
     onMounted(async () => {
       news.value = await NewsService.getNews();
     });
-    const getNews = (title, text) => {
+    const getNews = (title, text, sources) => {
       newsDialog.value = true;
       newsTitle.value = title;
       newsText.value = text;
+      console.log(src)
+      src.value = sources;
     };
     return {
       news,
@@ -111,9 +139,11 @@ export default {
       newsDialog,
       newsTitle,
       newsText,
+      src,
       getNews,
       customStyle,
       customClass,
+      goUrl,
     }
   }
 }
