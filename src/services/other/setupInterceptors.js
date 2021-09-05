@@ -3,19 +3,6 @@ import EventBus from "src/common/eventBus";
 import TokenService from "../auth/tokenService"
 
 const setup = (store) => {
-  api.interceptors.request.use(
-    (config) => {
-      const token = TokenService.getLocalAccessToken();
-      if (token) {
-        config.headers["Authorization"] = 'Bearer ' + token;
-      }
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
-
   api.interceptors.response.use(
     (res) => {
       return res;
@@ -37,7 +24,7 @@ const setup = (store) => {
           try {
             const {accessToken, refreshToken} = await TokenService.refreshTokens()
             await store.dispatch('auth/refreshTokensAction', accessToken, refreshToken);
-            console.log("Обновили токены")
+            originalConfig.headers["Authorization"] = 'Bearer ' + accessToken;
             return api(originalConfig);
           } catch (_error) {
             return Promise.reject(_error);

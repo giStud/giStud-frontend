@@ -37,7 +37,7 @@ class AuthService {
 
   async getUserRolesById(userId) {
     try {
-      const {data} = await api.get("/auth/userRoles?userId=" + userId.userId,/* {headers: authHeader()}*/)
+      const {data} = await api.get("/auth/userRoles?userId=" + userId.userId, {headers: authHeader()})
       return data;
     } catch (e) {
       throw e;

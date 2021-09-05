@@ -9,7 +9,7 @@ class NewsService {
         shortText,
         imgSrc : img,
         text : fullText
-      }/*, {headers: authHeader()}*/)
+      }, {headers: authHeader()})
     } catch (e) {
       throw e
     }
@@ -26,7 +26,7 @@ class NewsService {
 
   async deleteNewsEntityById(newsId) {
     try {
-      const {data} = await api.delete("/news/" + newsId/*, {headers: authHeader()}*/)
+      const {data} = await api.delete("/news/" + newsId, {headers: authHeader()})
       return data;
     } catch (e) {
       throw e;
