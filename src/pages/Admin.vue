@@ -24,7 +24,7 @@
             <div class="q-pa-md">
               <q-table bordered flat square title="Багулины" :rows="univRequestsRows"
                        :columns="univRequestsColumns" row-key="requestId" selection="multiple" separator="cell"
-                       v-model:selected="selectedUserMessagesRows" wrap-cells
+                       v-model:selected="selectedUserMessagesRows"
               />
             </div>
             <div class="q-pa-md">
@@ -48,6 +48,7 @@
               <div class="text-h5 q-mb-md">Добавить новость</div>
               <q-input square outlined filled v-model="newsTitle" label="Заголовок"/>
               <q-input square outlined filled v-model="newsImgSrc" label="Ссылка на фотографию"/>
+              <q-input square outlined filled v-model="newsSource" label="Источник"/>
               <div class="text-h6">Короткий текст</div>
               <q-editor
                 v-model="newsShortText"
@@ -65,7 +66,7 @@
             </div>
             <div class="q-pa-md">
               <q-btn color="primary" no-caps label="Добавить"
-                     @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText)"/>
+                     @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource)"/>
             </div>
           </q-tab-panel>
 
@@ -215,11 +216,12 @@ export default {
     const newsTitle = ref('');
     const newsShortText = ref('');
     const newsImgSrc = ref('');
+    const newsSource = ref('');
     const newsText = ref('');
 
-    const handleNewsCreating = async (title, img, shortText, fullText) => {
+    const handleNewsCreating = async (title, img, shortText, fullText, source) => {
       try {
-        const {data} = await NewsService.saveNews(title, img, shortText, fullText)
+        const {data} = await NewsService.saveNews(title, img, shortText, fullText, source)
         $q.notify({
           color: "green-4",
           textColor: "white",
@@ -336,6 +338,7 @@ export default {
       newsTitle,
       newsShortText,
       newsImgSrc,
+      newsSource,
       newsText,
       newsEditorFonts,
       newsToolbar,

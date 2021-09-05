@@ -2,13 +2,14 @@ import {api} from "boot/axios";
 import authHeader from "src/services/auth/authHeader";
 
 class NewsService {
-  async saveNews(title, img, shortText, fullText) {
+  async saveNews(title, img, shortText, fullText, source) {
     try {
       return await api.post("/news/", {
         title,
         shortText,
         imgSrc : img,
-        text : fullText
+        text : fullText,
+        source
       }, {headers: authHeader()})
     } catch (e) {
       throw e
