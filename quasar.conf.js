@@ -151,7 +151,7 @@ module.exports = configure(function (ctx) {
       manifest: {
         name: `GISTUD - Информационный студенческий сервис`,
         short_name: `GISTUD`,
-        description: `Удобная информация вашего университета: студенческие новости, раписание и многое другое`,
+        description: `Удобная информация вашего университета: студенческие новости, расписание и многое другое`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
