@@ -24,7 +24,7 @@
                 </q-card-section>
                 <q-card-section class="col-6">
                   <q-img height="250px" :src="itemNews.imgSrc"/>
-<!--                  <q-skeleton square height="250px"/>-->
+                  <!--                  <q-skeleton square height="250px"/>-->
                 </q-card-section>
               </q-card-section>
               <!--MOBILE-->
@@ -43,7 +43,7 @@
                 <q-btn @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)" flat id="btn-read">Читать</q-btn>
                 <div>
                   <q-icon size="16px" color="black" name="event"/>
-                  <span class="q-pl-sm"> {{getDateString(new Date(itemNews.date))}}</span>
+                  <span class="q-pl-sm"> {{ getDateString(new Date(itemNews.date)) }}</span>
                 </div>
               </q-card-actions>
               <div class="news-p bg-none"></div>
@@ -52,7 +52,7 @@
         </template>
       </div>
 
-      <q-dialog v-model="newsDialog" square >
+      <q-dialog v-model="newsDialog" square>
         <q-card style="max-width: 657px">
           <q-card-section style="color: white" class="row bg-primary">
             <div :class="customClass('text-h6', 'text-h6')"> Источник:</div>
@@ -79,16 +79,19 @@
         </q-card>
       </div>
     </div>
+    <div>
+      <q-btn @click="loadNextPage">Загрузить ещё</q-btn>
+    </div>
 
   </q-page>
 </template>
 
 <script>
 import {computed, onMounted, ref} from 'vue'
-import NewsService from '../services/other/newsService.js'
+import NewsService from '../services/news/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 
-import {customClass, customStyle, goUrl} from "src/services/other/tools";
+import {customClass, customStyle} from "src/services/other/tools";
 import {useMeta} from "quasar";
 
 const meta = {
@@ -117,6 +120,7 @@ export default {
   name: 'News',
 
   setup() {
+    const store = useStore();
     useMeta(() => meta);
     const news = ref([]);
     const newsTitle = ref("");
@@ -124,15 +128,24 @@ export default {
     const newsDialog = ref(false);
     const src = ref("");
     onMounted(async () => {
-      news.value = await NewsService.getNews();
+      await store.dispatch('news/getNewsPage', {existingNews : []})
+      news.value = store.getters['news/getNews'];
     });
     const getNews = (title, text, sources) => {
       newsDialog.value = true;
       newsTitle.value = title;
       newsText.value = text;
-      console.log(src)
       src.value = sources;
     };
+
+    const loadNextPage = async () => {
+      let idsOfExistingsNews = [];
+      for (let item of news.value) {
+        idsOfExistingsNews.push(item.newsId);
+      }
+      await store.dispatch('news/getNewsPage', {existingNews : idsOfExistingsNews});
+    }
+
     return {
       news,
       getDateString,
@@ -144,6 +157,7 @@ export default {
       customStyle,
       customClass,
       goUrl,
+      loadNextPage,
     }
   }
 }

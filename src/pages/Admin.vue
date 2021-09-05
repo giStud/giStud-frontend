@@ -49,6 +49,16 @@
               <q-input square outlined filled v-model="newsTitle" label="Заголовок"/>
               <q-input square outlined filled v-model="newsImgSrc" label="Ссылка на фотографию"/>
               <q-input square outlined filled v-model="newsSource" label="Источник"/>
+              <q-select
+                filled
+                v-model="newsType"
+                :options="newsTypesOptions"
+                option-value="newsTypeId"
+                option-label="type"
+                option-disable="inactive"
+                emit-value
+                map-options
+              />
               <div class="text-h6">Короткий текст</div>
               <q-editor
                 v-model="newsShortText"
@@ -66,7 +76,13 @@
             </div>
             <div class="q-pa-md">
               <q-btn color="primary" no-caps label="Добавить"
-                     @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource)"/>
+                     @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
+            </div>
+              <q-input square outlined filled v-model="newsTypeText" label="Новый тип новости"/>
+            <q-btn color="primary" no-caps label="Добавить"
+                   @click="handleNewsTypeCreating(newsTypeText)"/>
+            <div>
+
             </div>
           </q-tab-panel>
 
@@ -99,7 +115,8 @@ import {computed, onMounted, ref, watch} from "vue";
 import UserMessagesService from "../services/other/userMessagesService"
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 import UtilsService from "../services/other/utilsService"
-import NewsService from "../services/other/newsService"
+import NewsService from "../services/news/newsService"
+import NewsTypeService from "../services/news/newsTypesService"
 import {useQuasar} from "quasar";
 import {useStore} from "vuex";
 import TokenService from "src/services/auth/tokenService";
@@ -218,10 +235,14 @@ export default {
     const newsImgSrc = ref('');
     const newsSource = ref('');
     const newsText = ref('');
+    const newsTypeText = ref('');
+    const newsType = ref(null);
+    const newsTypesOptions = ref([]);
 
-    const handleNewsCreating = async (title, img, shortText, fullText, source) => {
+    const handleNewsCreating = async (title, img, shortText, fullText, source, typeId) => {
       try {
-        const {data} = await NewsService.saveNews(title, img, shortText, fullText, source)
+        console.log(typeId)
+        const {data} = await NewsService.saveNews(title, img, shortText, fullText, source, typeId)
         $q.notify({
           color: "green-4",
           textColor: "white",
@@ -229,6 +250,22 @@ export default {
           message: "Новость успешно добавлена",
         });
         newsRows.value.push(data);
+      } catch (e) {
+        console.log(e)
+      }
+    }
+
+    const handleNewsTypeCreating = async (type) => {
+      try {
+        console.log(type)
+        const {data} = await NewsTypeService.saveNewsType(type);
+        $q.notify({
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Новый тип успешно добавлен",
+        });
+        newsTypesOptions.value.push(data);
       } catch (e) {
         console.log(e)
       }
@@ -247,6 +284,7 @@ export default {
       tab.value = localStorage.getItem("adminCurrentTab");
       univRequestsRows.value = await UserMessagesService.getUserMessages();
       newsRows.value = await NewsService.getNews();
+      newsTypesOptions.value = await NewsTypeService.getNewsTypes();
     })
 
     const newsToolbar = [
@@ -329,6 +367,7 @@ export default {
     });
 
     return {
+      tab,
       selectedUserMessagesRows,
       univRequestsRows,
       univRequestsColumns,
@@ -340,16 +379,19 @@ export default {
       newsImgSrc,
       newsSource,
       newsText,
+      newsType,
+      newsTypeText,
+      newsTypesOptions,
       newsEditorFonts,
       newsToolbar,
+      onFailed,
+      splitterModel: ref(10),
+      apiPath: computed(() => process.env.API),
       deleteSelectedUserMessagesRows,
       handleNewsCreating,
+      handleNewsTypeCreating,
       deleteSelectedNewsRows,
-      tab,
-      splitterModel: ref(10),
       getHeaders,
-      onFailed,
-      apiPath: computed(() => process.env.API),
     }
   }
 }
