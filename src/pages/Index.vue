@@ -6,17 +6,18 @@
         <TemplateUniversity/>
         <div class="separator"></div>
       </div>
-      <div id="main-right-col" class="col-3">
-        <div id="col-ads" class="q-pa-xs">
-          <q-card flat class="col-ads">
-            <div id="yandex_rtb_R-A-1273406-1"></div>
-          </q-card>
-          <q-card square @click="getAdsStatic('https://vk.com/studiotag')" flat class="col-ads">
+      <div id="main-right-col" class="col-3 bg-none">
+        <div id="col-ads" class="bg-none">
+
+          <q-card square @click="getAdsStatic('https://vk.com/studiotag')" flat class="col-ads bg-none">
             <q-img src="https://cdn.discordapp.com/attachments/317672589457883136/881961544546660383/tagstudio.jpg">
               <div class="absolute-bottom text-left">
                 <span>Закажи дизайн тут!</span>
               </div>
             </q-img>
+          </q-card>
+          <q-card flat class="col-ads bg-none">
+            <div id="yandex_rtb_R-A-1273406-1"></div>
           </q-card>
         </div>
         <div id="student-news">
@@ -112,4 +113,7 @@ export default defineComponent({
 
 <style lang="css" scoped>
 @import 'src/css/home.css';
+.bg-none {
+  background-color: rgb(238, 238, 238);
+}
 </style>
