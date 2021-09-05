@@ -3,7 +3,8 @@
 </template>
 <script>
 import {defineComponent, onMounted} from "vue";
-import {useStore} from "vuex";
+
+import EventBus from "src/common/eventBus";
 
 export default defineComponent({
   name: "App",

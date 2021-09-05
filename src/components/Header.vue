@@ -63,6 +63,9 @@ export default {
     const loggedIn = computed(() => store.state.auth.loggedIn);
     const isAdmin = ref(false);
 
+    /**
+     * TODO Delete this after creating normal authorization
+     */
     const logout = () => {
       isAdmin.value = false;
       store.dispatch("auth/logoutAction");
@@ -75,9 +78,6 @@ export default {
     };
 
     onMounted(() => {
-      EventBus.on("logout", () => {
-        logout();
-      });
       let user = store.getters["auth/getCurrentUser"];
       if (user !== null) {
         let roles = user.roles;

@@ -8,19 +8,20 @@ export default boot(async ({store, router} ) => {
     const auth = to.meta.isAuth;
     const admin = to.meta.isAdmin;
 
-    const loggedIn = store.getters['auth/isLogged'];
-    let user = store.getters['auth/getCurrentUser'];
-    if (user !== null && !user.roles) {
-      await store.dispatch('auth/getUserRolesAction', {userId : user.id});
-      user = store.getters['auth/getCurrentUser'];
-    }
-
     if (!auth) {
       next();
     }
 
+    const loggedIn = store.getters['auth/isLogged'];
+
     if (auth && !loggedIn) {
       next('/auth/login');
+    }
+
+    let user = store.getters['auth/getCurrentUser'];
+    if (user !== null && !user.roles) {
+      await store.dispatch('auth/getUserRolesAction', {userId : user.id});
+      user = store.getters['auth/getCurrentUser'];
     }
 
     if (auth && loggedIn && admin && user !== null) {
