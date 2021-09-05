@@ -11,7 +11,8 @@
         <q-btn class="nav-btn"  :to="'/schedule'" stretch flat label="Расписание"/>
 
         <q-space/>
-
+        <q-separator dark vertical inset/>
+        <q-btn class="nav-btn-auth" @click="donate" stretch flat label="Поддержать проект"/>
         <q-separator dark vertical inset/>
         <q-btn class="nav-btn-auth" @click="dialogModel = true" stretch flat label="Нашли ошибку?"/>
         <UserMessageDialog v-model="dialogModel" :url="'/userMessages/bug'">
@@ -59,6 +60,10 @@ export default {
       router.push("/");
     };
 
+    const donate = () => {
+      window.open("https://boosty.to/gistud.info");
+    };
+
     onMounted(() => {
       EventBus.on("logout", () => {
         logout();
@@ -73,7 +78,8 @@ export default {
       loggedIn,
       currentUser: computed(() => store.state.auth.user),
       dialogModel,
-      logout
+      logout,
+      donate
 
     };
   },
