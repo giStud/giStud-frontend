@@ -10,7 +10,7 @@
     </div>
 
     <div class="row main-row">
-      <div  class="col-9 q-pr-sm bg-none">
+      <div class="col-9 q-pr-sm bg-none">
         <template v-for="itemNews in news" :key="itemNews.newsId">
           <q-card square flat>
             <q-card>
@@ -27,7 +27,7 @@
                 </q-card-section>
               </q-card-section>
               <!--MOBILE-->
-              <q-card-section class="q-pt-xs">
+              <q-card-section class="q-pt-xs desktop-hide">
                 <div class="text-h5 q-mt-sm q-mb-xs">
                   {{ itemNews.title }}
                 </div>
@@ -39,7 +39,7 @@
               </q-card-section>
               <q-separator/>
               <q-card-actions class="justify-between">
-                <q-btn flat color="primary">Читать</q-btn>
+                <q-btn @click="getNews(itemNews.title, itemNews.fullText)" flat color="primary">Читать</q-btn>
                 <div>
                   <q-icon color="black" name="event"/>
                   <span> {{getDateString(new Date(itemNews.date))}}</span>
@@ -50,6 +50,20 @@
           </q-card>
         </template>
       </div>
+
+      <q-dialog v-model="newsDialog" transition-show="10000"  square >
+        <q-card class="column">
+          <q-card-section class="row items-center q-pb-none">
+            <div class="text-h6">
+              {{ newsTitle }}
+            </div>
+            <q-space />
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
+          <q-card-section v-html="newsText" class="col q-pt-none"></q-card-section>
+
+        </q-card>
+      </q-dialog>
 
       <div class="col-3 q-pl-sm bg-none mobile-hide">
         <q-card square flat>
@@ -76,13 +90,25 @@ export default {
 
   setup() {
     const news = ref([]);
+    const newsTitle = ref("");
+    const newsText = ref("");
+    const newsDialog = ref(false);
     onMounted(async () => {
       news.value = await NewsService.getNews();
     });
+    const getNews = (title, text) => {
+      newsDialog.value = true;
+      newsTitle.value = title;
+      newsText.value = text;
+    }
 
     return {
       news,
-      getDateString
+      getDateString,
+      newsDialog,
+      newsTitle,
+      newsText,
+      getNews,
     }
   }
 }
