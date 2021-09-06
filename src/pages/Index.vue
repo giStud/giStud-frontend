@@ -21,7 +21,7 @@
           </q-card>
         </div>
         <div id="student-news">
-          <LastNews/>
+          <MainPageNews/>
         </div>
       </div>
     </div>
@@ -50,7 +50,7 @@
         </q-card>
         <div style="height: 20px;"></div>
         <q-card square flat style="text-align: center">
-            <LastNews/>
+            <MainPageNews/>
         </q-card>
         <div style="height: 20px;"></div>
         <TemplateUniversity/>
@@ -62,7 +62,7 @@
 
 <script>
 import {defineComponent} from 'vue';
-import LastNews from "components/static/LastNews";
+import MainPageNews from "components/static/MainPageNews";
 import MainNewsOur from "components/static/MainNewsOur";
 import TemplateUniversity from "components/static/TemplateUniversity";
 import {useMeta} from 'quasar'
@@ -93,7 +93,7 @@ const meta = {
 export default defineComponent({
   name: 'PageIndex',
   components: {
-    LastNews,
+    MainPageNews,
     MainNewsOur,
     TemplateUniversity,
   },

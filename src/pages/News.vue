@@ -201,7 +201,6 @@ export default {
       } else {
         await store.dispatch('news/getNewsPageByType', {existingNews : idsOfExistingsNews, typeId : newsMenuValue.value.newsTypeId})
       }
-
     }
 
     return {

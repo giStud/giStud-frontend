@@ -15,3 +15,13 @@ export function setNewsTypes (state, types) {
 export function addNews(state, news) {
   state.news.push.apply(state.news, news);
 }
+
+export function setMainPageNews(state, news) {
+  state.mainPageNews = news;
+}
+
+export function clearMainPageNews(state) {
+  while (state.mainPageNews.length) {
+    state.mainPageNews.pop()
+  }
+}
