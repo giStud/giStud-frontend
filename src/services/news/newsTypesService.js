@@ -4,9 +4,7 @@ import authHeader from "src/services/auth/authHeader";
 class NewsTypeService {
   async saveNewsType(type) {
     try {
-      return await api.post("/newsTypes/", {
-        type
-      }, {headers: authHeader()})
+      return await api.post("/newsTypes/", {value : type}, {headers: authHeader()})
     } catch (e) {
       throw e
     }

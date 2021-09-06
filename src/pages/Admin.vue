@@ -257,7 +257,6 @@ export default {
 
     const handleNewsTypeCreating = async (type) => {
       try {
-        console.log(type)
         const {data} = await NewsTypeService.saveNewsType(type);
         $q.notify({
           color: "green-4",

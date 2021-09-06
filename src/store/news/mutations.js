@@ -2,6 +2,12 @@ export function setNews (state, news) {
     state.news = news;
 }
 
+export function clearNews(state) {
+  while (state.news.length) {
+    state.news.pop()
+  }
+}
+
 export function setNewsTypes (state, types) {
   state.newsTypes = types;
 }

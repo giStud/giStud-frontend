@@ -7,8 +7,8 @@ class NewsService {
       return await api.post("/news/", {
         title,
         shortText,
-        imgSrc : img,
-        text : fullText,
+        imgSrc: img,
+        text: fullText,
         source,
         typeId
       }, {headers: authHeader()})
@@ -28,7 +28,16 @@ class NewsService {
 
   async getNewsExceptExisting(existingNews) {
     try {
-      const {data} = await api.get("/news/newsPage?ids=" + existingNews)
+      const {data} = await api.get("/news/newsPage?ids=" + existingNews);
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getNewsExceptExistingByType(existingNews, typeId) {
+    try {
+      const {data} = await api.get("/news/newsPageByType?ids=" + existingNews + "&typeId=" + typeId);
       return data;
     } catch (e) {
       throw e;

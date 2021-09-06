@@ -78,6 +78,41 @@
           </q-card>
         </q-card>
       </div>
+      <div>
+        <q-list bordered padding class="rounded-borders text-primary">
+          <q-item
+            clickable
+            v-ripple
+            :active="newsMenuValue === 'all'"
+            @click="newsMenuValue = 'all'"
+            active-class="color: white;   background:  #1976D2;"
+          >
+            <q-item-section avatar>
+              <q-icon name="inbox" />
+            </q-item-section>
+
+            <q-item-section>Все</q-item-section>
+          </q-item>
+
+          <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
+            <q-item
+              clickable
+              v-ripple
+              :active="newsMenuValue === type"
+              @click="newsMenuValue = type"
+              active-class="color: white;   background:  #1976D2;"
+            >
+              <q-item-section avatar>
+                <q-icon name="inbox" />
+<!--                <q-icon :name="type.icon" />-->
+              </q-item-section>
+
+              <q-item-section>{{type.type}}</q-item-section>
+            </q-item>
+          </template>
+
+        </q-list>
+      </div>
     </div>
     <div>
       <q-btn @click="loadNextPage">Загрузить ещё</q-btn>
@@ -87,7 +122,7 @@
 </template>
 
 <script>
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import NewsService from '../services/news/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 
@@ -120,17 +155,24 @@ export default {
   name: 'News',
 
   setup() {
-    const store = useStore();
     useMeta(() => meta);
+    const store = useStore();
     const news = ref([]);
     const newsTitle = ref("");
     const newsText = ref("");
     const newsDialog = ref(false);
     const src = ref("");
+    const newsMenuValue = ref('all');
+    const newsTypesOptions = ref([]);
+
     onMounted(async () => {
+      store.commit('news/clearNews')
       await store.dispatch('news/getNewsPage', {existingNews : []})
+      await store.dispatch('news/getNewsTypes')
+      newsTypesOptions.value = store.getters['news/getNewsTypes'];
       news.value = store.getters['news/getNews'];
     });
+
     const getNews = (title, text, sources) => {
       newsDialog.value = true;
       newsTitle.value = title;
@@ -138,12 +180,28 @@ export default {
       src.value = sources;
     };
 
+    watch(newsMenuValue, async (val) => {
+      if (val !== null) {
+        store.commit('news/clearNews')
+        if (val === 'all') {
+          await store.dispatch('news/getNewsPage', {existingNews : []})
+        } else {
+          await store.dispatch('news/getNewsPageByType', {existingNews : [], typeId : val.newsTypeId})
+        }
+      }
+    });
+
     const loadNextPage = async () => {
       let idsOfExistingsNews = [];
       for (let item of news.value) {
         idsOfExistingsNews.push(item.newsId);
       }
-      await store.dispatch('news/getNewsPage', {existingNews : idsOfExistingsNews});
+      if (newsMenuValue.value === 'all') {
+        await store.dispatch('news/getNewsPage', {existingNews : idsOfExistingsNews});
+      } else {
+        await store.dispatch('news/getNewsPageByType', {existingNews : idsOfExistingsNews, typeId : newsMenuValue.value.newsTypeId})
+      }
+
     }
 
     return {
@@ -153,6 +211,8 @@ export default {
       newsTitle,
       newsText,
       src,
+      newsMenuValue,
+      newsTypesOptions,
       getNews,
       customStyle,
       customClass,
