@@ -40,7 +40,8 @@
               </q-card-section>
               <q-separator/>
               <q-card-actions class="justify-between">
-                <q-btn @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)" flat id="btn-read">Читать</q-btn>
+                <q-btn @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)" flat id="btn-read">Читать
+                </q-btn>
                 <div>
                   <q-icon size="16px" color="black" name="event"/>
                   <span class="q-pl-sm"> {{ getDateString(new Date(itemNews.date)) }}</span>
@@ -56,10 +57,11 @@
         <q-card style="max-width: 657px">
           <q-card-section style="color: white" class="row bg-primary">
             <div :class="customClass('text-h6', 'text-h6')"> Источник:</div>
-            <q-btn class="q-ma-sm " :style="customStyle('font-size: 8px','font-size: 8px')" icon="fas fa-external-link-alt" @click="goUrl(src)" flat round dense />
-            <q-space />
+            <q-btn class="q-ma-sm " :style="customStyle('font-size: 8px','font-size: 8px')"
+                   icon="fas fa-external-link-alt" @click="goUrl(src)" flat round dense/>
+            <q-space/>
 
-            <q-btn :style="customStyle('','font-size: 10px')" icon="close" flat round dense v-close-popup />
+            <q-btn :style="customStyle('','font-size: 10px')" icon="close" flat round dense v-close-popup/>
           </q-card-section>
           <q-card-section>
             <div class="text-h6">{{ newsTitle }}</div>
@@ -69,8 +71,33 @@
         </q-card>
       </q-dialog>
 
-      <div class="col-3 q-pl-sm bg-none mobile-hide">
-        <q-card square flat class="bg-none">
+      <div class="col-3 q-pt-none q-px-sm bg-none mobile-hide">
+        <q-card square flat>
+          <div>
+            <q-list padding class="text-primary q-py-none">
+              <q-item clickable v-ripple :active="newsMenuValue === 'all'" @click="newsMenuValue = 'all'"
+                      active-class="active-list">
+                <q-item-section avatar>
+                  <q-icon name="inbox"/>
+                </q-item-section>
+
+                <q-item-section>Все</q-item-section>
+              </q-item>
+
+              <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
+                <q-item clickable v-ripple :active="newsMenuValue === type" @click="newsMenuValue = type"
+                        active-class="active-list">
+                  <q-item-section avatar>
+                    <q-icon :name="type.iconName"/>
+                  </q-item-section>
+
+                  <q-item-section>{{ type.type }}</q-item-section>
+                </q-item>
+              </template>
+
+            </q-list>
+          </div>
+
           <q-card class="bg-none">
             <q-card-section>
               <div id="yandex_rtb_R-A-1273406-5"></div>
@@ -78,43 +105,9 @@
           </q-card>
         </q-card>
       </div>
-      <div>
-        <q-list bordered padding class="rounded-borders text-primary">
-          <q-item
-            clickable
-            v-ripple
-            :active="newsMenuValue === 'all'"
-            @click="newsMenuValue = 'all'"
-            active-class="color: white;   background:  #1976D2;"
-          >
-            <q-item-section avatar>
-              <q-icon name="inbox" />
-            </q-item-section>
-
-            <q-item-section>Все</q-item-section>
-          </q-item>
-
-          <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
-            <q-item
-              clickable
-              v-ripple
-              :active="newsMenuValue === type"
-              @click="newsMenuValue = type"
-              active-class="color: white;   background:  #1976D2;"
-            >
-              <q-item-section avatar>
-                <q-icon :name="type.iconName" />
-              </q-item-section>
-
-              <q-item-section>{{type.type}}</q-item-section>
-            </q-item>
-          </template>
-
-        </q-list>
-      </div>
     </div>
-    <div>
-      <q-btn @click="loadNextPage">Загрузить ещё</q-btn>
+    <div class="q-px-lg q-py-sm">
+      <q-btn flat @click="loadNextPage">Загрузить ещё</q-btn>
     </div>
 
   </q-page>
@@ -124,7 +117,7 @@
 import {computed, onMounted, ref, watch} from 'vue'
 import NewsService from '../services/news/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
-
+import {useStore} from "vuex";
 import {customClass, customStyle} from "src/services/other/tools";
 import {useMeta} from "quasar";
 
@@ -184,9 +177,12 @@ export default {
         idsOfExistingsNews.push(item.newsId);
       }
       if (newsMenuValue.value === 'all') {
-        await store.dispatch('news/getNewsPage', {existingNews : idsOfExistingsNews});
+        await store.dispatch('news/getNewsPage', {existingNews: idsOfExistingsNews});
       } else {
-        await store.dispatch('news/getNewsPageByType', {existingNews : idsOfExistingsNews, typeId : newsMenuValue.value.newsTypeId})
+        await store.dispatch('news/getNewsPageByType', {
+          existingNews: idsOfExistingsNews,
+          typeId: newsMenuValue.value.newsTypeId
+        })
       }
     }
 
@@ -194,16 +190,16 @@ export default {
       if (val !== null) {
         store.commit('news/clearNews')
         if (val === 'all') {
-          await store.dispatch('news/getNewsPage', {existingNews : []})
+          await store.dispatch('news/getNewsPage', {existingNews: []})
         } else {
-          await store.dispatch('news/getNewsPageByType', {existingNews : [], typeId : val.newsTypeId})
+          await store.dispatch('news/getNewsPageByType', {existingNews: [], typeId: val.newsTypeId})
         }
       }
     });
 
     onMounted(async () => {
       store.commit('news/clearNews')
-      await store.dispatch('news/getNewsPage', {existingNews : []})
+      await store.dispatch('news/getNewsPage', {existingNews: []})
       await store.dispatch('news/getNewsTypes')
       newsTypesOptions.value = store.getters['news/getNewsTypes'];
       news.value = store.getters['news/getNews'];
@@ -228,8 +224,8 @@ export default {
       getNews,
       customStyle,
       customClass,
-      goUrl,
       loadNextPage,
+      goUrl,
     }
   }
 }
@@ -245,7 +241,6 @@ export default {
 .border {
   border: 1px solid black;
 }
-
 #top-adw {
   margin-bottom: 16px;
 }
@@ -254,7 +249,8 @@ export default {
   padding-left: 24px;
 
 }
-#main-center-row {
-
+.active-list {
+  color: white;
+  background: #1976D2;
 }
 </style>

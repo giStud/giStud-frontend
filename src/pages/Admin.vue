@@ -19,7 +19,7 @@
 
       <template v-slot:after>
         <q-tab-panels v-model="tab" animated swipeable vertical transition-prev="jump-up" transition-next="jump-up">
-          <q-tab-panel name="bugs">
+          <q-tab-panel class="bg-none" name="bugs">
             <div class="text-h4 q-mb-md">Баги</div>
             <div class="q-pa-md">
               <q-table bordered flat square title="Багулины" :rows="univRequestsRows"
@@ -28,66 +28,73 @@
               />
             </div>
             <div class="q-pa-md">
-              <q-btn color="primary" label="Удалить выбранные записи" @click="deleteSelectedUserMessagesRows"/>
+              <q-btn class="btr-square" color="primary" label="Удалить выбранные записи" @click="deleteSelectedUserMessagesRows"/>
             </div>
           </q-tab-panel>
 
-          <q-tab-panel name="news">
-            <div class="text-h4 q-mb-md">Новости</div>
-            <div class="q-pa-md">
-              <q-table bordered flat square title="Список новостей" :rows="newsRows"
-                       :columns="newsColumns" row-key="newsId" selection="multiple" separator="cell"
-                       v-model:selected="selectedNewsRows" wrap-cells
-              />
-            </div>
-            <div class="q-pa-md">
-              <q-btn color="primary" no-caps label="Удалить выбранные новости" @click="deleteSelectedNewsRows"/>
-            </div>
-            <div class="q-pa-md">
+          <q-tab-panel class="bg-none" name="news">
+            <q-card flat square class="bg-none">
+              <q-tabs v-model="newsProperty" dense active-color="primary" indicator-color="primary" align="justify"
+                      narrow-indicator>
+                <q-tab name="newsList" label="Список новостей"/>
+                <q-tab name="newsAdd" label="Редактор новостей"/>
+                <q-tab name="newsType" label="Редактор типов новостей"/>
+              </q-tabs>
 
-              <div class="text-h5 q-mb-md">Добавить новость</div>
-              <q-input square outlined filled v-model="newsTitle" label="Заголовок"/>
-              <q-input square outlined filled v-model="newsImgSrc" label="Ссылка на фотографию"/>
-              <q-input square outlined filled v-model="newsSource" label="Источник"/>
-              <q-select
-                filled
-                v-model="newsType"
-                :options="newsTypesOptions"
-                option-value="newsTypeId"
-                option-label="type"
-                option-disable="inactive"
-                emit-value
-                map-options
-              />
-              <div class="text-h6">Короткий текст</div>
-              <q-editor
-                v-model="newsShortText"
-                :dense="$q.screen.lt.md"
-                :toolbar="newsToolbar"
-                :fonts="newsEditorFonts"
-              />
-              <div class="text-h6">Полный текст</div>
-              <q-editor
-                v-model="newsText"
-                :dense="$q.screen.lt.md"
-                :toolbar="newsToolbar"
-                :fonts="newsEditorFonts"
-              />
-            </div>
-            <div class="q-pa-md">
-              <q-btn color="primary" no-caps label="Добавить"
-                     @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
-            </div>
-              <q-input square outlined filled v-model="newsTypeText" label="Новый тип новости"/>
-              <q-input square outlined filled v-model="newsTypeIcon" label="Имя иконки для типа новости"/>
-            <q-btn color="primary" no-caps label="Добавить"
-                   @click="handleNewsTypeCreating(newsTypeText, newsTypeIcon)"/>
-            <div>
+              <q-separator/>
 
-            </div>
+              <q-tab-panels v-model="newsProperty" animated>
+                <q-tab-panel class="bg-none" name="newsList">
+                  <div class="text-h4 q-mb-md">Новости</div>
+                  <div class="q-pa-md">
+                    <q-table bordered flat square title="Список новостей" :rows="newsRows"
+                             :columns="newsColumns" row-key="newsId" selection="multiple" separator="cell"
+                             v-model:selected="selectedNewsRows" wrap-cells
+                    />
+                  </div>
+                  <div class="q-pa-md">
+                    <q-btn class="btr-square" color="primary" no-caps label="Удалить выбранные новости"
+                           @click="deleteSelectedNewsRows"/>
+                  </div>
+                </q-tab-panel>
+
+                <q-tab-panel class="bg-none" name="newsAdd">
+                  <div class="q-pa-md">
+                    <div class="text-h5 q-mb-md">Добавить новость</div>
+                    <q-input class="q-my-sm" square outlined filled v-model="newsTitle" label="Заголовок"/>
+                    <q-input class="q-my-sm" square outlined filled v-model="newsImgSrc" label="Ссылка на фотографию"/>
+                    <q-input class="q-my-sm" square outlined filled v-model="newsSource" label="Источник"/>
+                    <q-select class="q-my-sm" square label="Выберите тип новости" filled v-model="newsType"
+                              :options="newsTypesOptions" option-value="newsTypeId" option-label="type"
+                              option-disable="inactive" emit-value map-options/>
+                    <div class="text-h6">Короткий текст</div>
+                    <q-editor square v-model="newsShortText" :dense="$q.screen.lt.md" :toolbar="newsToolbar"
+                              :fonts="newsEditorFonts"/>
+                    <div class="text-h6">Полный текст</div>
+                    <q-editor square v-model="newsText" :dense="$q.screen.lt.md" :toolbar="newsToolbar"
+                              :fonts="newsEditorFonts"/>
+                  </div>
+                  <div class="q-pa-md">
+                    <q-btn class="btr-square" color="primary" no-caps label="Добавить"
+                           @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
+                  </div>
+                </q-tab-panel>
+
+                <q-tab-panel class="bg-none" name="newsType">
+                  <q-input class="q-ma-sm" square outlined filled v-model="newsTypeText" label="Новый тип новости"/>
+                  <q-input class="q-ma-sm" square outlined filled v-model="newsTypeIcon"
+                           label="Имя иконки для типа новости"/>
+                  <div class="q-pa-sm">
+                    <q-btn class="btr-square" color="primary" no-caps label="Добавить"
+                           @click="handleNewsTypeCreating(newsTypeText, newsTypeIcon)"/>
+                  </div>
+                </q-tab-panel>
+
+              </q-tab-panels>
+            </q-card>
           </q-tab-panel>
 
-          <q-tab-panel name="schedule">
+          <q-tab-panel class="bg-none" name="schedule">
             <div class="text-h4 q-mb-md">Загрузка расписания</div>
             <div>
               <div class="q-pa-md">
@@ -240,10 +247,10 @@ export default {
     const newsTypeIcon = ref('');
     const newsType = ref(null);
     const newsTypesOptions = ref([]);
+    const newsProperty = ref('');
 
     const handleNewsCreating = async (title, img, shortText, fullText, source, typeId) => {
       try {
-        console.log(typeId)
         const {data} = await NewsService.saveNews(title, img, shortText, fullText, source, typeId)
         $q.notify({
           color: "green-4",
@@ -283,6 +290,7 @@ export default {
 
     onMounted(async () => {
       tab.value = localStorage.getItem("adminCurrentTab");
+      newsProperty.value = localStorage.getItem("adminNewsCurrentTab");
       univRequestsRows.value = await UserMessagesService.getUserMessages();
       newsRows.value = await NewsService.getNews();
       newsTypesOptions.value = await NewsTypeService.getNewsTypes();
@@ -367,8 +375,13 @@ export default {
       localStorage.setItem("adminCurrentTab", val)
     });
 
+    watch(newsProperty, (val) => {
+      localStorage.setItem("adminNewsCurrentTab", val)
+    });
+
     return {
       tab,
+      newsProperty,
       selectedUserMessagesRows,
       univRequestsRows,
       univRequestsColumns,
@@ -400,5 +413,13 @@ export default {
 </script>
 
 <style scoped>
+
+.bg-none {
+  background-color: rgb(238, 238, 238);
+}
+
+.btr-square {
+  border-radius: 0;
+}
 
 </style>
