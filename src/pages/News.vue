@@ -103,8 +103,7 @@
               active-class="color: white;   background:  #1976D2;"
             >
               <q-item-section avatar>
-                <q-icon name="inbox" />
-<!--                <q-icon :name="type.icon" />-->
+                <q-icon :name="type.iconName" />
               </q-item-section>
 
               <q-item-section>{{type.type}}</q-item-section>

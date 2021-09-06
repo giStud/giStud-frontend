@@ -79,8 +79,9 @@
                      @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
             </div>
               <q-input square outlined filled v-model="newsTypeText" label="Новый тип новости"/>
+              <q-input square outlined filled v-model="newsTypeIcon" label="Имя иконки для типа новости"/>
             <q-btn color="primary" no-caps label="Добавить"
-                   @click="handleNewsTypeCreating(newsTypeText)"/>
+                   @click="handleNewsTypeCreating(newsTypeText, newsTypeIcon)"/>
             <div>
 
             </div>
@@ -236,6 +237,7 @@ export default {
     const newsSource = ref('');
     const newsText = ref('');
     const newsTypeText = ref('');
+    const newsTypeIcon = ref('');
     const newsType = ref(null);
     const newsTypesOptions = ref([]);
 
@@ -255,9 +257,9 @@ export default {
       }
     }
 
-    const handleNewsTypeCreating = async (type) => {
+    const handleNewsTypeCreating = async (type, icon) => {
       try {
-        const {data} = await NewsTypeService.saveNewsType(type);
+        const {data} = await NewsTypeService.saveNewsType(type, icon);
         $q.notify({
           color: "green-4",
           textColor: "white",
@@ -380,6 +382,7 @@ export default {
       newsText,
       newsType,
       newsTypeText,
+      newsTypeIcon,
       newsTypesOptions,
       newsEditorFonts,
       newsToolbar,
