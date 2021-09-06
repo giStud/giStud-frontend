@@ -44,6 +44,15 @@ class NewsService {
     }
   }
 
+  async getNewsItemById(newsId) {
+    try {
+      const {data} = await api.get("/news/" + newsId)
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async deleteNewsEntityById(newsId) {
     try {
       const {data} = await api.delete("/news/" + newsId, {headers: authHeader()})

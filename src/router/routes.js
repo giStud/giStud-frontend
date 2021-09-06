@@ -14,6 +14,13 @@ const routes = [
         props: (route) => ({univName: route.query.univName}),
         meta: {isAuth: false, isAdmin: false}
       },
+      {
+        path: '/news',
+        name: 'news',
+        component: () => import('pages/News.vue'),
+        props: (route) => ({newsId: route.query.newsId}),
+        meta: {isAuth: false, isAdmin: false}
+      }
     ]
   },
   {
@@ -30,13 +37,6 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       {path: '', component: () => import('pages/Admin.vue'), meta: {isAuth: true, isAdmin: true}} //todo  ВСЕ НА ТРУ
-    ]
-  },
-  {
-    path: "/news",
-    component: () => import('layouts/MainLayout.vue'),
-    children: [
-      {path: '', component: () => import('pages/News.vue'), meta: {isAuth: false, isAdmin: false}}
     ]
   },
   // {

@@ -154,7 +154,14 @@ const meta = {
 export default {
   name: 'News',
 
-  setup() {
+  props: {
+    newsId: {
+      type: String,
+      default: null
+    }
+  },
+
+  setup(props) {
     useMeta(() => meta);
     const store = useStore();
     const news = ref([]);
@@ -165,31 +172,12 @@ export default {
     const newsMenuValue = ref('all');
     const newsTypesOptions = ref([]);
 
-    onMounted(async () => {
-      store.commit('news/clearNews')
-      await store.dispatch('news/getNewsPage', {existingNews : []})
-      await store.dispatch('news/getNewsTypes')
-      newsTypesOptions.value = store.getters['news/getNewsTypes'];
-      news.value = store.getters['news/getNews'];
-    });
-
     const getNews = (title, text, sources) => {
       newsDialog.value = true;
       newsTitle.value = title;
       newsText.value = text;
       src.value = sources;
     };
-
-    watch(newsMenuValue, async (val) => {
-      if (val !== null) {
-        store.commit('news/clearNews')
-        if (val === 'all') {
-          await store.dispatch('news/getNewsPage', {existingNews : []})
-        } else {
-          await store.dispatch('news/getNewsPageByType', {existingNews : [], typeId : val.newsTypeId})
-        }
-      }
-    });
 
     const loadNextPage = async () => {
       let idsOfExistingsNews = [];
@@ -202,6 +190,32 @@ export default {
         await store.dispatch('news/getNewsPageByType', {existingNews : idsOfExistingsNews, typeId : newsMenuValue.value.newsTypeId})
       }
     }
+
+    watch(newsMenuValue, async (val) => {
+      if (val !== null) {
+        store.commit('news/clearNews')
+        if (val === 'all') {
+          await store.dispatch('news/getNewsPage', {existingNews : []})
+        } else {
+          await store.dispatch('news/getNewsPageByType', {existingNews : [], typeId : val.newsTypeId})
+        }
+      }
+    });
+
+    onMounted(async () => {
+      store.commit('news/clearNews')
+      await store.dispatch('news/getNewsPage', {existingNews : []})
+      await store.dispatch('news/getNewsTypes')
+      newsTypesOptions.value = store.getters['news/getNewsTypes'];
+      news.value = store.getters['news/getNews'];
+
+      const newsId = props.newsId;
+      if (props.newsId !== null) {
+        const selectedNewsItem = await NewsService.getNewsItemById(newsId);
+        console.log(selectedNewsItem);
+        getNews(selectedNewsItem.title, selectedNewsItem.fullText, selectedNewsItem.source);
+      }
+    });
 
     return {
       news,
