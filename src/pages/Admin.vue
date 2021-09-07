@@ -483,6 +483,9 @@ export default {
       localStorage.setItem("adminNewsCurrentTab", val)
     });
 
+    watch(newsType, (val)=>{
+      console.log(val)})
+
     return {
       tab,
       newsProperty,

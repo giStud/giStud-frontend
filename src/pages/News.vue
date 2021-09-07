@@ -75,7 +75,6 @@
             <q-btn class="q-ma-sm " :style="customStyle('font-size: 8px','font-size: 8px')"
                    icon="fas fa-external-link-alt" @click="goUrl(src)" flat round dense/>
             <q-space/>
-
             <q-btn :style="customStyle('','font-size: 10px')" icon="close" flat round dense v-close-popup/>
           </q-card-section>
           <q-card-section>
@@ -124,8 +123,8 @@ import {computed, onMounted, ref, watch} from 'vue'
 import NewsService from '../services/news/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 import {useStore} from "vuex";
-import {customClass, customStyle} from "src/services/other/tools";
-import {useMeta} from "quasar";
+import {customClass, customStyle, goUrl} from "src/services/other/tools";
+import {debounce, useMeta} from "quasar";
 
 const meta = {
   title: 'Расписание - GISTUD',
