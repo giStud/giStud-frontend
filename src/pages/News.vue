@@ -6,9 +6,24 @@
           <div id="yandex_rtb_R-A-1273406-4"></div>
         </q-card-section>
       </q-card>
-
     </div>
-
+    <div>
+      <q-select  square borderless outlined v-model="newsTypeValue" use-input hide-selected fill-input
+                label="Выберите категорию" :options="newsTypesOptions" option-label="type"
+                 option-disable="inactive"
+                transition-show="jump-up" transition-hide="jump-up" bottom-slots>
+        <template v-slot:option="scope">
+          <q-item v-bind="scope.itemProps">
+            <q-item-section avatar>
+              <q-icon :name="scope.opt.iconName" />
+            </q-item-section>
+            <q-item-section>
+              <q-item-label v-html="scope.opt.type"/>
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
+    </div>
     <div class="row main-row" :style="customStyle('min-width: 1250px', '')">
       <div :class="customClass('col-9 q-pr-sm', '')" class="bg-none">
         <template v-for="itemNews in news" :key="itemNews.newsId">
@@ -75,17 +90,8 @@
         <q-card square flat>
           <div>
             <q-list padding class="text-primary q-py-none">
-              <q-item clickable v-ripple :active="newsMenuValue === 'all'" @click="newsMenuValue = 'all'"
-                      active-class="active-list">
-                <q-item-section avatar>
-                  <q-icon name="inbox"/>
-                </q-item-section>
-
-                <q-item-section>Все</q-item-section>
-              </q-item>
-
               <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
-                <q-item clickable v-ripple :active="newsMenuValue === type" @click="newsMenuValue = type"
+                <q-item clickable v-ripple :active="newsTypeValue === type" @click="newsTypeValue = type"
                         active-class="active-list">
                   <q-item-section avatar>
                     <q-icon :name="type.iconName"/>
@@ -161,7 +167,8 @@ export default {
     const newsText = ref("");
     const newsDialog = ref(false);
     const src = ref("");
-    const newsMenuValue = ref('all');
+    const allTypeObj = {newsTypeId : -1, type: 'Все', iconName : 'warning'}
+    const newsTypeValue = ref(allTypeObj);
     const newsTypesOptions = ref([]);
 
     const getNews = (title, text, sources) => {
@@ -176,32 +183,36 @@ export default {
       for (let item of news.value) {
         idsOfExistingsNews.push(item.newsId);
       }
-      if (newsMenuValue.value === 'all') {
+      if (newsTypeValue.value.type === 'Все') {
         await store.dispatch('news/getNewsPage', {existingNews: idsOfExistingsNews});
       } else {
         await store.dispatch('news/getNewsPageByType', {
           existingNews: idsOfExistingsNews,
-          typeId: newsMenuValue.value.newsTypeId
+          typeId: newsTypeValue.value.newsTypeId
         })
       }
     }
 
-    watch(newsMenuValue, async (val) => {
-      if (val !== null) {
+    const filterByNewsType = async (type) => {
+      if (type) {
         store.commit('news/clearNews')
-        if (val === 'all') {
+        console.log(type)
+        if (type.type === 'Все') {
           await store.dispatch('news/getNewsPage', {existingNews: []})
         } else {
-          await store.dispatch('news/getNewsPageByType', {existingNews: [], typeId: val.newsTypeId})
+          await store.dispatch('news/getNewsPageByType', {existingNews: [], typeId: type.newsTypeId})
         }
       }
-    });
+    }
+
+    watch(newsTypeValue, filterByNewsType);
 
     onMounted(async () => {
       store.commit('news/clearNews')
       await store.dispatch('news/getNewsPage', {existingNews: []})
       await store.dispatch('news/getNewsTypes')
-      newsTypesOptions.value = store.getters['news/getNewsTypes'];
+      newsTypesOptions.value[0] = allTypeObj;
+      newsTypesOptions.value.push.apply(newsTypesOptions.value, store.getters['news/getNewsTypes']);
       news.value = store.getters['news/getNews'];
 
       const newsId = props.newsId;
@@ -214,18 +225,18 @@ export default {
 
     return {
       news,
-      getDateString,
       newsDialog,
       newsTitle,
       newsText,
       src,
-      newsMenuValue,
+      newsTypeValue,
       newsTypesOptions,
       getNews,
       customStyle,
       customClass,
       loadNextPage,
       goUrl,
+      getDateString,
     }
   }
 }
