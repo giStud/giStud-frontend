@@ -4,7 +4,7 @@
          :style="customStyle('min-width: 1250px', '')">
       <q-card square flat class="bg-none">
         <q-card-section class="q-px-none">
-          <div id="yandex_rtb_R-A-1273406-3"></div>
+          <div id="yandex_rtb_R-A-1273406-6"></div>
         </q-card-section>
       </q-card>
 
@@ -376,7 +376,7 @@ const meta = {
     yandexMetrika: {
       type: 'application/javascript',
       innerHTML: `(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(84689620, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true});
-                  window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-3', blockId: 'R-A-1273406-3'})})
+                  window.yaContextCb.push(()=>{Ya.Context.AdvManager.render({renderTo: 'yandex_rtb_R-A-1273406-6', blockId: 'R-A-1273406-6'})})
     `
     }
   },
