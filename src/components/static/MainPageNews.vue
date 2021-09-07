@@ -1,16 +1,21 @@
 <template>
   <div class="q-pa-md">
     <q-list>
-      <q-item-label id="header-news" header>Последние новости</q-item-label>
-
+      <q-item-label id="header-news" style="color: #1976D2; text-align: center" header>
+        Последние новости
+        <q-separator class="q-my-sm" style="margin-left: 50px; margin-right: 50px"/>
+      </q-item-label>
       <template v-for="item in newsOptions" :key="item.newsId">
-        <q-item clickable :to="{name: 'news', query : {newsId: item.newsId}}">
+        <q-item style="text-align: center" clickable :to="{name: 'news', query : {newsId: item.newsId}}">
           <q-item-section>
-            <q-item-label class="list-title" >{{item.title}}</q-item-label>
-<!--            <q-item-label lines="2" v-html="item.shortText"/>-->
+            <q-item-label class="list-title">{{ item.title }}</q-item-label>
+            <!--            <q-item-label lines="2" v-html="item.shortText"/>-->
           </q-item-section>
         </q-item>
       </template>
+      <div style="text-align: center" class="q-mt-lg">
+        <q-btn class="bg-primary" :to="'/news'" flat label="Читать еще" no-caps color="white"></q-btn>
+      </div>
     </q-list>
   </div>
 </template>
@@ -28,7 +33,7 @@ export default {
 
     onMounted(async () => {
       store.commit('news/clearMainPageNews');
-      const data = await store.dispatch('news/getNewsPage', {existingNews : []});
+      const data = await store.dispatch('news/getNewsPage', {existingNews: []});
       store.commit('news/setMainPageNews', data);
       newsOptions.value = store.getters['news/getMainPageNews'];
     })

@@ -57,7 +57,7 @@
                   <div class="q-pa-md">
                     <q-btn class="btr-square" color="primary" no-caps label="Удалить выбранные новости"
                            @click="deleteSelectedNewsRows"/>
-                    <q-btn class="btr-square" color="primary" no-caps label="Изменить выбранную новость" :disable="selectedNewsRows.length !== 1"
+                    <q-btn class="btr-square q-mx-lg" color="primary" no-caps label="Изменить выбранную новость" :disable="selectedNewsRows.length !== 1"
                            @click="changeSelectedNewsItem(selectedNewsRows[0])"/>
                   </div>
                 </q-tab-panel>

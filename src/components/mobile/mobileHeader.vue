@@ -1,9 +1,11 @@
 <template>
   <q-header elevated >
     <q-toolbar class="bg-primary text-white">
-      <q-avatar id="logo" square>
-        <img src="../../assets/logo.svg">
-      </q-avatar>
+      <q-btn class="q-pa-none bg-none" :to="'/'" flat color="primary">
+        <q-avatar id="logo" square>
+          <img src="../../assets/logo.svg">
+        </q-avatar>
+      </q-btn>
       <q-space/>
       <q-btn flat @click="menuMobile = !menuMobile" round dense icon="menu"/>
       <q-drawer side="right" v-model="menuMobile" :width="200" :breakpoint="500" overlay bordered class="bg-white shadow-24">

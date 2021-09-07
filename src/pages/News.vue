@@ -8,7 +8,7 @@
       </q-card>
     </div>
     <div>
-      <q-select  square borderless outlined v-model="newsTypeValue" use-input hide-selected fill-input
+      <q-select class="desktop-hide q-mx-sm"  square borderless outlined v-model="newsTypeValue" use-input hide-selected fill-input
                 label="Выберите категорию" :options="newsTypesOptions" option-label="type"
                  option-disable="inactive"
                 transition-show="jump-up" transition-hide="jump-up" bottom-slots>
@@ -24,10 +24,10 @@
         </template>
       </q-select>
     </div>
-    <div class="row main-row" :style="customStyle('min-width: 1250px', '')">
+    <div :class="customClass('row main-row', '')" :style="customStyle('min-width: 1250px', '')">
       <div :class="customClass('col-9 q-pr-sm', '')" class="bg-none">
         <template v-for="itemNews in news" :key="itemNews.newsId">
-          <q-card square flat>
+          <q-card :class="customClass('', 'q-mx-sm')" square flat>
             <q-card>
               <q-card-section horizontal class="mobile-hide">
                 <q-card-section class="col-6 q-pt-xs">
@@ -111,9 +111,9 @@
         </q-card>
       </div>
     </div>
-    <div class="q-px-lg q-py-sm">
-      <q-btn flat @click="loadNextPage">Загрузить ещё</q-btn>
-    </div>
+<!--    <div class="q-px-lg q-py-sm">-->
+<!--      <q-btn flat @click="loadNextPage">Загрузить ещё</q-btn>-->
+<!--    </div>-->
 
   </q-page>
 </template>
@@ -166,7 +166,7 @@ export default {
     const newsText = ref("");
     const newsDialog = ref(false);
     const src = ref("");
-    const allTypeObj = {newsTypeId : -1, type: 'Все', iconName : 'warning'}
+    const allTypeObj = {newsTypeId : -1, type: 'Все', iconName : 'apps'}
     const newsTypeValue = ref(allTypeObj);
     const newsTypesOptions = ref([]);
 
