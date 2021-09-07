@@ -1,6 +1,7 @@
 <template>
   <q-page>
-    <div id="top-adw" :class="customClass('main-row q-mt-sm', 'q-mt-md q-px-sm')" class="q-mb-none" :style="customStyle('min-width: 1250px', '')">
+    <div id="top-adw" :class="customClass('main-row q-mt-sm', 'q-mt-md q-px-sm')" class="q-mb-none"
+         :style="customStyle('min-width: 1250px', '')">
       <q-card square flat class="bg-none">
         <q-card-section class="q-px-none">
           <div id="yandex_rtb_R-A-1273406-3"></div>

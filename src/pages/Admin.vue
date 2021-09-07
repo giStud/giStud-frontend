@@ -28,7 +28,8 @@
               />
             </div>
             <div class="q-pa-md">
-              <q-btn class="btr-square" color="primary" label="Удалить выбранные записи" @click="deleteSelectedUserMessagesRows"/>
+              <q-btn class="btr-square" color="primary" label="Удалить выбранные записи"
+                     @click="deleteSelectedUserMessagesRows"/>
             </div>
           </q-tab-panel>
 
@@ -45,6 +46,7 @@
 
               <q-tab-panels v-model="newsProperty" animated>
                 <q-tab-panel class="bg-none" name="newsList">
+                  <!--news table-->
                   <div class="text-h4 q-mb-md">Новости</div>
                   <div class="q-pa-md">
                     <q-table bordered flat square title="Список новостей" :rows="newsRows"
@@ -59,6 +61,7 @@
                 </q-tab-panel>
 
                 <q-tab-panel class="bg-none" name="newsAdd">
+                  <!--news edit-->
                   <div class="q-pa-md">
                     <div class="text-h5 q-mb-md">Добавить новость</div>
                     <q-input class="q-my-sm" square outlined filled v-model="newsTitle" label="Заголовок"/>
@@ -81,12 +84,34 @@
                 </q-tab-panel>
 
                 <q-tab-panel class="bg-none" name="newsType">
+                  <!--                  news types-->
+                  <div class="q-pa-md">
+                    <q-table bordered flat square title="Список новостей" :rows="newsTypesOptions"
+                             :columns="newsTypesColumns" row-key="newsTypeId" selection="multiple" separator="cell"
+                             v-model:selected="newsTypesSelected" wrap-cells
+                    >
+                      <template v-slot:body-cell-icon="props">
+                        <q-td :props="props">
+                          <div>
+                            <q-icon :name="props.row.iconName"></q-icon>
+                          </div>
+                        </q-td>
+                      </template>
+                    </q-table>
+                  </div>
+
+                  <div class="q-pa-md">
+                    <q-btn class="btr-square" color="primary" no-caps label="Удалить выбранные новости"
+                           @click="deleteSelectedNewsTypesRows"/>
+                  </div>
+
                   <q-input class="q-ma-sm" square outlined filled v-model="newsTypeText" label="Новый тип новости"/>
                   <q-input class="q-ma-sm" square outlined filled v-model="newsTypeIcon"
                            label="Имя иконки для типа новости"/>
                   <div class="q-pa-sm">
                     <q-btn class="btr-square" color="primary" no-caps label="Добавить"
                            @click="handleNewsTypeCreating(newsTypeText, newsTypeIcon)"/>
+                    <q-icon :name="newsTypeIcon"/> {{newsTypeText}}
                   </div>
                 </q-tab-panel>
 
@@ -154,10 +179,37 @@ const newsColumns = [{
   required: true,
   label: 'Заголовок',
   align: 'center',
-  headerStyle: 'width: 500px',
   field: 'title',
+  headerStyle: 'width: 500px',
   sortable: true
 }
+]
+
+const newsTypesColumns = [{
+  name: 'id',
+  required: true,
+  label: 'Id',
+  align: 'center',
+  field: 'newsTypeId',
+  headerStyle: 'width: 200px',
+  sortable: true
+}, {
+  name: 'name',
+  required: true,
+  label: 'Имя',
+  align: 'center',
+  headerStyle: 'width: 500px',
+  field: 'type',
+  sortable: true
+},
+  {
+    name: 'icon',
+    required: true,
+    label: 'Иконка',
+    align: 'center',
+    headerStyle: 'width: 500px',
+    sortable: true
+  }
 ]
 
 const univRequestsColumns = [{
@@ -243,11 +295,6 @@ export default {
     const newsImgSrc = ref('');
     const newsSource = ref('');
     const newsText = ref('');
-    const newsTypeText = ref('');
-    const newsTypeIcon = ref('');
-    const newsType = ref(null);
-    const newsTypesOptions = ref([]);
-    const newsProperty = ref('');
 
     const handleNewsCreating = async (title, img, shortText, fullText, source, typeId) => {
       try {
@@ -264,6 +311,23 @@ export default {
       }
     }
 
+    const deleteSelectedNewsRows = async () => {
+      if (selectedNewsRows.value.length > 0) {
+        for (let selected of selectedNewsRows.value) {
+          await NewsService.deleteNewsEntityById(selected.newsId)
+        }
+        newsRows.value = await NewsService.getNews();
+      }
+    }
+
+
+    const newsTypeText = ref('');
+    const newsTypeIcon = ref('');
+    const newsType = ref(null);
+    const newsTypesOptions = ref([]);
+    const newsProperty = ref('');
+    const newsTypesSelected = ref([]);
+
     const handleNewsTypeCreating = async (type, icon) => {
       try {
         const {data} = await NewsTypeService.saveNewsType(type, icon);
@@ -279,12 +343,12 @@ export default {
       }
     }
 
-    const deleteSelectedNewsRows = async () => {
-      if (selectedNewsRows.value.length > 0) {
-        for (let selected of selectedNewsRows.value) {
-          await NewsService.deleteNewsEntityById(selected.newsId)
+    const deleteSelectedNewsTypesRows = async () => {
+      if (newsTypesSelected.value.length > 0) {
+        for (let selected of newsTypesSelected.value) {
+          await NewsTypeService.deleteNewsTypeById(selected.newsTypeId)
         }
-        newsRows.value = await NewsService.getNews();
+        newsTypesOptions.value = await NewsTypeService.getNewsTypes();
       }
     }
 
@@ -397,12 +461,15 @@ export default {
       newsTypeText,
       newsTypeIcon,
       newsTypesOptions,
+      newsTypesSelected,
+      newsTypesColumns,
       newsEditorFonts,
       newsToolbar,
       onFailed,
       splitterModel: ref(10),
       apiPath: computed(() => process.env.API),
       deleteSelectedUserMessagesRows,
+      deleteSelectedNewsTypesRows,
       handleNewsCreating,
       handleNewsTypeCreating,
       deleteSelectedNewsRows,
