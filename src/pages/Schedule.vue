@@ -259,7 +259,7 @@
                       :key="cell.day"
                       :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
                   <template v-if="cell.length > 1">
-                    <div class="col-12" style="height: 100%;">
+                    <div class="col-12" style="height: 100%; overflow: scroll; overflow-y: hidden; overflow-x: hidden">
                       <q-list style="height: 100%">
                         <q-item style="border-color: #959595;" id="main-table-before-cell"
                                 :style="getScheduleCellColor(cell[0])">
