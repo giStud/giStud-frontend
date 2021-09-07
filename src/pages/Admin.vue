@@ -82,7 +82,7 @@
                   <div class="q-pa-md">
                     <template v-if="editMode">
                       <q-btn class="btr-square" color="primary" no-caps label="Изменить"
-                             @click="handleNewsChange(changeNewsId,newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
+                             @click="handleNewsChange(changeNewsId, { newsTitle,newsImgSrc ,newsShortText, newsText , newsSource, type : newsType })"/>
                     </template>
                     <template v-else>
                       <q-btn class="btr-square" color="primary" no-caps label="Добавить"
@@ -93,7 +93,7 @@
                 </q-tab-panel>
 
                 <q-tab-panel class="bg-none" name="newsType">
-                  <!--                  news types-->
+                  <!--news types-->
                   <div class="q-pa-md">
                     <q-table bordered flat square title="Список новостей" :rows="newsTypesOptions"
                              :columns="newsTypesColumns" row-key="newsTypeId" selection="multiple" separator="cell"
@@ -325,6 +325,7 @@ export default {
 
     const changeSelectedNewsItem = (val) => {
       newsProperty.value = 'newsAdd';
+      changeNewsId.value = val.newsId;
       newsTitle.value = val.title;
       newsImgSrc.value = val.imgSrc;
       newsSource.value = val.source;
@@ -334,16 +335,18 @@ export default {
       editMode.value = true;
     }
 
-    const handleNewsChange = async (id, title, img, shortText, fullText, source, typeId) => {
-      let newValue = {
-        title,
-        img,
-        shortText,
-        fullText,
-        source,
-        typeId
+    const handleNewsChange = async (id, newValue) => {
+      try {
+        await store.dispatch('news/updateNewsEntity', {id, newValue});
+        $q.notify({
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Запись успешно обновлена",
+        });
+      } catch (e) {
+        console.log(e)
       }
-      await store.dispatch('news/updateNewsEntity', {id, newValue});
       editMode.value = false;
     }
 
@@ -392,7 +395,8 @@ export default {
       tab.value = localStorage.getItem("adminCurrentTab");
       newsProperty.value = localStorage.getItem("adminNewsCurrentTab");
       univRequestsRows.value = await UserMessagesService.getUserMessages();
-      newsRows.value = await NewsService.getNews();
+      await store.dispatch('news/downloadAllNews');
+      newsRows.value = store.getters['news/getNews'];
       newsTypesOptions.value = await NewsTypeService.getNewsTypes();
     })
 

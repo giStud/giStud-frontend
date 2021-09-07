@@ -11,6 +11,12 @@ export async function getNewsTypes({commit}) {
   }
 }
 
+export async function downloadAllNews({commit}) {
+  const data = await NewsService.getNews();
+  commit('setNews', data);
+  return data;
+}
+
 export async function getNewsPage({commit}, {existingNews}) {
   const data = await NewsService.getNewsExceptExisting(existingNews);
   commit('addNews', data);
@@ -24,7 +30,8 @@ export async function getNewsPageByType({commit}, {existingNews, typeId}) {
 }
 
 export async function updateNewsEntity({commit}, {id, newValue}) {
-  const data = await NewsService.updateNewsEntity(id, newValue.title, newValue.img, newValue.fullText, newValue.fullText, newValue.typeId);
-  commit('editNews', id, data);
+  const data = await NewsService.updateNewsEntity(id, newValue);
+  console.log(data)
+  commit('editNews', {id, data});
   return data;
 }

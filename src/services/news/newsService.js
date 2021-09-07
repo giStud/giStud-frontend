@@ -53,16 +53,20 @@ class NewsService {
     }
   }
 
-  async updateNewsEntity(id, title, img, shortText, fullText, source, typeId) {
+  async updateNewsEntity(id, newValue) {
+    const type = newValue.type;
+    let typeId = null;
+    if (type !== null) {
+      typeId = type.newsTypeId;
+    }
     try {
       const {data} = await api.put("/news/" + id,
         {
-          newsId : id,
-          title,
-          shortText,
-          fullText,
-          imgSrc : img,
-          source,
+          title : newValue.newsTitle,
+          shortText : newValue.newsShortText,
+          text : newValue.newsText,
+          imgSrc : newValue.newsImgSrc,
+          source : newValue.newsSource,
           typeId
         },{headers: authHeader()})
       return data;
