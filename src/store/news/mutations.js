@@ -25,3 +25,14 @@ export function clearMainPageNews(state) {
     state.mainPageNews.pop()
   }
 }
+
+export function editNews(state, id, newValue) {
+  for (let item in state.news) {
+    let val = state.news[item];
+    if (val.newsId === id) {
+      console.log(state.news[item])
+      state.news[item] = newValue;
+      console.log(state.news[item])
+    }
+  }
+}

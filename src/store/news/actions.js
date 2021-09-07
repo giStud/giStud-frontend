@@ -18,8 +18,13 @@ export async function getNewsPage({commit}, {existingNews}) {
 }
 
 export async function getNewsPageByType({commit}, {existingNews, typeId}) {
-  console.log(existingNews)
   const data = await NewsService.getNewsExceptExistingByType(existingNews, typeId);
   commit('addNews', data);
+  return data;
+}
+
+export async function updateNewsEntity({commit}, {id, newValue}) {
+  const data = await NewsService.updateNewsEntity(id, newValue.title, newValue.img, newValue.fullText, newValue.fullText, newValue.typeId);
+  commit('editNews', id, data);
   return data;
 }

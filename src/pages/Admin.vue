@@ -57,6 +57,8 @@
                   <div class="q-pa-md">
                     <q-btn class="btr-square" color="primary" no-caps label="Удалить выбранные новости"
                            @click="deleteSelectedNewsRows"/>
+                    <q-btn class="btr-square" color="primary" no-caps label="Изменить выбранную новость" :disable="selectedNewsRows.length !== 1"
+                           @click="changeSelectedNewsItem(selectedNewsRows[0])"/>
                   </div>
                 </q-tab-panel>
 
@@ -78,8 +80,15 @@
                               :fonts="newsEditorFonts"/>
                   </div>
                   <div class="q-pa-md">
-                    <q-btn class="btr-square" color="primary" no-caps label="Добавить"
-                           @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
+                    <template v-if="editMode">
+                      <q-btn class="btr-square" color="primary" no-caps label="Изменить"
+                             @click="handleNewsChange(changeNewsId,newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
+                    </template>
+                    <template v-else>
+                      <q-btn class="btr-square" color="primary" no-caps label="Добавить"
+                             @click="handleNewsCreating(newsTitle,newsImgSrc ,newsShortText, newsText, newsSource, newsType)"/>
+                    </template>
+
                   </div>
                 </q-tab-panel>
 
@@ -111,7 +120,8 @@
                   <div class="q-pa-sm">
                     <q-btn class="btr-square" color="primary" no-caps label="Добавить"
                            @click="handleNewsTypeCreating(newsTypeText, newsTypeIcon)"/>
-                    <q-icon :name="newsTypeIcon"/> {{newsTypeText}}
+                    <q-icon :name="newsTypeIcon"/>
+                    {{ newsTypeText }}
                   </div>
                 </q-tab-panel>
 
@@ -295,6 +305,8 @@ export default {
     const newsImgSrc = ref('');
     const newsSource = ref('');
     const newsText = ref('');
+    const changeNewsId = ref(null);
+    const editMode = ref(false);
 
     const handleNewsCreating = async (title, img, shortText, fullText, source, typeId) => {
       try {
@@ -309,6 +321,30 @@ export default {
       } catch (e) {
         console.log(e)
       }
+    }
+
+    const changeSelectedNewsItem = (val) => {
+      newsProperty.value = 'newsAdd';
+      newsTitle.value = val.title;
+      newsImgSrc.value = val.imgSrc;
+      newsSource.value = val.source;
+      newsType.value = val.newsTypesEntity;
+      newsShortText.value = val.shortText;
+      newsText.value = val.fullText;
+      editMode.value = true;
+    }
+
+    const handleNewsChange = async (id, title, img, shortText, fullText, source, typeId) => {
+      let newValue = {
+        title,
+        img,
+        shortText,
+        fullText,
+        source,
+        typeId
+      }
+      await store.dispatch('news/updateNewsEntity', {id, newValue});
+      editMode.value = false;
     }
 
     const deleteSelectedNewsRows = async () => {
@@ -457,6 +493,8 @@ export default {
       newsImgSrc,
       newsSource,
       newsText,
+      changeNewsId,
+      editMode,
       newsType,
       newsTypeText,
       newsTypeIcon,
@@ -471,6 +509,8 @@ export default {
       deleteSelectedUserMessagesRows,
       deleteSelectedNewsTypesRows,
       handleNewsCreating,
+      handleNewsChange,
+      changeSelectedNewsItem,
       handleNewsTypeCreating,
       deleteSelectedNewsRows,
       getHeaders,

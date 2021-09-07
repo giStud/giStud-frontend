@@ -53,6 +53,24 @@ class NewsService {
     }
   }
 
+  async updateNewsEntity(id, title, img, shortText, fullText, source, typeId) {
+    try {
+      const {data} = await api.put("/news/" + id,
+        {
+          newsId : id,
+          title,
+          shortText,
+          fullText,
+          imgSrc : img,
+          source,
+          typeId
+        },{headers: authHeader()})
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async deleteNewsEntityById(newsId) {
     try {
       const {data} = await api.delete("/news/" + newsId, {headers: authHeader()})
