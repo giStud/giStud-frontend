@@ -5,6 +5,24 @@
       <q-card flat style="max-height: 81px;" square >
         <q-card-section style="font-size: 18px; padding: 14px 15px" class="q-ma-none">Главная</q-card-section>
         <q-card-section class="top-nav q-pa-none" style="overflow-x: scroll; overflow-y: hidden; width: auto; white-space: nowrap;">
+        <!--Табы от ДимASS'а-->
+
+<!--          <q-tabs-->
+<!--            v-model="tab"-->
+<!--            dense-->
+<!--            class="text-grey"-->
+<!--            active-color="primary"-->
+<!--            indicator-color="primary"-->
+<!--            align="justify"-->
+<!--            narrow-indicator-->
+<!--          >-->
+<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="all" label="Все" />-->
+<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="univs" label="Университеты" />-->
+<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="lastNews" label="Последние новости" />-->
+<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="lastAnn" label="Последние обьявления" />-->
+<!--          </q-tabs>-->
+
+
           <q-btn class="top-nav" no-caps no-wrap flat @click="tab = 'all'">Все</q-btn>
           <q-btn class="top-nav" no-caps no-wrap flat @click="tab = 'univs'">Университеты</q-btn>
           <q-btn class="top-nav" no-caps no-wrap flat @click="tab = 'lastNews'">Последние новости</q-btn>
