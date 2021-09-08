@@ -303,3 +303,49 @@ export function getScheduleCellColor(dayObject, splitterMode) {
     return style;
   }
 }
+
+export function isCurrentLessonGoes(selectedWeek, lessonDay, lessonBeginTime, lessonFinishTime) {
+  //const currentDate = new Date();
+  const currentDate = new Date(2021,8,8,15,16);
+  const currentWeek = getNumberOfWeek(currentDate);
+  let dayWeek = [7, 1, 2, 3, 4, 5, 6][currentDate.getDay()];
+  //const currentDay = getDayStringFromNumberOfDay(dayWeek);
+  const currentDay = 'MONDAY';
+
+
+  if (currentWeek === selectedWeek && currentDay === lessonDay) {
+    console.log('ВОШЁЛ')
+    const beginLessonArray = lessonBeginTime.split(":");
+    const finishLessonArray = lessonFinishTime.split(":");
+    console.log(beginLessonArray)
+    console.log(finishLessonArray)
+    let startDate = new Date();
+    startDate.setHours(beginLessonArray[0])
+    startDate.setMinutes(beginLessonArray[1])
+    startDate.setSeconds(0);
+    console.log(startDate)
+    let finishDate = new Date();
+    finishDate.setHours(finishLessonArray[0])
+    finishDate.setMinutes(finishLessonArray[1])
+    startDate.setSeconds(0);
+    console.log(finishDate)
+
+    console.log(currentDate)
+
+    return currentDate >= startDate && currentDate <= finishDate;
+  } else {
+    return false;
+  }
+}
+
+function getDayStringFromNumberOfDay(dayWeek) {
+  switch (dayWeek) {
+    case 1 : return 'MONDAY';
+    case 2 : return 'TUESDAY';
+    case 3 : return 'WEDNESDAY';
+    case 4 : return 'THURSDAY';
+    case 5 : return 'FRIDAY';
+    case 6 : return 'SATURDAY';
+    default : return 'SUNDAY';
+  }
+}

@@ -100,17 +100,17 @@
 
 
           <ScheduleDayTable class="q-my-lg" :day="'Понедельник'" :date="mondayDate" :rows="mobileMondayTableRows"
-                            :rls-mode="rawLessonStringMode"/>
+                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
           <ScheduleDayTable class="q-my-lg" :day="'Вторник'" :date="tuesdayDate" :rows="mobileTuesdayTableRows"
-                            :rls-mode="rawLessonStringMode"/>
+                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
           <ScheduleDayTable class="q-my-lg" :day="'Среда'" :date="wednesdayDate" :rows="mobileWednesdayTableRows"
-                            :rls-mode="rawLessonStringMode"/>
+                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
           <ScheduleDayTable class="q-my-lg" :day="'Четверг'" :date="thursdayDate" :rows="mobileThursdayTableRows"
-                            :rls-mode="rawLessonStringMode"/>
+                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
           <ScheduleDayTable class="q-my-lg" :day="'Пятница'" :date="fridayDate" :rows="mobileFridayTableRows"
-                            :rls-mode="rawLessonStringMode"/>
+                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
           <ScheduleDayTable class="q-my-lg" :day="'Суббота'" :date="saturdayDate" :rows="mobileSaturdayTableRows"
-                            :rls-mode="rawLessonStringMode"/>
+                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
         </div>
 
         <q-page-sticky position="bottom-right" :offset="[8, 8]">
@@ -261,20 +261,33 @@
                   <template v-if="cell.length > 1">
                     <div class="col-12" style="height: 100%; overflow: scroll; overflow-y: hidden; overflow-x: hidden">
                       <q-list style="height: 100%">
-                        <q-item style="border-color: #959595;" id="main-table-before-cell"
-                                :style="getScheduleCellColor(cell[0])">
-                          {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
-                        </q-item>
+                        <div>
+                          <q-item style="border-color: #959595;" id="main-table-before-cell"
+                                  :style="getScheduleCellColor(cell[0])">
+                            <div class="col-12">
+                              <div class="col-6">{{ rawLessonStringMode ? cell[0].rawLessonString : cell[1].name }}</div>
+                              <div class="col-6"> <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[0].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
+                            </div>
+                          </q-item>
+                        </div>
                         <q-separator/>
                         <q-item style="border-color: #959595;" id="main-table-after-cell"
                                 :style="getScheduleCellColor(cell[1])">
-                          {{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}
+                          <div class="col-12">
+                            <div class="col-6">{{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}</div>
+                            <div class="col-6"><q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[1].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
+                          </div>
                         </q-item>
                       </q-list>
                     </div>
                   </template>
                   <template v-else-if="cell.length !== 0">
-                    {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
+                    <div>
+                      {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
+                    </div>
+                    <div>
+                      <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[0].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" />
+                    </div>
                   </template>
                 </q-td>
               </q-tr>
@@ -363,7 +376,8 @@ import {
   getScheduleCellColor,
   getTableRowsFromLessons,
   getTypeOfWeek,
-  getTableRowsFromLessonsMobile
+  getTableRowsFromLessonsMobile,
+  isCurrentLessonGoes
 } from "../composables/schedule/ScheduleTable"
 import ModalWindow from "components/ModalWindow";
 import ScheduleDayTable from "components/mobile/ScheduleDayTable";
@@ -831,6 +845,7 @@ export default {
       changeDateFromDatePicker,
       getScheduleCellColor,
       scrollToElement,
+      isCurrentLessonGoes,
       legendDialog,
       customStyle,
       customClass,
