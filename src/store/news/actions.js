@@ -31,7 +31,6 @@ export async function getNewsPageByType({commit}, {existingNews, typeId}) {
 
 export async function updateNewsEntity({commit}, {id, newValue}) {
   const data = await NewsService.updateNewsEntity(id, newValue);
-  console.log(data)
   commit('editNews', {id, data});
   return data;
 }

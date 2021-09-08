@@ -27,15 +27,10 @@ export function clearMainPageNews(state) {
 }
 
 export function editNews(state, {id, data}) {
-  console.log("Вошёл ебать")
-  console.log(state.news)
   for (let item in state.news) {
     let val = state.news[item];
     if (val.newsId === id) {
-      console.log(state.news[item])
-      console.log(data)
       state.news[item] = data;
-      console.log(state.news[item])
     }
   }
 }
