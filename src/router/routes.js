@@ -1,7 +1,20 @@
-import Profile from "components/Profile"
+import {Platform} from "quasar";
+
+const mobile = [
+  {
+    path: '/',
+    component: () => import('layouts/MobileMainLayout.vue'),
+    children: [
+      {
+        path: '', component: () => import('pages/mobile/mHome.vue'), meta: {isAuth: false, isAdmin: false}
+      },
+    ]
+  }
+]
 
 
-const routes = [
+const desktop = [
+  // NEW REDESIGN ^^^
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -52,6 +65,16 @@ const routes = [
     component: () => import('pages/Error404.vue'),
     meta: {isAuth: false, isAdmin: false}
   }
-]
+];
+
+let routes = [];
+
+if (Platform.is.desktop) {
+  routes = desktop;
+}
+if (Platform.is.mobile) {
+  routes = mobile;
+}
+
 
 export default routes
