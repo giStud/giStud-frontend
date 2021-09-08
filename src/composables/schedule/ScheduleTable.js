@@ -1,3 +1,5 @@
+import UtilsService from '../../services/other/utilsService'
+
 export function getTableRowsFromLessons(lessons, week) {
   let timeArray = [];
   const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -20,13 +22,24 @@ export function getTableRowsFromLessons(lessons, week) {
   }
   timeArray.sort();
   timeArray = Array.from(new Set(timeArray));
+
   for (let time in timeArray) {
     let timeValue = timeArray[time];
-    timeValue = timeValue.substr(0,5);
-    timeValue = timeValue.substr(0,1) === '0' ? timeValue.substr(1) : timeValue;
-    timeArray[time] = timeValue;
-  }
+    const timeSplittedArray = timeValue.split(":");
+    let tempDate = new Date();
+    tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
+    let lessonBeginTime = UtilsService.getTimeString(tempDate);
 
+    tempDate.setHours(tempDate.getHours() + 1);
+    tempDate.setMinutes(tempDate.getMinutes() + 35)
+
+    let lessonFinishTime = UtilsService.getTimeString(tempDate);
+
+    timeArray[time] = {
+      lessonBeginTime,
+      lessonFinishTime
+    }
+  }
   let rowsArray = []
   for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
     let rowObject = {}
@@ -48,7 +61,7 @@ export function getTableRowsFromLessons(lessons, week) {
 
 
     for (let rowObject of rowsArray) {
-      if (rowObject.time === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+      if (rowObject.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
         let dayArray = rowObject['days'][day];
         if (lesson.name !== '') {
           if (dayArray.length !== 0) {
@@ -89,11 +102,23 @@ export function getTableRowsFromLessonsMobile(lessons, week, day) {
   }
   timeArray.sort();
   timeArray = Array.from(new Set(timeArray));
+
   for (let time in timeArray) {
     let timeValue = timeArray[time];
-    timeValue = timeValue.substr(0,5);
-    timeValue = timeValue.substr(0,1) === '0' ? timeValue.substr(1) : timeValue;
-    timeArray[time] = timeValue;
+    const timeSplittedArray = timeValue.split(":");
+    let tempDate = new Date();
+    tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
+    let lessonBeginTime = UtilsService.getTimeString(tempDate);
+
+    tempDate.setHours(tempDate.getHours() + 1);
+    tempDate.setMinutes(tempDate.getMinutes() + 35)
+
+    let lessonFinishTime = UtilsService.getTimeString(tempDate);
+
+    timeArray[time] = {
+      lessonBeginTime,
+      lessonFinishTime
+    }
   }
 
   let filteredLessonsByDay = []
@@ -119,7 +144,7 @@ export function getTableRowsFromLessonsMobile(lessons, week, day) {
 
 
     for (let rowObject of rowsArray) {
-      if (rowObject.time === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+      if (rowObject.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
         let lessonsFromRow = rowObject['lessons'];
         if (lesson.name !== '') {
           if (lessonsFromRow.length !== 0) {

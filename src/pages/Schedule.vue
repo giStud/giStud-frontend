@@ -254,7 +254,7 @@
                    no-data-label="Для отображения расписания выберите группу">
             <template v-slot:body="props">
               <q-tr :props="props" :key="props.row.rowNum">
-                <q-td style="border-color: #959595;" id="main-table-rasp-time">{{ props.row.time }}</q-td>
+                <q-td style="border-color: #959595;" id="main-table-rasp-time">{{ props.row.time.lessonBeginTime }} - {{ props.row.time.lessonFinishTime }}</q-td>
                 <q-td style="border-color: #959595;" id="main-table-lesson-cell" v-for="(cell) in props.row.days"
                       :key="cell.day"
                       :style="cell.length !== 0 ? getScheduleCellColor(cell[0], cell.length > 1) : ''">
@@ -834,6 +834,9 @@ export default {
       legendDialog,
       customStyle,
       customClass,
+      debug(val) {
+        console.log(val)
+      }
     };
   },
 };

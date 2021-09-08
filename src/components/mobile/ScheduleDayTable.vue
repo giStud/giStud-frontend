@@ -6,7 +6,7 @@
            no-data-label="Для отображения расписания выберите группу">
     <template v-slot:body="props" >
       <q-tr >
-        <q-td style="border-color: #959595 ; text-align: center; width: 30px; padding: 0; font-size: 12px">{{ props.row.time }}</q-td>
+        <q-td style="border-color: #959595 ; text-align: center; width: 30px; padding: 0; font-size: 12px">{{ props.row.time.lessonBeginTime }} - {{ props.row.time.lessonFinishTime }}</q-td>
         <q-td style="border-color: #959595 ; text-align: center; font-size: 12px" :style="props.row.lessons.length !== 0 ? getScheduleCellColor(props.row.lessons[0], props.row.lessons.length > 1) : ''">
           <template v-if="props.row.lessons.length > 1">
             <div>
