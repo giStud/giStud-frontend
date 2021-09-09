@@ -82,6 +82,94 @@ export function getTableRowsFromLessons(lessons, week) {
   return rowsArray;
 }
 
+export function getLessonFromSelectedDate(lessons, date) {
+  const currentDayOfWeek = getWeekDayStringFromDate(date);
+  const selectedWeek = getNumberOfWeek(date)
+
+  let lessonsOfSelectedWeek = [];
+  for (let lesson of lessons) {
+    if (lesson.week === selectedWeek) {
+      lessonsOfSelectedWeek.push(lesson);
+    }
+  }
+
+  let timeArray = [];
+  for (let lesson of lessonsOfSelectedWeek) {
+    if (lesson.day === 'MONDAY') {
+      timeArray.push(lesson.time);
+    }
+    if (lesson.day === 'TUESDAY') {
+      timeArray.push(lesson.time);
+    }
+  }
+  timeArray.sort();
+  timeArray = Array.from(new Set(timeArray));
+
+  for (let time in timeArray) {
+    let timeValue = timeArray[time];
+    const timeSplittedArray = timeValue.split(":");
+    let tempDate = new Date();
+    tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
+    let lessonBeginTime = UtilsService.getTimeString(tempDate);
+
+    tempDate.setHours(tempDate.getHours() + 1);
+    tempDate.setMinutes(tempDate.getMinutes() + 35)
+
+    let lessonFinishTime = UtilsService.getTimeString(tempDate);
+
+    timeArray[time] = {
+      lessonBeginTime,
+      lessonFinishTime,
+    }
+  }
+
+  let filteredLessonsByDay = []
+  for (let lesson of lessonsOfSelectedWeek) {
+    if (lesson.day === currentDayOfWeek) {
+      filteredLessonsByDay.push(lesson);
+    }
+  }
+
+  let rowsArray = []
+  for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
+    let rowObject = {}
+    rowObject['lessonNumber'] = indexOfTimeArray + 1;
+    rowObject['time'] = timeArray[indexOfTimeArray]
+    rowObject['lessons'] = [];
+    rowsArray[indexOfTimeArray] = rowObject
+  }
+
+  const numerator = getTypeOfWeek(selectedWeek);
+
+  for (let lesson of filteredLessonsByDay) {
+    let time = lesson.time.substr(0,5);
+    time = time.substr(0,1) === '0' ? time.substr(1) : time;
+    const lessonNumerator = lesson.numerator;
+
+
+    for (let rowObject of rowsArray) {
+      if (rowObject.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+        let lessonsFromRow = rowObject['lessons'];
+        if (lesson.name !== '') {
+          if (lessonsFromRow.length !== 0) {
+            if (lessonsFromRow[0].name === '') {
+              lessonsFromRow[0] = lesson;
+            } else {
+              lessonsFromRow.push(lesson);
+            }
+          } else {
+            lessonsFromRow.push(lesson);
+          }
+        } else if(lessonsFromRow.length === 0) {
+          lessonsFromRow.push(lesson);
+        }
+      }
+    }
+  }
+
+  return rowsArray;
+}
+
 export function getTableRowsFromLessonsMobile(lessons, week, day) {
   let timeArray = [];
   const numerator = getTypeOfWeek(week);
@@ -251,7 +339,7 @@ export function getNumberOfWeek(date) {
 }
 
 export function getScheduleCellColor(dayObject, splitterMode) {
-  if (dayObject.typeEntity) {
+  if (dayObject && dayObject.typeEntity) {
     const typeName = dayObject.typeEntity.typeName;
     let style = 'border-color: #959595; ';//width: 250px; text-align: center;
     if (splitterMode) {
@@ -306,31 +394,25 @@ export function getScheduleCellColor(dayObject, splitterMode) {
 
 export function isCurrentLessonGoes(selectedWeek, lessonDay, lessonBeginTime, lessonFinishTime) {
   //const currentDate = new Date();
-  const currentDate = new Date(2021,8,8,15,16);
+  const currentDate = new Date(2021,8,6,15,20);
   const currentWeek = getNumberOfWeek(currentDate);
-  let dayWeek = [7, 1, 2, 3, 4, 5, 6][currentDate.getDay()];
-  //const currentDay = getDayStringFromNumberOfDay(dayWeek);
+
+
+  //const currentDay = getWeekDayStringFromDate(currentDate);
   const currentDay = 'MONDAY';
 
 
   if (currentWeek === selectedWeek && currentDay === lessonDay) {
-    console.log('ВОШЁЛ')
     const beginLessonArray = lessonBeginTime.split(":");
     const finishLessonArray = lessonFinishTime.split(":");
-    console.log(beginLessonArray)
-    console.log(finishLessonArray)
-    let startDate = new Date();
+    let startDate = new Date(2021,8,6);
     startDate.setHours(beginLessonArray[0])
     startDate.setMinutes(beginLessonArray[1])
     startDate.setSeconds(0);
-    console.log(startDate)
-    let finishDate = new Date();
+    let finishDate = new Date(2021,8,6);
     finishDate.setHours(finishLessonArray[0])
     finishDate.setMinutes(finishLessonArray[1])
     startDate.setSeconds(0);
-    console.log(finishDate)
-
-    console.log(currentDate)
 
     return currentDate >= startDate && currentDate <= finishDate;
   } else {
@@ -338,7 +420,8 @@ export function isCurrentLessonGoes(selectedWeek, lessonDay, lessonBeginTime, le
   }
 }
 
-function getDayStringFromNumberOfDay(dayWeek) {
+export function getWeekDayStringFromDate(date) {
+  let dayWeek = [7, 1, 2, 3, 4, 5, 6][date.getDay()];
   switch (dayWeek) {
     case 1 : return 'MONDAY';
     case 2 : return 'TUESDAY';
