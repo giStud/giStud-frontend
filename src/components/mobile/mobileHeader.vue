@@ -27,7 +27,7 @@
             <q-separator/>
             <q-item class="qitem-menu" style="color: black" @click="donate" flat clickable>
               <q-item-section avatar><q-icon name="account_balance_wallet"/></q-item-section>
-              <q-item-section style="color: black;margin-left: -20px"><b>Поддержать проект</b></q-item-section>
+              <q-item-section style="color: black;margin-left: -20px">Поддержать проект</q-item-section>
             </q-item>
             <q-separator/>
             <q-item class="qitem-menu" style="color: black" @click="dialogModel = true" flat clickable>

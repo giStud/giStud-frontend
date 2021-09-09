@@ -6,23 +6,42 @@
            no-data-label="Для отображения расписания выберите группу">
     <template v-slot:body="props" >
       <q-tr >
-        <q-td style="border-color: #959595 ; text-align: center; width: 30px; padding: 0; font-size: 12px">{{ props.row.time }}</q-td>
+        <q-td style="border-color: #959595 ; text-align: center; width: 50px; padding: 0; font-size: 12px">
+          <div class="col-12">
+            <div class="col4">{{ props.row.time.lessonBeginTime }}</div>
+            <div class="col4">-</div>
+            <div class="col4">{{ props.row.time.lessonFinishTime }}</div>
+          </div>
+        </q-td>
         <q-td style="border-color: #959595 ; text-align: center; font-size: 12px" :style="props.row.lessons.length !== 0 ? getScheduleCellColor(props.row.lessons[0], props.row.lessons.length > 1) : ''">
           <template v-if="props.row.lessons.length > 1">
             <div>
               <q-list >
                 <q-item class="justify-center items-center" :style="getScheduleCellColor(props.row.lessons[0])">
-                  {{ rawLessonStringMode ? props.row.lessons[0].rawLessonString : props.row.lessons[0].name }}
+                  <div class="col-12">
+                    <div class="col-6">{{ rawLessonStringMode ? props.row.lessons[0].rawLessonString : props.row.lessons[0].name }}</div>
+                    <div class="col-6"> <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(week, props.row.lessons[0].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
+                  </div>
+
                 </q-item>
                 <q-separator style="background-color:#c1d2d7"/>
                 <q-item class="justify-center items-center" :style="getScheduleCellColor(props.row.lessons[1])">
-                  {{ rawLessonStringMode ? props.row.lessons[1].rawLessonString : props.row.lessons[1].name }}
+                  <div class="col-12">
+                    <div class="col-6">{{ rawLessonStringMode ? props.row.lessons[1].rawLessonString : props.row.lessons[1].name }}</div>
+                    <div class="col-6"> <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(week, props.row.lessons[1].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
+                  </div>
                 </q-item>
               </q-list>
             </div>
           </template>
           <template v-else-if="props.row.lessons.length !== 0">
-            {{ rawLessonStringMode ? props.row.lessons[0].rawLessonString : props.row.lessons[0].name }}
+
+            <div>
+              {{ rawLessonStringMode ? props.row.lessons[0].rawLessonString : props.row.lessons[0].name }}
+            </div>
+            <div>
+              <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(week, props.row.lessons[0].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" />
+            </div>
           </template>
         </q-td>
       </q-tr>
@@ -39,7 +58,7 @@
 <script>
 import {ref, watch} from 'vue'
 import {toRefs} from 'vue'
-import {getScheduleCellColor} from "src/composables/schedule/ScheduleTable";
+import {getScheduleCellColor, isCurrentLessonGoes} from "src/composables/schedule/ScheduleTable";
 
 const scheduleColumns = [
   {
@@ -63,18 +82,21 @@ export default {
     day: String,
     date: String,
     rows: Array,
-    rlsMode: Boolean
+    rlsMode: Boolean,
+    week: Number
   },
   setup(props) {
-    const {rows, rlsMode, date} = toRefs(props)
+    const {rows, rlsMode, date, week} = toRefs(props)
 
     return {
       dayString: ref(props.day),
       dateString: ref(date),
       rowsArray: ref(rows),
+      weekValue : ref(week),
       rawLessonStringMode: ref(rlsMode),
       scheduleColumns,
       getScheduleCellColor,
+      isCurrentLessonGoes
     }
   }
 }
