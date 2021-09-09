@@ -45,13 +45,13 @@
         </template>
       </q-select>
       <div>
-        <q-btn :label="firstDayButtonString" @click="selectedDate.setDate(selectedDate.getDate() - 3)">Пн</q-btn>
-        <q-btn :label="secondDayButtonString" @click="selectedDate.setDate(selectedDate.getDate() - 2)">Ср</q-btn>
-        <q-btn :label="thirdDayButtonString" @click="selectedDate.setDate(selectedDate.getDate() - 1)">Вт</q-btn>
-        <q-btn :label="fourthDayButtonString">Чт</q-btn>
-        <q-btn :label="fifthDayButtonString" @click="selectedDate.setDate(selectedDate.getDate() + 1)">Пт</q-btn>
-        <q-btn :label="sixthDayButtonString" @click="selectedDate.setDate(selectedDate.getDate() + 2)">Сб</q-btn>
-        <q-btn :label="seventhDayButtonString" @click="selectedDate.setDate(selectedDate.getDate() + 3)">Вс</q-btn>
+        <q-btn no-caps :label="firstDayButtonString" @click="changeSelectedDateByOffset(-3)"/>
+        <q-btn no-caps :label="secondDayButtonString" @click="changeSelectedDateByOffset(-2)"/>
+        <q-btn no-caps :label="thirdDayButtonString" @click="changeSelectedDateByOffset(-1)"/>
+        <q-btn class="bg-primary" no-caps :label="fourthDayButtonString"/>
+        <q-btn no-caps :label="fifthDayButtonString" @click="changeSelectedDateByOffset(1)"/>
+        <q-btn no-caps :label="sixthDayButtonString" @click="changeSelectedDateByOffset(2)"/>
+        <q-btn no-caps :label="seventhDayButtonString" @click="changeSelectedDateByOffset(3)"/>
       </div>
       <div>
         <q-list>
@@ -137,7 +137,7 @@ import {
   getNumberOfWeek,
   getTableRowsFromLessons,
   getWeekDayStringFromDate,
-  getScheduleCellColor, isCurrentLessonGoes, getDateString
+  getScheduleCellColor, isCurrentLessonGoes, getDateString, getShortDayOfWeekStringByDayEnum
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
 
@@ -220,7 +220,6 @@ export default {
           localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
 
           currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
-          console.log(currentDayLessons.value)
 
           //scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
         } else {
@@ -233,15 +232,38 @@ export default {
 
     }
 
-    const getDayButtonString = (offset) => {
-      let tempDate = new Date(selectedDate.value);
-      tempDate.setDate(tempDate.getDate() + offset);
-      const dayOfMonth = tempDate.getDate();
-
+    const changeSelectedDateByOffset = (offset) => {
+      const newDate = new Date(selectedDate.value);
+      newDate.setDate(newDate.getDate() + offset);
+      selectedDate.value = newDate;
     }
 
-    const setDaysButtonsString = ()=> {
+    const getDayButtonDateByOffset = (offset) => {
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() + offset);
+      return tempDate;
+    }
 
+    const updateDaysButtonsString = () => {
+      const mondayDate = getDayButtonDateByOffset(-3);
+      firstDayButtonString.value = mondayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(mondayDate));
+
+      const tuesdayDate = getDayButtonDateByOffset(-2);
+      secondDayButtonString.value = tuesdayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(tuesdayDate));
+
+      const wednesdayDate = getDayButtonDateByOffset(-1);
+      thirdDayButtonString.value = wednesdayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(wednesdayDate));
+
+      fourthDayButtonString.value = selectedDate.value.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(selectedDate.value));
+
+      const fridayDate = getDayButtonDateByOffset(1);
+      fifthDayButtonString.value = fridayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(fridayDate));
+
+      const saturdayDate = getDayButtonDateByOffset(2);
+      sixthDayButtonString.value = saturdayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(saturdayDate));
+
+      const sundayDate = getDayButtonDateByOffset(3);
+      seventhDayButtonString.value = sundayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(sundayDate));
     }
 
     watch(groupSelectValue, (val) => {
@@ -249,7 +271,8 @@ export default {
     })
 
     watch(selectedDate, (val) => {
-
+      updateDaysButtonsString();
+      loadGroupSchedule(groupSelectValue.value)
     })
 
     onMounted(async () => {
@@ -264,6 +287,8 @@ export default {
       if ((typeof lastLoadedGroup !== 'undefined') && lastLoadedGroup !== null) {
         groupSelectValue.value = JSON.parse(lastLoadedGroup);
       }
+
+      updateDaysButtonsString();
     })
 
     return {
@@ -285,6 +310,7 @@ export default {
       getScheduleCellColor,
       isCurrentLessonGoes,
       getNumberOfWeek,
+      changeSelectedDateByOffset,
       debug(val) {
         console.log(val)
       }

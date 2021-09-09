@@ -432,3 +432,15 @@ export function getWeekDayStringFromDate(date) {
     default : return 'SUNDAY';
   }
 }
+
+export function getShortDayOfWeekStringByDayEnum(string) {
+  switch (string) {
+    case 'MONDAY' : return 'Пн';
+    case 'TUESDAY' : return 'Вт';
+    case 'WEDNESDAY' : return 'Ср';
+    case 'THURSDAY' : return 'Чт';
+    case 'FRIDAY' : return 'Пт';
+    case 'SATURDAY' : return 'Сб';
+    default : return 'Вс';
+  }
+}
