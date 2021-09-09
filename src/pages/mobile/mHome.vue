@@ -1,85 +1,157 @@
 <template>
 
-  <q-page>
+  <q-page class="body-color">
     <q-card flat>
-      <q-card flat style="max-height: 81px;" square >
-        <q-card-section style="font-size: 18px; padding: 14px 15px" class="q-ma-none">Главная</q-card-section>
-        <q-card-section class="top-nav q-pa-none" style="overflow-x: scroll; overflow-y: hidden; width: auto; white-space: nowrap;">
-        <!--Табы от ДимASS'а-->
-
-<!--          <q-tabs-->
-<!--            v-model="tab"-->
-<!--            dense-->
-<!--            class="text-grey"-->
-<!--            active-color="primary"-->
-<!--            indicator-color="primary"-->
-<!--            align="justify"-->
-<!--            narrow-indicator-->
-<!--          >-->
-<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="all" label="Все" />-->
-<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="univs" label="Университеты" />-->
-<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="lastNews" label="Последние новости" />-->
-<!--            <q-tab class="top-nav" no-caps no-wrap flat  name="lastAnn" label="Последние обьявления" />-->
-<!--          </q-tabs>-->
-
-
-          <q-btn class="top-nav" no-caps no-wrap flat @click="tab = 'all'">Все</q-btn>
-          <q-btn class="top-nav" no-caps no-wrap flat @click="tab = 'univs'">Университеты</q-btn>
-          <q-btn class="top-nav" no-caps no-wrap flat @click="tab = 'lastNews'">Последние новости</q-btn>
-          <q-btn class="top-nav" no-caps no-wrap flat @click="tab = 'lastAnn'">Последние обьявления</q-btn>
+      <q-card flat style="max-height: 81px;" square>
+        <q-card-section id="title-page" class="q-ma-none">Главная</q-card-section>
+        <q-card-section class="q-pa-none" id="top-nav-div">
+          <q-tabs id="asdasdasd" v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary"
+                  align="justify"
+                  narrow-indicator inline-label>
+            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Новости проекта</q-tab>
+            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">Подключенные университеты</q-tab>
+          </q-tabs>
         </q-card-section>
         <q-separator/>
-
-        <q-tab-panels style="height: max-content" v-model="tab" animated class="shadow-2 rounded-borders q-mt-lg">
-          <q-tab-panel name="all">
-            <div class="text-h6">Mails</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+        <q-tab-panels swipeable v-model="tab" animated>
+          <q-tab-panel class="bg-none q-px-none q-pt-sm" name="newsProject">
+            <q-card square flat class="bg-none">
+              <template v-for="news in texts.newsProject" :key="news">
+                <q-card square flat class="q-mb-sm">
+                  <q-separator/>
+                  <q-card-section>
+                    <p style="font-size: 15px; margin: 0">{{ news.title }}</p>
+                    <p style="font-size: 9px; margin: 0;">{{ news.desc }}</p>
+                  </q-card-section>
+                  <q-card-section class="q-pt-none q-px-none">
+                    <q-img :src="news.img"/>
+                  </q-card-section>
+                  <q-separator/>
+                </q-card>
+              </template>
+            </q-card>
+            <div style="height: 50px;"></div>
           </q-tab-panel>
-
-          <q-tab-panel name="univs">
-            <div class="text-h6">Alarms</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </q-tab-panel>
-
-          <q-tab-panel name="lastNews">
-            <div class="text-h6">Movies</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          </q-tab-panel>
-          <q-tab-panel name="lastAnn">
-            <div class="text-h6">Movies1</div>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <q-tab-panel class="bg-none q-px-none q-pt-sm" name="univs">
+            <q-card square flat class="bg-none">
+              <template v-for="news in texts.connectedUniversities" :key="news">
+                <q-card square flat class="q-mb-sm">
+                  <q-separator/>
+                  <q-card-section>
+                    <p style="font-size: 15px; margin: 0; font-weight: bold">{{ news.title }}</p>
+                    <p style="font-size: 12px; margin: 0;">{{ news.desc }}</p>
+                  </q-card-section>
+                  <q-card-section class="q-pt-none q-px-none">
+                    <q-img :src="news.img"/>
+                    <template v-if="news.btn_url === ''">
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary" @click="dialogModel = true">
+                        <span style="color: white; font-size: 12px">{{news.btn}}</span>
+                      </q-btn>
+                    </template>
+                    <template v-else>
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary" @click="goUrl(news.btn_url)">
+                        <span style="color: white; font-size: 12px">{{news.btn}}</span>
+                      </q-btn>
+                    </template>
+                  </q-card-section>
+                  <q-separator/>
+                </q-card>
+              </template>
+            </q-card>
+            <div style="height: 40px;"></div>
           </q-tab-panel>
         </q-tab-panels>
       </q-card>
     </q-card>
-  </q-page>
 
+    <UserMessageDialog v-model="dialogModel" :url="'/userMessages/univRequest'">
+      <template v-slot:title>
+        <div class="text-h6">Введите текст вашей заявки</div>
+      </template>
+    </UserMessageDialog>
+
+    <!--        <q-btn :style="theme('background-color: #edeef0;', 'background-color: #000;')" @click="$q.dark.toggle()" >asdasd</q-btn>-->
+
+  </q-page>
 </template>
 
 <script>
-import {ref} from "vue";
+import {onMounted, ref, watch} from "vue";
+import {goUrl, theme} from "src/services/other/tools";
+import {useQuasar} from "quasar";
+import texts from 'src/info/texts.js'
+import UserMessageDialog from "components/UserMessageDialog";
 
 export default {
   name: "Home",
+  components: {
+    UserMessageDialog
+  },
   setup() {
-    const tab = ref('all');
+    const tab = ref('');
+    const $q = useQuasar();
+    onMounted(async () => {
+      tab.value = (localStorage.getItem("mHomeCurrentTab") === null) ? 'all' : localStorage.getItem("mHomeCurrentTab");
+    });
+
+    watch(tab, (val) => {
+      localStorage.setItem("mHomeCurrentTab", val)
+    });
+
+    const dialogModel = ref(false);
+    const url = (string) => {
+      window.open(string);
+    };
     return {
-      tab
+      tab,
+      theme,
+      $q,
+      texts,
+      goUrl,
+      dialogModel,
+      url,
     }
   }
 }
 </script>
 
 <style scoped>
+.bg-none {
+  background-color: rgb(238, 238, 238);
+}
+
+.body-color {
+  background-color: #edeef0;
+  /*background-color: #0047d4;*/
+}
+
+#asdasdasd {
+  color: #1976D2;
+}
+
+#title-page {
+  font-size: 18px;
+  padding: 14px 15px;
+}
+
+#top-nav-div {
+  width: auto;
+  height: 25px;
+  font-size: 10px;
+  color: gray;
+}
 
 .top-nav {
   width: auto;
   height: 25px;
-  font-size: 12px;
+  font-size: 11px;
   color: gray;
 }
 
-.top-nav::-webkit-scrollbar {
-  display: none;
+.tab-btn {
+  font-size: 10px;
+}
+
+.tab-btn:hover {
 }
 </style>
