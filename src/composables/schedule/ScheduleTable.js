@@ -345,48 +345,7 @@ export function getScheduleCellColor(dayObject, splitterMode) {
     if (splitterMode) {
       style += 'padding: 0px; '
     } else {
-      switch (typeName) {
-        case 'LAB' : {
-          style += 'background-color: rgba(204,220,236,0.9);';
-          break;
-        }
-        case 'LECTURE' : {
-          style += 'background-color: rgba(213,218,175,0.9);';
-          break;
-        }
-        case 'PRACTICE' : {
-          style += 'background-color: rgba(248,201,201,0.9);';
-          break;
-        }
-        case 'PE' : {
-          style += 'background-color: rgba(41, 58, 128, 0.4)';
-          break
-        }
-        case 'LANGUAGE' : {
-          style += 'background-color: rgba(201,177,222,0.9);';
-          break;
-        }
-        case 'LECTURE_AND_LAB' : {
-          style += 'background-color: rgba(195,236,198,0.9);';
-          break;
-        }
-        case 'PRACTICE_AND_LECTURE' : {
-          style += 'background-color: rgba(253,237,185,0.9);';
-          break;
-        }
-        case 'PRACTICE_AND_LAB' : {
-          style+= 'background-color: rgba(191,253,222,0.9);'
-          break;
-        }
-        case 'MILITARY_TRAINING' : {
-          style+= 'background-color: rgba(203,182,155,0.9);'
-          break;
-        }
-        case 'RELOCATION' : {
-          style+= 'background-color: rgba(195,171,7,0.4);'
-          break;
-        }
-      }
+      style += getTypeColorByValue(typeName);
     }
     return style;
   }
@@ -461,6 +420,46 @@ export function getMonthStringByDate(date) {
       case 9: return 'октября'
       case 10: return 'ноября'
       case 11: return 'декабря'
+    }
+  } else {
+    return '';
+  }
+}
+
+export function getTypeNameByValue(type) {
+  if (type) {
+    switch (type) {
+      case 'LAB' : return 'Лабораторная работа';
+      case 'LECTURE' : return 'Лекция';
+      case 'PRACTICE' : return 'Практика';
+      case 'PE' : return 'Физическая культура';
+      case 'LANGUAGE' : return 'Иностранный язык';
+      case 'LECTURE_AND_LAB' : return 'Лекция и лабораторная работа';
+      case 'PRACTICE_AND_LECTURE' : return 'Практика и лекция';
+      case 'PRACTICE_AND_LAB' : return 'Лабораторная работа и практика';
+      case 'MILITARY_TRAINING' : return 'Военная подготовка';
+      case 'RELOCATION' : return 'Переезд';
+      default: return '';
+    }
+  } else {
+    return '';
+  }
+}
+
+export function getTypeColorByValue(type) {
+  if (type) {
+    switch (type) {
+      case 'LAB' : return 'background-color: rgba(204,220,236,0.9);';
+      case 'LECTURE' : return 'background-color: rgba(213,218,175,0.9);';
+      case 'PRACTICE' : return 'background-color: rgba(248,201,201,0.9);';
+      case 'PE' : return 'background-color: rgba(41, 58, 128, 0.4)';
+      case 'LANGUAGE' : return 'background-color: rgba(201,177,222,0.9);';
+      case 'LECTURE_AND_LAB' : return 'background-color: rgba(195,236,198,0.9);';
+      case 'PRACTICE_AND_LECTURE' : return 'background-color: rgba(253,237,185,0.9);';
+      case 'PRACTICE_AND_LAB' : return 'background-color: rgba(191,253,222,0.9);';
+      case 'MILITARY_TRAINING' : return 'background-color: rgba(203,182,155,0.9);';
+      case 'RELOCATION' : return 'background-color: rgba(195,171,7,0.4);';
+      default: return '';
     }
   } else {
     return '';

@@ -7,7 +7,7 @@
     <template v-for="lesson in currentDayLessons" :key="lesson.lessonId">
 
       <template v-if="lesson.lessons.length === 1">
-        <q-item style="text-align: center" clickable :to="'/'">
+        <q-item style="text-align: center" clickable @click="openLessonInfoDialog(lesson.lessons[0])">
           <q-item-section style="text-align: left">
             <div>
               <q-item-label>
@@ -28,7 +28,7 @@
       </template>
 
       <template v-else-if="lesson.lessons.length === 2">
-        <q-item style="text-align: center" clickable :to="'/'">
+        <q-item style="text-align: center">
           <q-item-section>
             <div>
               <q-item-label>
@@ -43,12 +43,12 @@
             </div>
           </q-item-section>
           <q-item-section>
-            <q-item>
+            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[0])">
               <q-item-label class="list-title">{{  rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}</q-item-label>
             </q-item>
           </q-item-section>
           <q-item-section>
-            <q-item>
+            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[1])">
               <q-item-label class="list-title">{{  rawLessonStringMode ? lesson.lessons[1].rawLessonString : lesson.lessons[1].name }}</q-item-label>
             </q-item>
           </q-item-section>
@@ -71,11 +71,31 @@
       </template>
     </template>
   </q-list>
+  <q-dialog square v-model="lessonInfoDialog" position="bottom">
+    <q-card flat>
+      <q-card-section class="row q-pa-none q-ma-none" >
+        <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+        <span class="title-page">Информация о занятии</span>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section :style="getTypeColorByValue(lessonInfoType)">
+        {{getTypeNameByValue(lessonInfoType)}}
+      </q-card-section>
+      <q-separator/>
+      <q-card-section >
+          {{lessonInfoText}}
+      </q-card-section>
+      <q-separator/>
+      <q-card-section >
+          {{lessonInfoAudience}}
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
 import {toRefs, ref, watch} from 'vue'
-import {isCurrentLessonGoes, getNumberOfWeek, getScheduleCellColor} from "src/composables/schedule/ScheduleTable";
+import {isCurrentLessonGoes, getNumberOfWeek, getScheduleCellColor,getTypeNameByValue, getTypeColorByValue} from "src/composables/schedule/ScheduleTable";
 
 export default {
   name: "ScheduleDayList",
@@ -86,6 +106,11 @@ export default {
   },
   setup(props, {emit}) {
     const {lessons, rlsMode, selectedDate} = toRefs(props);
+    const rawLessonStringMode = ref(rlsMode);
+    const lessonInfoDialog = ref(false);
+    const lessonInfoType = ref(null);
+    const lessonInfoText = ref('');
+    const lessonInfoAudience = ref('');
 
     const swipeRightSchedule = ()=> {
       emit('swipeRightSchedule')
@@ -95,15 +120,29 @@ export default {
       emit('swipeLeftSchedule')
     }
 
+    const openLessonInfoDialog = (lesson) => {
+      lessonInfoDialog.value = true;
+      lessonInfoAudience.value = lesson.audienceEntity.audience;
+      lessonInfoText.value = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
+      lessonInfoType.value = lesson.typeEntity.typeName;
+    }
+
     return {
+      rawLessonStringMode,
+      lessonInfoDialog,
+      lessonInfoText,
+      lessonInfoType,
+      lessonInfoAudience,
       currentDayLessons : ref(lessons),
-      rawLessonStringMode : ref(rlsMode),
       selectedDateValue : ref(selectedDate),
       swipeRightSchedule,
       swipeLeftSchedule,
       isCurrentLessonGoes,
       getNumberOfWeek,
-      getScheduleCellColor
+      getScheduleCellColor,
+      openLessonInfoDialog,
+      getTypeNameByValue,
+      getTypeColorByValue
     }
   }
 }

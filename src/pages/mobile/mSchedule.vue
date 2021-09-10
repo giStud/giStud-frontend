@@ -77,6 +77,22 @@
         </q-card>
       </q-dialog>
 
+      <q-dialog maximized square v-model="helpDialog">
+        <q-card flat>
+          <q-card-section class="row q-pa-none q-ma-none">
+            <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+            <span class="title-page">0 помощи</span>
+          </q-card-section>
+          <q-separator/>
+        </q-card>
+      </q-dialog>
+
+      <div v-if="groupSelectValue">
+        {{groupName}}
+      </div>
+      <div v-else>
+        Выберите группу
+      </div>
       <div>
         {{ selectedDate.getDate() + ' ' + getMonthStringByDate(selectedDate) + ',' + currentWeekType }}
       </div>
@@ -97,6 +113,7 @@
 
       <q-btn @click="groupSelectDialog = true">GAVNO</q-btn>
       <q-btn @click="settingsDialog = true">GAVNO SETTINGS</q-btn>
+      <q-btn @click="helpDialog = true">Помощь</q-btn>
       <q-tab-panels
         v-model="daysButtonsPanel"
         animated
@@ -136,14 +153,11 @@ import {useStore} from "vuex";
 import {
   getLessonFromSelectedDate,
   getNumberOfWeek,
-  getTableRowsFromLessons,
-  getWeekDayStringFromDate,
   getScheduleCellColor,
   isCurrentLessonGoes,
-  getDateString,
-  getShortDayWeekString,
   getDateOfMonday,
-  getMonthStringByDate, getTypeOfWeek
+  getMonthStringByDate,
+  getTypeOfWeek,
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
@@ -169,7 +183,7 @@ export default {
     const store = useStore();
     const $q = useQuasar();
 
-    const title = ref('');
+    const groupName = ref('');
     const groupSelectValue = ref(null);
     const univSelectValue = ref(null);
     const univSelectOptions = ref([]);
@@ -182,6 +196,7 @@ export default {
     const rawLessonStringMode = ref(false);
     const groupSelectDialog = ref(false)
     const settingsDialog = ref(false);
+    const helpDialog = ref(false);
     const currentWeekType = ref('');
 
     const daysButtonsPanel = ref('weekButtonTab1');
@@ -232,12 +247,12 @@ export default {
           const selectedGroup = await store.dispatch('schedule/getGroupById', {
             grId: selectedGroupId,
           });
-          title.value = 'Группа: ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
+          groupName.value = 'Группа: ' + selectedGroup.name /*+ " (" + selectedGroup.universityEntity.name + ")"*/;
           localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
 
           currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
         } else {
-          title.value = '';
+          groupName.value = '';
         }
       } catch (e) {
         localStorage.removeItem("lastLoadedGroup");
@@ -355,6 +370,7 @@ export default {
 
     watch(selectedDate, (val) => {
       if (val) {
+        localStorage.setItem('selectedDate', val.toString())
         updateButtonsDataString();
         loadGroupSchedule(groupSelectValue.value)
         currentWeekType.value = getTypeOfWeek(getNumberOfWeek(val)) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
@@ -401,9 +417,11 @@ export default {
       datePickerDate,
       daysButtonsPanel,
       schedulePanel,
+      currentWeekType,
+      groupName,
       groupSelectDialog,
       settingsDialog,
-      currentWeekType,
+      helpDialog,
       filterUniversitiesFn,
       filterGroupsFn,
       getScheduleCellColor,
