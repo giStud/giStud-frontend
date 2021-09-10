@@ -13,18 +13,14 @@
 
 <script>
 import {toRefs, ref, watch} from 'vue'
-import UtilsService from '../../../services/other/utilsService'
 
 export default {
   name: "ScheduleWeekButtons",
   props : {
     buttonsData : Array,
-    selectedDate : Date,
   },
   setup(props, {emit}) {
-    const {buttonsData, selectedDate} = toRefs(props);
-
-    const selectedDateValue = ref(selectedDate);
+    const {buttonsData} = toRefs(props);
 
     const incrementWeek = ()=> {
       emit('incrementWeek')
@@ -40,7 +36,6 @@ export default {
 
     return {
       buttonsDataValue : ref(buttonsData),
-      selectedDateValue,
       decrementWeek,
       incrementWeek,
       changeSelectedDateByButtonIndex
