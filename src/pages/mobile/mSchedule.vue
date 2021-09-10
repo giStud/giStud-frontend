@@ -51,86 +51,31 @@
         infinite
       >
         <q-tab-panel name="weekButtonTab1">
-          <ScheduleWeekButtons :buttons-data="buttonsData" :selected-date="selectedDate" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+          <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
         </q-tab-panel>
 
         <q-tab-panel name="weekButtonTab2">
-          <ScheduleWeekButtons :buttons-data="buttonsData" :selected-date="selectedDate" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+          <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
         </q-tab-panel>
 
       </q-tab-panels>
-      <div>
-        <q-list>
-          <q-item-label id="header-news" style="color: #1976D2; text-align: center" header>
-            Последние новости
-            <q-separator class="q-my-sm" style="margin-left: 50px; margin-right: 50px"/>
-          </q-item-label>
-          <template v-for="lesson in currentDayLessons" :key="lesson.lessonId">
+      <q-tab-panels
+        v-model="schedulePanel"
+        animated
+        swipeable
+        infinite
 
-            <template v-if="lesson.lessons.length === 1">
-              <q-item style="text-align: center" clickable :to="'/'">
-                <q-item-section style="text-align: left">
-                  <div>
-                    <q-item-label>
-                      <q-chip square :style="getScheduleCellColor(lesson.lessons[0])">
-                        {{ lesson.lessonNumber }}
-                      </q-chip>
-                    </q-item-label>
-                    <q-item-label>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</q-item-label>
-                    <q-chip style="border: none; font-size: 12px"
-                            v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDate), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                            outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас"/>
-                  </div>
-                  <div>
-                    <q-item-label class="list-title">{{ lesson.lessons[0].name }}</q-item-label>
-                  </div>
-                </q-item-section>
-              </q-item>
-            </template>
-
-            <template v-else-if="lesson.lessons.length === 2">
-              <q-item style="text-align: center" clickable :to="'/'">
-                <q-item-section>
-                  <div>
-                    <q-item-label>
-                      <q-chip square :style="getScheduleCellColor(lesson.lessons[0])">
-                        {{ lesson.lessonNumber }}
-                      </q-chip>
-                    </q-item-label>
-                    <q-item-label>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</q-item-label>
-                    <q-chip style="border: none; font-size: 12px"
-                            v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDate), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                            outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас"/>
-                  </div>
-                </q-item-section>
-                <q-item-section>
-                  <q-item>
-                    <q-item-label class="list-title">{{ lesson.lessons[0].name }}</q-item-label>
-                  </q-item>
-                </q-item-section>
-                <q-item-section>
-                  <q-item>
-                    <q-item-label class="list-title">{{ lesson.lessons[1].name }}</q-item-label>
-                  </q-item>
-                </q-item-section>
-              </q-item>
-            </template>
-
-            <template v-else>
-              <q-item-section>
-                <div>
-                  <q-item-label>
-                    <q-chip square color="grey">
-                      {{ lesson.lessonNumber }}
-                    </q-chip>
-                  </q-item-label>
-                  <q-item-label>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</q-item-label>
-                </div>
-              </q-item-section>
-            </template>
-          </template>
-        </q-list>
-      </div>
+      >
+        <q-tab-panel name="scheduleTab1" class="q-pa-none">
+          <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate" @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
+        </q-tab-panel>
+        <q-tab-panel name="scheduleTab2" class="q-pa-none">
+          <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate" @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
+        </q-tab-panel>
+      </q-tab-panels>
+    </div>
+    <div>
+      <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
     </div>
   </q-page>
 </template>
@@ -147,12 +92,14 @@ import {
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
+import ScheduleDayList from "components/mobile/schedule/ScheduleDayList";
 import UtilsService from "src/services/other/utilsService";
 
 export default {
   name: "mSchedule.vue",
   components : {
-    ScheduleWeekButtons
+    ScheduleWeekButtons,
+    ScheduleDayList
   },
   setup() {
     const store = useStore();
@@ -167,8 +114,10 @@ export default {
     const groupsFilteredOptions = ref(groupsSelectOptions.value);
     const currentDayLessons = ref([]);
     const selectedDate = ref(new Date(2021, 8, 10));
+    const rawLessonStringMode = ref(false);
 
     const daysButtonsPanel = ref('weekButtonTab1');
+    const schedulePanel = ref('scheduleTab1');
     const buttonsData = ref([]);
 
     for (let i = 0; i < 7; i++) {
@@ -283,6 +232,20 @@ export default {
       selectedDate.value = tempDate;
     }
 
+    const swipeRightSchedule = async() => {
+      await UtilsService.sleep(150);
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() + 1)
+      selectedDate.value = tempDate;
+    }
+
+    const swipeLeftSchedule = async() => {
+      await UtilsService.sleep(150);
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() - 1)
+      selectedDate.value = tempDate;
+    }
+
     const changeSelectedDateByOffset = (offset) => {
       const newDate = new Date(selectedDate.value);
       newDate.setDate(newDate.getDate() + offset);
@@ -350,7 +313,9 @@ export default {
       currentDayLessons,
       selectedDate,
       buttonsData,
+      rawLessonStringMode,
       daysButtonsPanel,
+      schedulePanel,
       filterUniversitiesFn,
       filterGroupsFn,
       getScheduleCellColor,
@@ -359,6 +324,8 @@ export default {
       decrementWeek,
       incrementWeek,
       changeSelectedDateByButtonIndex,
+      swipeRightSchedule,
+      swipeLeftSchedule,
       debug(val) {
         console.log(val)
       }
