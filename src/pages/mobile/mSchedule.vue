@@ -44,16 +44,40 @@
           <q-icon name="search"/>
         </template>
       </q-select>
-      <q-card flat square style="text-align: center;" class="row justify-between q-px-sm" >
-        <template v-for="(data, index) in buttonsData" :key="data" >
-          <q-btn style="height: 14px; width: 14px; border: 1px solid #1976D2" flat no-caps :class="data.selected ? 'bg-primary' : ''" @click="changeSelectedDateByButtonIndex(index)">
-            <q-card style="background-color: rgba(255,255,255,0);" :style="data.selected ? 'color: white' : ''" :class="data.selected ? 'bg-primary' : ''" flat class="q-pa-none">
-              <q-card-section style="line-height: 13px; font-size: 9px;" class="q-pa-none">{{ data.date }}</q-card-section>
-              <q-card-section style="line-height: 12px;font-size: 8px; " class="q-pa-none">{{ data.day }}</q-card-section>
-            </q-card>
-          </q-btn>
-        </template>
-      </q-card>
+      <q-tab-panels
+        v-model="daysButtonsPanel"
+        animated
+        swipeable
+        infinite
+      >
+        <q-tab-panel name="tab1">
+          <q-card v-touch-swipe.right="decrWeek" v-touch-swipe.left="incrWeek" flat square style="text-align: center;" class="row justify-between q-px-sm" >
+            <template v-for="(data, index) in buttonsData" :key="data" >
+              <q-btn style="height: 14px; width: 14px; border: 1px solid #1976D2" flat no-caps :class="data.selected ? 'bg-primary' : ''" @click="changeSelectedDateByButtonIndex(index)">
+                <q-card style="background-color: rgba(255,255,255,0);" :style="data.selected ? 'color: white' : ''" :class="data.selected ? 'bg-primary' : ''" flat class="q-pa-none">
+                  <q-card-section style="line-height: 13px; font-size: 9px;" class="q-pa-none">{{ data.date }}</q-card-section>
+                  <q-card-section style="line-height: 12px;font-size: 8px; " class="q-pa-none">{{ data.day }}</q-card-section>
+                </q-card>
+              </q-btn>
+            </template>
+          </q-card>
+        </q-tab-panel>
+
+        <q-tab-panel name="tab2">
+          <q-card v-touch-swipe.right="decrWeek" v-touch-swipe.left="incrWeek" flat square style="text-align: center;" class="row justify-between q-px-sm" >
+            <template v-for="(data, index) in buttonsData" :key="data" >
+              <q-btn style="height: 14px; width: 14px; border: 1px solid #1976D2" flat no-caps :class="data.selected ? 'bg-primary' : ''" @click="changeSelectedDateByButtonIndex(index)">
+                <q-card style="background-color: rgba(255,255,255,0);" :style="data.selected ? 'color: white' : ''" :class="data.selected ? 'bg-primary' : ''" flat class="q-pa-none">
+                  <q-card-section style="line-height: 13px; font-size: 9px;" class="q-pa-none">{{ data.date }}</q-card-section>
+                  <q-card-section style="line-height: 12px;font-size: 8px; " class="q-pa-none">{{ data.day }}</q-card-section>
+                </q-card>
+              </q-btn>
+            </template>
+          </q-card>
+        </q-tab-panel>
+
+      </q-tab-panels>
+
       <div>
         <q-btn @click="decrWeek">Decr</q-btn>
         <q-btn @click="incrWeek">Incr</q-btn>
@@ -162,6 +186,7 @@ export default {
     const currentDayLessons = ref([]);
     const selectedDate = ref(new Date(2021, 8, 10));
 
+    const daysButtonsPanel = ref('tab1');
     const buttonsData = ref([]);
 
     for (let i = 0; i < 7; i++) {
@@ -256,13 +281,19 @@ export default {
       }
     }
 
-    const incrWeek = ()=> {
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    const incrWeek = async ()=> {
+      await sleep(200)
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() + 7)
       selectedDate.value = tempDate;
     }
 
-    const decrWeek = ()=> {
+    const decrWeek = async ()=> {
+      await sleep(200)
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() - 7)
       selectedDate.value = tempDate;
@@ -306,7 +337,6 @@ export default {
       buttonsData.value[6].day = 'Вс'
       buttonsData.value[6].date = tempDate.getDate().toString();
       buttonsData.value[6].selected = tempDate.toString() === selectedDate.value.toString();
-      console.log(selectedDate.value)
     }
 
     watch(groupSelectValue, (val) => {
@@ -342,6 +372,7 @@ export default {
       currentDayLessons,
       selectedDate,
       buttonsData,
+      daysButtonsPanel,
       filterUniversitiesFn,
       filterGroupsFn,
       getScheduleCellColor,
