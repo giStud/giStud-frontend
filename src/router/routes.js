@@ -7,11 +7,16 @@ const mobile = [
     children: [
       {
         path: '', component: () => import('pages/mobile/mHome.vue'), meta: {isAuth: false, isAdmin: false}
-      },
-      {
+      }, {
         path: '/schedule',
         name: 'schedule',
         component: () => import('pages/mobile/mSchedule'),
+        props: (route) => ({univName: route.query.univName}),
+        meta: {isAuth: false, isAdmin: false}
+      }, {
+        path: '/profile',
+        name: 'profile',
+        component: () => import('pages/mobile/mProfile'),
         props: (route) => ({univName: route.query.univName}),
         meta: {isAuth: false, isAdmin: false}
       },
