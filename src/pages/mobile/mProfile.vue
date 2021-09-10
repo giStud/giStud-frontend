@@ -1,5 +1,5 @@
 <template>
-  <q-page class="body-color">
+  <q-page :class="theme('bg-none-l', 'bg-none-d')">
     <q-card flat>
       <q-card flat style="max-height: 81px;" square>
         <q-card-section class="row justify-between q-pa-none q-ma-none">
@@ -15,8 +15,8 @@
         </q-card-section>
         <q-separator/>
 
-        <q-card class="bg-none q-px-none">
-          <q-card square flat class="bg-none">
+        <q-card :class="theme('bg-none-l', 'bg-none-d')" class="q-px-none">
+          <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
             <template v-if="isAdmin /* TODO поправить и сделать что был залогинен пользователь*/">
               <q-card flat square style="background-color:rgba(114,114,114,0.25);">
                 <q-card-section class="row justify-between q-pa-none fix-px fix-py">
@@ -35,56 +35,56 @@
             <q-card flat square>
               <template v-if="isAdmin /* TODO поправить и сделать что был залогинен пользователь*/">
                 <q-card-section class="q-px-none">
-                  <span class="fix-px">НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</span>
+                  <span class="fix-px" :class="theme('text-grey-8', 'text-white')">НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</span>
                   <q-list class="q-pa-none q-ma-none">
                     <q-item @click="statusDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
                       <q-item-section class="q-pa-none fix-px" avatar>
-                        <q-icon color="black" name="school"/>
+                        <q-icon :color="theme('grey-8', 'white')" name="school"/>
                       </q-item-section>
-                      <q-item-section>Задать статус</q-item-section>
+                      <q-item-section :class="theme('text-grey-8', 'text-white')">Задать статус</q-item-section>
                     </q-item>
                     <q-item @click="profileDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
                       <q-item-section class="q-pa-none fix-px" avatar>
-                        <q-icon color="black" name="person_pin"/>
+                        <q-icon :color="theme('grey-8', 'white')" name="person_pin"/>
                       </q-item-section>
-                      <q-item-section>Моя учетная запись</q-item-section>
+                      <q-item-section :class="theme('text-grey-8', 'text-white')">Моя учетная запись</q-item-section>
                     </q-item>
                   </q-list>
                 </q-card-section>
                 <q-separator/>
               </template>
               <q-card-section class="q-px-none">
-                <span class="fix-px" >НАСТРОЙКИ САЙТА</span>
+                <span class="fix-px" :class="theme('text-grey-8', 'text-white')">НАСТРОЙКИ САЙТА</span>
                 <q-list class="q-pa-none q-ma-none">
                   <q-item @click="appearanceDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
                     <q-item-section class="q-pa-none fix-px" avatar>
-                      <q-icon color="black" name="palette"/>
+                      <q-icon :color="theme('grey-8', 'white')" name="palette"/>
                     </q-item-section>
-                    <q-item-section>Внешний вид</q-item-section>
+                    <q-item-section :class="theme('text-grey-8', 'text-white')">Внешний вид</q-item-section>
                   </q-item>
                 </q-list>
               </q-card-section>
               <q-separator/>
               <q-card-section class="q-px-none">
-                <span class="fix-px">ИНФОРМАЦИЯ О САЙТЕ</span>
+                <span class="fix-px" :class="theme('text-grey-8', 'text-white')">ИНФОРМАЦИЯ О САЙТЕ</span>
                 <q-list class="q-pa-none q-ma-none">
                   <q-item @click="supportDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
                     <q-item-section class="q-pa-none fix-px" avatar>
-                      <q-icon color="black" name="report"/>
+                      <q-icon :color="theme('grey-8', 'white')" name="report"/>
                     </q-item-section>
-                    <q-item-section>Поддержка</q-item-section>
+                    <q-item-section :class="theme('text-grey-8', 'text-white')">Поддержка</q-item-section>
                   </q-item>
                   <q-item @click="goUrl('https://boosty.to/gistud.info')" class="q-pa-none q-ma-none" clickable v-ripple>
                     <q-item-section class="q-pa-none fix-px" avatar>
-                      <q-icon color="black" name="paid"/>
+                      <q-icon :color="theme('grey-8', 'white')" name="paid"/>
                     </q-item-section>
-                    <q-item-section>Поддержать проект</q-item-section>
+                    <q-item-section :class="theme('text-grey-8', 'text-white')">Поддержать проект</q-item-section>
                   </q-item>
                   <q-item disable class="q-pa-none q-ma-none" clickable v-ripple>
                     <q-item-section class="q-pa-none fix-px" avatar>
-                      <q-icon color="black" name="emoji_events"/>
+                      <q-icon :color="theme('grey-8', 'white')" name="emoji_events"/>
                     </q-item-section>
-                    <q-item-section>Благодарности</q-item-section>
+                    <q-item-section :class="theme('text-grey', 'text-white')" >Благодарности</q-item-section>
                   </q-item>
                 </q-list>
               </q-card-section>
@@ -215,7 +215,7 @@ import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import EventBus from "../../common/eventBus";
 import {useRouter} from 'vue-router';
 import {Dark, useQuasar} from 'quasar'
-import {goUrl} from "src/services/other/tools";
+import {goUrl, theme} from "src/services/other/tools";
 import UtilsService from "src/services/other/utilsService";
 import UnivRequestService from "src/services/other/userMessagesService";
 
@@ -315,14 +315,18 @@ export default {
         return UtilsService.isValidEmail(val);
       },
       sendUserMessage,
+      theme,
     }
   }
 }
 </script>
 
 <style scoped>
-.bg-none {
+.bg-none-l {
   background-color: rgb(238, 238, 238);
+}
+.bg-none-d {
+  background-color: rgb(53, 55, 57);
 }
 
 .fix-pa {
@@ -353,11 +357,6 @@ export default {
 
 .fix-pl {
   padding-left: 15px;
-}
-
-.body-color {
-  background-color: #edeef0;
-  /*background-color: #0047d4;*/
 }
 
 .title-page {
