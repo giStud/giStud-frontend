@@ -1,49 +1,102 @@
 <template>
   <q-page>
     <div>
-      <q-select square borderless outlined v-model="univSelectValue" use-input hide-selected fill-input
-                label="Выберите университет" :options="univFilteredOptions" option-label="univName"
-                @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots
-                behavior="menu">
-        <template v-slot:option="scope">
-          <q-item v-bind="scope.itemProps">
-            <q-item-section>
-              <q-item-label v-html="scope.opt.univName"/>
-              <q-item-label caption>{{ scope.opt.city }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">Не найдено</q-item-section>
-          </q-item>
-        </template>
-        <template v-slot:append>
-          <q-icon name="search"/>
-        </template>
-      </q-select>
-      <q-select style="margin-top: -15px; max-height: 100px" square borderless outlined v-model="groupSelectValue"
-                use-input
-                hide-selected fill-input label="Выберите группу" :options="groupsFilteredOptions"
-                option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up" transition-hide="jump-up"
-                bottom-slots tabindex="5" behavior="menu">
-        <template v-slot:option="scope">
-          <q-item v-bind="scope.itemProps">
-            <q-item-section>
-              <q-item-label v-html="scope.opt.groupName"/>
-              <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
-            </q-item-section>
-          </q-item>
-        </template>
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">Не найдено</q-item-section>
-          </q-item>
-        </template>
-        <template v-slot:append>
-          <q-icon name="search"/>
-        </template>
-      </q-select>
+      <q-dialog maximized square v-model="groupSelectDialog" transition-show="slide-left" transition-hide="slide-right">
+       <q-card flat>
+         <q-card-section class="row q-pa-none q-ma-none">
+           <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+           <span class="title-page">Выбор группы</span>
+         </q-card-section>
+         <q-separator/>
+         <q-card-section>
+           <q-select square borderless outlined dense v-model="univSelectValue" use-input hide-selected fill-input
+                     :options="univFilteredOptions" option-label="univName"
+                     @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots
+                     behavior="menu">
+             <template v-slot:option="scope">
+               <q-item v-bind="scope.itemProps">
+                 <q-item-section>
+                   <q-item-label v-html="scope.opt.univName"/>
+                   <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+                 </q-item-section>
+               </q-item>
+             </template>
+             <template v-slot:no-option>
+               <q-item>
+                 <q-item-section class="text-grey">Не найдено</q-item-section>
+               </q-item>
+             </template>
+             <template v-slot:append>
+               <q-icon name="search"/>
+             </template>
+           </q-select>
+           <q-select style="margin-top: -15px; max-height: 100px" square borderless outlined v-model="groupSelectValue"
+                     use-input
+                     hide-selected fill-input dense :options="groupsFilteredOptions"
+                     option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up" transition-hide="jump-up"
+                     bottom-slots tabindex="5" behavior="menu">
+             <template v-slot:option="scope">
+               <q-item v-bind="scope.itemProps">
+                 <q-item-section>
+                   <q-item-label v-html="scope.opt.groupName"/>
+                   <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
+                 </q-item-section>
+               </q-item>
+             </template>
+             <template v-slot:no-option>
+               <q-item>
+                 <q-item-section class="text-grey">Не найдено</q-item-section>
+               </q-item>
+             </template>
+             <template v-slot:append>
+               <q-icon name="search"/>
+             </template>
+           </q-select>
+         </q-card-section>
+       </q-card>
+      </q-dialog>
+
+      <q-dialog maximized square v-model="settingsDialog" transition-show="slide-left" transition-hide="slide-right">
+        <q-card flat>
+          <q-card-section class="row q-pa-none q-ma-none">
+            <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+            <span class="title-page">Выбор группы</span>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section>
+            <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
+          </q-card-section>
+          <q-card-section>
+            <template v-if="rawLessonStringMode">
+              2п (л/р ) Электротех. и электроника асс.Белых М.А. ауд.307/3 числитель
+            </template>
+            <template v-else>
+              2п Электротех. и электроника асс.Белых М.А. ауд.307/3
+            </template>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
+      <div>
+        {{ selectedDate.getDate() + ' ' + getMonthStringByDate(selectedDate) + ',' + currentWeekType }}
+      </div>
+
+      <div>
+        <q-btn class="" color="black" round flat no-caps icon="today">
+          <q-popup-proxy transition-show="scale" transition-hide="scale">
+            <q-date v-model="datePickerDate"
+                    :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
+              <div class="row items-center justify-end q-gutter-sm">
+                <q-btn label="Перейти" color="primary" flat @click="selectedDate = new Date(datePickerDate)" v-close-popup/>
+                <q-btn label="Отмена" color="primary" flat v-close-popup/>
+              </div>
+            </q-date>
+          </q-popup-proxy>
+        </q-btn>
+      </div>
+
+      <q-btn @click="groupSelectDialog = true">GAVNO</q-btn>
+      <q-btn @click="settingsDialog = true">GAVNO SETTINGS</q-btn>
       <q-tab-panels
         v-model="daysButtonsPanel"
         animated
@@ -74,9 +127,6 @@
         </q-tab-panel>
       </q-tab-panels>
     </div>
-    <div>
-      <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
-    </div>
   </q-page>
 </template>
 
@@ -88,12 +138,26 @@ import {
   getNumberOfWeek,
   getTableRowsFromLessons,
   getWeekDayStringFromDate,
-  getScheduleCellColor, isCurrentLessonGoes, getDateString, getShortDayWeekString, getDateOfMonday
+  getScheduleCellColor,
+  isCurrentLessonGoes,
+  getDateString,
+  getShortDayWeekString,
+  getDateOfMonday,
+  getMonthStringByDate, getTypeOfWeek
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
 import ScheduleDayList from "components/mobile/schedule/ScheduleDayList";
 import UtilsService from "src/services/other/utilsService";
+
+function formatDate(date) {
+  let dd = date.getDate();
+  if (dd < 10) dd = '0' + dd;
+  let mm = date.getMonth() + 1;
+  if (mm < 10) mm = '0' + mm;
+  let yy = date.getFullYear();
+  return yy + '/' + mm + '/' + dd;
+}
 
 export default {
   name: "mSchedule.vue",
@@ -114,7 +178,11 @@ export default {
     const groupsFilteredOptions = ref(groupsSelectOptions.value);
     const currentDayLessons = ref([]);
     const selectedDate = ref(new Date(2021, 8, 10));
+    const datePickerDate = ref(formatDate(new Date()));
     const rawLessonStringMode = ref(false);
+    const groupSelectDialog = ref(false)
+    const settingsDialog = ref(false);
+    const currentWeekType = ref('');
 
     const daysButtonsPanel = ref('weekButtonTab1');
     const schedulePanel = ref('scheduleTab1');
@@ -282,11 +350,15 @@ export default {
 
     watch(groupSelectValue, (val) => {
       loadGroupSchedule(val)
+      groupSelectDialog.value = false;
     })
 
     watch(selectedDate, (val) => {
-      updateButtonsDataString();
-      loadGroupSchedule(groupSelectValue.value)
+      if (val) {
+        updateButtonsDataString();
+        loadGroupSchedule(groupSelectValue.value)
+        currentWeekType.value = getTypeOfWeek(getNumberOfWeek(val)) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+      }
     })
 
     onMounted(async () => {
@@ -294,6 +366,18 @@ export default {
 
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
       let lastLoadedGroup = localStorage.getItem('lastLoadedGroup');
+
+      let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
+      if (dateFromStorage !== null) {
+        let currentDate = getDateOfMonday(new Date());
+        if (dateFromStorage < currentDate) {
+          selectedDate.value = currentDate;
+        } else {
+          selectedDate.value = dateFromStorage;
+        }
+      } else {
+        selectedDate.value = new Date();
+      }
 
       if ((typeof lastLoadedUniv !== 'undefined') && lastLoadedUniv !== null) {
         univSelectValue.value = JSON.parse(lastLoadedUniv);
@@ -314,8 +398,12 @@ export default {
       selectedDate,
       buttonsData,
       rawLessonStringMode,
+      datePickerDate,
       daysButtonsPanel,
       schedulePanel,
+      groupSelectDialog,
+      settingsDialog,
+      currentWeekType,
       filterUniversitiesFn,
       filterGroupsFn,
       getScheduleCellColor,
@@ -326,6 +414,7 @@ export default {
       changeSelectedDateByButtonIndex,
       swipeRightSchedule,
       swipeLeftSchedule,
+      getMonthStringByDate,
       debug(val) {
         console.log(val)
       }
