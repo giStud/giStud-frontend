@@ -1,15 +1,14 @@
 <template>
-
   <q-page class="body-color">
     <q-card flat>
       <q-card flat style="max-height: 81px;" square>
-        <q-card-section id="title-page" class="q-ma-none">Главная</q-card-section>
+        <q-card-section id="title-page" class="q-ma-none">Студенческие новости</q-card-section>
         <q-card-section class="q-pa-none" id="top-nav-div">
           <q-tabs id="asdasdasd" v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary"
                   align="justify"
                   narrow-indicator inline-label>
-            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Новости проекта</q-tab>
-            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">Подключенные университеты</q-tab>
+            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Все</q-tab>
+            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">авто_ген_группа</q-tab>
           </q-tabs>
         </q-card-section>
         <q-separator/>
@@ -44,13 +43,15 @@
                   <q-card-section class="q-pt-none q-px-none">
                     <q-img :src="news.img"/>
                     <template v-if="news.btn_url === ''">
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary" @click="dialogModel = true">
-                        <span style="color: white; font-size: 12px">{{news.btn}}</span>
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
+                             @click="dialogModel = true">
+                        <span style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                     <template v-else>
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary" @click="goUrl(news.btn_url)">
-                        <span style="color: white; font-size: 12px">{{news.btn}}</span>
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
+                             @click="goUrl(news.btn_url)">
+                        <span style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                   </q-card-section>
@@ -64,29 +65,18 @@
       </q-card>
     </q-card>
 
-    <UserMessageDialog v-model="dialogModel" :url="'/userMessages/univRequest'">
-      <template v-slot:title>
-        <div class="text-h6">Введите текст вашей заявки</div>
-      </template>
-    </UserMessageDialog>
-
-    <!--        <q-btn :style="theme('background-color: #edeef0;', 'background-color: #000;')" @click="$q.dark.toggle()" >asdasd</q-btn>-->
-
   </q-page>
 </template>
 
 <script>
+import {customClass, goUrl, theme} from "src/services/other/tools";
 import {onMounted, ref, watch} from "vue";
-import {goUrl, theme} from "src/services/other/tools";
 import {useQuasar} from "quasar";
-import texts from 'src/info/texts.js'
-import UserMessageDialog from "components/UserMessageDialog";
+import texts from "src/info/texts";
 
 export default {
-  name: "Home",
-  components: {
-    UserMessageDialog
-  },
+  name: "mNews",
+
   setup() {
     const tab = ref('');
     const $q = useQuasar();
@@ -104,17 +94,16 @@ export default {
     };
     return {
       tab,
-      theme,
       $q,
       texts,
       goUrl,
       dialogModel,
       url,
+      theme,
     }
   }
 }
 </script>
-
 <style scoped>
 .bg-none-l {
   background-color: rgb(238, 238, 238);

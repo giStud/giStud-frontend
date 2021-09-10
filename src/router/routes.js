@@ -19,6 +19,12 @@ const mobile = [
         component: () => import('pages/mobile/mProfile'),
         props: (route) => ({univName: route.query.univName}),
         meta: {isAuth: false, isAdmin: false}
+      }, {
+        path: '/news',
+        name: 'news',
+        component: () => import('pages/mobile/mNews'),
+        props: (route) => ({univName: route.query.univName}),
+        meta: {isAuth: false, isAdmin: false}
       },
     ]
   }
