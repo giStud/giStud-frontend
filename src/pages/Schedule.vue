@@ -629,7 +629,7 @@ export default {
     }
     //Group selecting end
 
-    //Schedule table start
+    //schedule table start
     const rawLessonStringMode = ref(null)
     const scheduleRows = ref([]);
     const title = ref('');
@@ -761,7 +761,7 @@ export default {
     })
 
 
-    //Schedule table end
+    //schedule table end
 
     onMounted(async () => {
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');

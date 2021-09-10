@@ -84,7 +84,7 @@ export function getTableRowsFromLessons(lessons, week) {
 
 export function getLessonFromSelectedDate(lessons, date) {
   const currentDayOfWeek = getWeekDayStringFromDate(date);
-  const selectedWeek = getNumberOfWeek(date)
+  const selectedWeek = getNumberOfWeek(getDateOfMonday(date));
 
   let lessonsOfSelectedWeek = [];
   for (let lesson of lessons) {
@@ -433,7 +433,7 @@ export function getWeekDayStringFromDate(date) {
   }
 }
 
-export function getShortDayOfWeekStringByDayEnum(string) {
+export function getShortDayWeekString(string) {
   switch (string) {
     case 'MONDAY' : return 'Пн';
     case 'TUESDAY' : return 'Вт';

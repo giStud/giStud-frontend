@@ -44,15 +44,21 @@
           <q-icon name="search"/>
         </template>
       </q-select>
-      <div>
-        <q-btn no-caps :label="firstDayButtonString" @click="changeSelectedDateByOffset(-3)"/>
-        <q-btn no-caps :label="secondDayButtonString" @click="changeSelectedDateByOffset(-2)"/>
-        <q-btn no-caps :label="thirdDayButtonString" @click="changeSelectedDateByOffset(-1)"/>
-        <q-btn class="bg-primary" no-caps :label="fourthDayButtonString"/>
-        <q-btn no-caps :label="fifthDayButtonString" @click="changeSelectedDateByOffset(1)"/>
-        <q-btn no-caps :label="sixthDayButtonString" @click="changeSelectedDateByOffset(2)"/>
-        <q-btn no-caps :label="seventhDayButtonString" @click="changeSelectedDateByOffset(3)"/>
-      </div>
+      <q-tab-panels
+        v-model="daysButtonsPanel"
+        animated
+        swipeable
+        infinite
+      >
+        <q-tab-panel name="weekButtonTab1">
+          <ScheduleWeekButtons :buttons-data="buttonsData" :selected-date="selectedDate" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+        </q-tab-panel>
+
+        <q-tab-panel name="weekButtonTab2">
+          <ScheduleWeekButtons :buttons-data="buttonsData" :selected-date="selectedDate" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+        </q-tab-panel>
+
+      </q-tab-panels>
       <div>
         <q-list>
           <q-item-label id="header-news" style="color: #1976D2; text-align: center" header>
@@ -137,12 +143,17 @@ import {
   getNumberOfWeek,
   getTableRowsFromLessons,
   getWeekDayStringFromDate,
-  getScheduleCellColor, isCurrentLessonGoes, getDateString, getShortDayOfWeekStringByDayEnum
+  getScheduleCellColor, isCurrentLessonGoes, getDateString, getShortDayWeekString, getDateOfMonday
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
+import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
+import UtilsService from "src/services/other/utilsService";
 
 export default {
   name: "mSchedule.vue",
+  components : {
+    ScheduleWeekButtons
+  },
   setup() {
     const store = useStore();
     const $q = useQuasar();
@@ -155,15 +166,19 @@ export default {
     const groupsSelectOptions = ref([]);
     const groupsFilteredOptions = ref(groupsSelectOptions.value);
     const currentDayLessons = ref([]);
-    const selectedDate = ref(new Date(2021, 8, 6));
+    const selectedDate = ref(new Date(2021, 8, 10));
 
-    const firstDayButtonString = ref('');
-    const secondDayButtonString = ref('');
-    const thirdDayButtonString = ref('');
-    const fourthDayButtonString = ref('');
-    const fifthDayButtonString = ref('');
-    const sixthDayButtonString = ref('');
-    const seventhDayButtonString = ref('');
+    const daysButtonsPanel = ref('weekButtonTab1');
+    const buttonsData = ref([]);
+
+    for (let i = 0; i < 7; i++) {
+      let buttonDataObject = {}
+      buttonDataObject['day'] = '';
+      buttonDataObject['date'] = ''
+      buttonDataObject['offset'] = 0;
+      buttonDataObject['center'] = false;
+      buttonsData.value[i] = buttonDataObject;
+    }
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -193,6 +208,99 @@ export default {
       });
     }
 
+    const loadGroupSchedule = async (val) => {
+      try {
+        if (val !== null && val.groupName !== '') {
+          const selectedGroupId = val.groupId;
+          const selectedGroup = await store.dispatch('schedule/getGroupById', {
+            grId: selectedGroupId,
+          });
+          title.value = 'Группа: ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
+          localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
+
+          currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
+        } else {
+          title.value = '';
+        }
+      } catch (e) {
+        localStorage.removeItem("lastLoadedGroup");
+        groupSelectValue.value = null;
+      }
+
+    }
+
+    const updateButtonsDataString = () => {
+      let tempDate = getDateOfMonday(selectedDate.value);
+
+      buttonsData.value[0].day = 'Пн';
+      buttonsData.value[0].date = tempDate.getDate().toString();
+      buttonsData.value[0].selected = tempDate.toString() === selectedDate.value.toString();
+      tempDate.setDate(tempDate.getDate() + 1)
+
+
+      buttonsData.value[1].day = 'Вт';
+      buttonsData.value[1].date = tempDate.getDate().toString();
+      buttonsData.value[1].selected = tempDate.toString() === selectedDate.value.toString();
+      tempDate.setDate(tempDate.getDate() + 1)
+
+      buttonsData.value[2].day = 'Ср';
+      buttonsData.value[2].date = tempDate.getDate().toString();
+      buttonsData.value[2].selected = tempDate.toString() === selectedDate.value.toString();
+      tempDate.setDate(tempDate.getDate() + 1)
+
+      buttonsData.value[3].day = 'Чт';
+      buttonsData.value[3].date = tempDate.getDate().toString();
+      buttonsData.value[3].selected = tempDate.toString() === selectedDate.value.toString();
+      tempDate.setDate(tempDate.getDate() + 1)
+
+      buttonsData.value[4].day = 'Пт';
+      buttonsData.value[4].date = tempDate.getDate().toString();
+      buttonsData.value[4].selected = tempDate.toString() === selectedDate.value.toString();
+      tempDate.setDate(tempDate.getDate() + 1)
+
+
+      buttonsData.value[5].day = 'Сб';
+      buttonsData.value[5].date = tempDate.getDate().toString();
+      buttonsData.value[5].selected = tempDate.toString() === selectedDate.value.toString();
+      tempDate.setDate(tempDate.getDate() + 1)
+
+      buttonsData.value[6].day = 'Вс'
+      buttonsData.value[6].date = tempDate.getDate().toString();
+      buttonsData.value[6].selected = tempDate.toString() === selectedDate.value.toString();
+    }
+
+    const decrementWeek = async ()=> {
+      await UtilsService.sleep(200);
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() - 7)
+      selectedDate.value = tempDate;
+    }
+
+    const incrementWeek = async () => {
+      await UtilsService.sleep(200);
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() + 7)
+      selectedDate.value = tempDate;
+    }
+
+    const changeSelectedDateByOffset = (offset) => {
+      const newDate = new Date(selectedDate.value);
+      newDate.setDate(newDate.getDate() + offset);
+      selectedDate.value = newDate;
+    }
+
+    const changeSelectedDateByButtonIndex = (index) => {
+      index++;
+      let indexOfSelectedDate = [7, 1, 2, 3, 4, 5, 6][selectedDate.value.getDay()];
+
+      if (index > indexOfSelectedDate) {
+        changeSelectedDateByOffset(index - indexOfSelectedDate)
+      } else if(index < indexOfSelectedDate){
+        changeSelectedDateByOffset(-(indexOfSelectedDate - index))
+        console.log(-(indexOfSelectedDate - index))
+      }
+    }
+
     watch(univSelectValue, async (newValue) => {
       try {
         let selectedUnivId;
@@ -209,69 +317,12 @@ export default {
 
     })
 
-    const loadGroupSchedule = async (val) => {
-      try {
-        if (val !== null && val.groupName !== '') {
-          const selectedGroupId = val.groupId;
-          const selectedGroup = await store.dispatch('schedule/getGroupById', {
-            grId: selectedGroupId,
-          });
-          title.value = 'Группа: ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-          localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
-
-          currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
-
-          //scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
-        } else {
-          title.value = '';
-        }
-      } catch (e) {
-        localStorage.removeItem("lastLoadedGroup");
-        groupSelectValue.value = null;
-      }
-
-    }
-
-    const changeSelectedDateByOffset = (offset) => {
-      const newDate = new Date(selectedDate.value);
-      newDate.setDate(newDate.getDate() + offset);
-      selectedDate.value = newDate;
-    }
-
-    const getDayButtonDateByOffset = (offset) => {
-      let tempDate = new Date(selectedDate.value);
-      tempDate.setDate(tempDate.getDate() + offset);
-      return tempDate;
-    }
-
-    const updateDaysButtonsString = () => {
-      const mondayDate = getDayButtonDateByOffset(-3);
-      firstDayButtonString.value = mondayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(mondayDate));
-
-      const tuesdayDate = getDayButtonDateByOffset(-2);
-      secondDayButtonString.value = tuesdayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(tuesdayDate));
-
-      const wednesdayDate = getDayButtonDateByOffset(-1);
-      thirdDayButtonString.value = wednesdayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(wednesdayDate));
-
-      fourthDayButtonString.value = selectedDate.value.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(selectedDate.value));
-
-      const fridayDate = getDayButtonDateByOffset(1);
-      fifthDayButtonString.value = fridayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(fridayDate));
-
-      const saturdayDate = getDayButtonDateByOffset(2);
-      sixthDayButtonString.value = saturdayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(saturdayDate));
-
-      const sundayDate = getDayButtonDateByOffset(3);
-      seventhDayButtonString.value = sundayDate.getDate() + '\n' + getShortDayOfWeekStringByDayEnum(getWeekDayStringFromDate(sundayDate));
-    }
-
     watch(groupSelectValue, (val) => {
       loadGroupSchedule(val)
     })
 
     watch(selectedDate, (val) => {
-      updateDaysButtonsString();
+      updateButtonsDataString();
       loadGroupSchedule(groupSelectValue.value)
     })
 
@@ -288,7 +339,7 @@ export default {
         groupSelectValue.value = JSON.parse(lastLoadedGroup);
       }
 
-      updateDaysButtonsString();
+      updateButtonsDataString();
     })
 
     return {
@@ -298,19 +349,16 @@ export default {
       groupsFilteredOptions,
       currentDayLessons,
       selectedDate,
-      firstDayButtonString,
-      secondDayButtonString,
-      thirdDayButtonString,
-      fourthDayButtonString,
-      fifthDayButtonString,
-      sixthDayButtonString,
-      seventhDayButtonString,
+      buttonsData,
+      daysButtonsPanel,
       filterUniversitiesFn,
       filterGroupsFn,
       getScheduleCellColor,
       isCurrentLessonGoes,
       getNumberOfWeek,
-      changeSelectedDateByOffset,
+      decrementWeek,
+      incrementWeek,
+      changeSelectedDateByButtonIndex,
       debug(val) {
         console.log(val)
       }
