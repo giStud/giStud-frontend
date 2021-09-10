@@ -50,38 +50,15 @@
         swipeable
         infinite
       >
-        <q-tab-panel name="tab1">
-          <q-card v-touch-swipe.right="decrWeek" v-touch-swipe.left="incrWeek" flat square style="text-align: center;" class="row justify-between q-px-sm" >
-            <template v-for="(data, index) in buttonsData" :key="data" >
-              <q-btn style="height: 14px; width: 14px; border: 1px solid #1976D2" flat no-caps :class="data.selected ? 'bg-primary' : ''" @click="changeSelectedDateByButtonIndex(index)">
-                <q-card style="background-color: rgba(255,255,255,0);" :style="data.selected ? 'color: white' : ''" :class="data.selected ? 'bg-primary' : ''" flat class="q-pa-none">
-                  <q-card-section style="line-height: 13px; font-size: 9px;" class="q-pa-none">{{ data.date }}</q-card-section>
-                  <q-card-section style="line-height: 12px;font-size: 8px; " class="q-pa-none">{{ data.day }}</q-card-section>
-                </q-card>
-              </q-btn>
-            </template>
-          </q-card>
+        <q-tab-panel name="weekButtonTab1">
+          <ScheduleWeekButtons :buttons-data="buttonsData" :selected-date="selectedDate" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
         </q-tab-panel>
 
-        <q-tab-panel name="tab2">
-          <q-card v-touch-swipe.right="decrWeek" v-touch-swipe.left="incrWeek" flat square style="text-align: center;" class="row justify-between q-px-sm" >
-            <template v-for="(data, index) in buttonsData" :key="data" >
-              <q-btn style="height: 14px; width: 14px; border: 1px solid #1976D2" flat no-caps :class="data.selected ? 'bg-primary' : ''" @click="changeSelectedDateByButtonIndex(index)">
-                <q-card style="background-color: rgba(255,255,255,0);" :style="data.selected ? 'color: white' : ''" :class="data.selected ? 'bg-primary' : ''" flat class="q-pa-none">
-                  <q-card-section style="line-height: 13px; font-size: 9px;" class="q-pa-none">{{ data.date }}</q-card-section>
-                  <q-card-section style="line-height: 12px;font-size: 8px; " class="q-pa-none">{{ data.day }}</q-card-section>
-                </q-card>
-              </q-btn>
-            </template>
-          </q-card>
+        <q-tab-panel name="weekButtonTab2">
+          <ScheduleWeekButtons :buttons-data="buttonsData" :selected-date="selectedDate" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
         </q-tab-panel>
 
       </q-tab-panels>
-
-      <div>
-        <q-btn @click="decrWeek">Decr</q-btn>
-        <q-btn @click="incrWeek">Incr</q-btn>
-      </div>
       <div>
         <q-list>
           <q-item-label id="header-news" style="color: #1976D2; text-align: center" header>
@@ -169,9 +146,14 @@ import {
   getScheduleCellColor, isCurrentLessonGoes, getDateString, getShortDayWeekString, getDateOfMonday
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
+import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
+import UtilsService from "src/services/other/utilsService";
 
 export default {
   name: "mSchedule.vue",
+  components : {
+    ScheduleWeekButtons
+  },
   setup() {
     const store = useStore();
     const $q = useQuasar();
@@ -186,7 +168,7 @@ export default {
     const currentDayLessons = ref([]);
     const selectedDate = ref(new Date(2021, 8, 10));
 
-    const daysButtonsPanel = ref('tab1');
+    const daysButtonsPanel = ref('weekButtonTab1');
     const buttonsData = ref([]);
 
     for (let i = 0; i < 7; i++) {
@@ -226,22 +208,6 @@ export default {
       });
     }
 
-    watch(univSelectValue, async (newValue) => {
-      try {
-        let selectedUnivId;
-        if (newValue !== null && (selectedUnivId = newValue.univId)) {
-          groupsSelectOptions.value = await store.dispatch('schedule/getGroupNamesByUnivAction', {
-            univId: selectedUnivId
-          })
-          localStorage.setItem('lastLoadedUniv', JSON.stringify(newValue));
-        }
-      } catch (e) {
-        localStorage.removeItem("lastLoadedUniv");
-        univSelectValue.value = null;
-      }
-
-    })
-
     const loadGroupSchedule = async (val) => {
       try {
         if (val !== null && val.groupName !== '') {
@@ -261,42 +227,6 @@ export default {
         groupSelectValue.value = null;
       }
 
-    }
-
-    const changeSelectedDateByOffset = (offset) => {
-      const newDate = new Date(selectedDate.value);
-      newDate.setDate(newDate.getDate() + offset);
-      selectedDate.value = newDate;
-    }
-
-    const changeSelectedDateByButtonIndex = (index) => {
-      index++;
-      let indexOfSelectedDate = [7, 1, 2, 3, 4, 5, 6][selectedDate.value.getDay()];
-
-      if (index > indexOfSelectedDate) {
-        changeSelectedDateByOffset(index - indexOfSelectedDate)
-      } else if(index < indexOfSelectedDate){
-        changeSelectedDateByOffset(-(indexOfSelectedDate - index))
-        console.log(-(indexOfSelectedDate - index))
-      }
-    }
-
-    function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    const incrWeek = async ()=> {
-      await sleep(200)
-      let tempDate = new Date(selectedDate.value);
-      tempDate.setDate(tempDate.getDate() + 7)
-      selectedDate.value = tempDate;
-    }
-
-    const decrWeek = async ()=> {
-      await sleep(200)
-      let tempDate = new Date(selectedDate.value);
-      tempDate.setDate(tempDate.getDate() - 7)
-      selectedDate.value = tempDate;
     }
 
     const updateButtonsDataString = () => {
@@ -339,6 +269,54 @@ export default {
       buttonsData.value[6].selected = tempDate.toString() === selectedDate.value.toString();
     }
 
+    const decrementWeek = async ()=> {
+      await UtilsService.sleep(200);
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() - 7)
+      selectedDate.value = tempDate;
+    }
+
+    const incrementWeek = async () => {
+      await UtilsService.sleep(200);
+      let tempDate = new Date(selectedDate.value);
+      tempDate.setDate(tempDate.getDate() + 7)
+      selectedDate.value = tempDate;
+    }
+
+    const changeSelectedDateByOffset = (offset) => {
+      const newDate = new Date(selectedDate.value);
+      newDate.setDate(newDate.getDate() + offset);
+      selectedDate.value = newDate;
+    }
+
+    const changeSelectedDateByButtonIndex = (index) => {
+      index++;
+      let indexOfSelectedDate = [7, 1, 2, 3, 4, 5, 6][selectedDate.value.getDay()];
+
+      if (index > indexOfSelectedDate) {
+        changeSelectedDateByOffset(index - indexOfSelectedDate)
+      } else if(index < indexOfSelectedDate){
+        changeSelectedDateByOffset(-(indexOfSelectedDate - index))
+        console.log(-(indexOfSelectedDate - index))
+      }
+    }
+
+    watch(univSelectValue, async (newValue) => {
+      try {
+        let selectedUnivId;
+        if (newValue !== null && (selectedUnivId = newValue.univId)) {
+          groupsSelectOptions.value = await store.dispatch('schedule/getGroupNamesByUnivAction', {
+            univId: selectedUnivId
+          })
+          localStorage.setItem('lastLoadedUniv', JSON.stringify(newValue));
+        }
+      } catch (e) {
+        localStorage.removeItem("lastLoadedUniv");
+        univSelectValue.value = null;
+      }
+
+    })
+
     watch(groupSelectValue, (val) => {
       loadGroupSchedule(val)
     })
@@ -378,9 +356,9 @@ export default {
       getScheduleCellColor,
       isCurrentLessonGoes,
       getNumberOfWeek,
+      decrementWeek,
+      incrementWeek,
       changeSelectedDateByButtonIndex,
-      incrWeek,
-      decrWeek,
       debug(val) {
         console.log(val)
       }
