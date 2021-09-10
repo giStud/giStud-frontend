@@ -7,7 +7,7 @@
     <template v-for="lesson in currentDayLessons" :key="lesson.lessonId">
 
       <template v-if="lesson.lessons.length === 1">
-        <q-item style="text-align: center" clickable @click="openLessonInfoDialog(lesson.lessons[0])">
+        <q-item style="text-align: center" clickable @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
           <q-item-section style="text-align: left">
             <div>
               <q-item-label>
@@ -43,12 +43,12 @@
             </div>
           </q-item-section>
           <q-item-section>
-            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[0])">
+            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
               <q-item-label class="list-title">{{  rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}</q-item-label>
             </q-item>
           </q-item-section>
           <q-item-section>
-            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[1])">
+            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[1], lesson.time)">
               <q-item-label class="list-title">{{  rawLessonStringMode ? lesson.lessons[1].rawLessonString : lesson.lessons[1].name }}</q-item-label>
             </q-item>
           </q-item-section>
@@ -78,17 +78,24 @@
         <span class="title-page">Информация о занятии</span>
       </q-card-section>
       <q-separator/>
-      <q-card-section :style="getTypeColorByValue(lessonInfoType)">
-        {{getTypeNameByValue(lessonInfoType)}}
+      <template v-if="lessonInfoType">
+        <q-card-section :style="getTypeColorByValue(lessonInfoType)">
+          {{getTypeNameByValue(lessonInfoType)}}
+        </q-card-section>
+        <q-separator/>
+      </template>
+      <q-card-section>
+        {{lessonInfoTimeString}}
       </q-card-section>
-      <q-separator/>
-      <q-card-section >
-          {{lessonInfoText}}
+      <q-card-section>
+        {{lessonInfoText}}
       </q-card-section>
-      <q-separator/>
-      <q-card-section >
-          {{lessonInfoAudience}}
-      </q-card-section>
+<!--      <template v-if="lessonInfoAudience">-->
+<!--        <q-separator/>-->
+<!--        <q-card-section >-->
+<!--          {{lessonInfoAudience}}-->
+<!--        </q-card-section>-->
+<!--      </template>-->
     </q-card>
   </q-dialog>
 </template>
@@ -104,6 +111,10 @@ export default {
     selectedDate : Date,
     rlsMode : Boolean,
   },
+  emits : [
+    'swipeRightSchedule',
+    'swipeLeftSchedule'
+  ],
   setup(props, {emit}) {
     const {lessons, rlsMode, selectedDate} = toRefs(props);
     const rawLessonStringMode = ref(rlsMode);
@@ -111,6 +122,7 @@ export default {
     const lessonInfoType = ref(null);
     const lessonInfoText = ref('');
     const lessonInfoAudience = ref('');
+    const lessonInfoTimeString = ref('');
 
     const swipeRightSchedule = ()=> {
       emit('swipeRightSchedule')
@@ -120,11 +132,16 @@ export default {
       emit('swipeLeftSchedule')
     }
 
-    const openLessonInfoDialog = (lesson) => {
-      lessonInfoDialog.value = true;
-      lessonInfoAudience.value = lesson.audienceEntity.audience;
-      lessonInfoText.value = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
-      lessonInfoType.value = lesson.typeEntity.typeName;
+    const openLessonInfoDialog = (lesson, time) => {
+      if (lesson.name && lesson.name !== '' && time) {
+        lessonInfoDialog.value = true;
+        const audienceValue = lesson.audienceEntity.audience;
+        const typeValue =  lesson.typeEntity.typeName;
+        lessonInfoAudience.value = audienceValue !== 'UNKNOWN' &&  audienceValue !== '' ? audienceValue : null;
+        lessonInfoType.value = typeValue !== 'UNKNOWN' &&  typeValue !== '' ? typeValue : null;
+        lessonInfoText.value = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
+        lessonInfoTimeString.value = time.lessonBeginTime +  '-'  + time.lessonFinishTime;
+    }
     }
 
     return {
@@ -133,6 +150,7 @@ export default {
       lessonInfoText,
       lessonInfoType,
       lessonInfoAudience,
+      lessonInfoTimeString,
       currentDayLessons : ref(lessons),
       selectedDateValue : ref(selectedDate),
       swipeRightSchedule,

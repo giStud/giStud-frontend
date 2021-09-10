@@ -19,6 +19,11 @@ export default {
   props : {
     buttonsData : Array,
   },
+  emits : [
+    'incrementWeek',
+    'decrementWeek',
+    'changeDateByIndex'
+  ],
   setup(props, {emit}) {
     const {buttonsData} = toRefs(props);
 

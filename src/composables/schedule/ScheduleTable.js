@@ -55,7 +55,6 @@ export function getTableRowsFromLessons(lessons, week) {
 
   for (let lesson of lessonsOfSelectedWeek) {
     let time = lesson.time.substr(0,5);
-    time = time.substr(0,1) === '0' ? time.substr(1) : time;
     const day = lesson.day.toLocaleLowerCase();
     const lessonNumerator = lesson.numerator;
 
@@ -143,7 +142,6 @@ export function getLessonFromSelectedDate(lessons, date) {
 
   for (let lesson of filteredLessonsByDay) {
     let time = lesson.time.substr(0,5);
-    time = time.substr(0,1) === '0' ? time.substr(1) : time;
     const lessonNumerator = lesson.numerator;
 
 
@@ -227,7 +225,6 @@ export function getTableRowsFromLessonsMobile(lessons, week, day) {
 
   for (let lesson of filteredLessonsByDay) {
     let time = lesson.time.substr(0,5);
-    time = time.substr(0,1) === '0' ? time.substr(1) : time;
     const lessonNumerator = lesson.numerator;
 
 
