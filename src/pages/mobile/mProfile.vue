@@ -34,51 +34,57 @@
 
             <q-card flat square>
               <template v-if="isAdmin /* TODO поправить и сделать что был залогинен пользователь*/">
-                <q-card-section>
-                  <span>НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</span>
+                <q-card-section class="q-px-none">
+                  <span class="fix-px">НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</span>
                   <q-list class="q-pa-none q-ma-none">
                     <q-item @click="statusDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
-                      <q-item-section class="q-pa-none" avatar>
+                      <q-item-section class="q-pa-none fix-px" avatar>
                         <q-icon color="black" name="school"/>
                       </q-item-section>
-                      <q-item-section style="margin-left: -15px">Задать статус</q-item-section>
+                      <q-item-section>Задать статус</q-item-section>
                     </q-item>
-                    <q-item @click="statusProfile = true" class="q-pa-none q-ma-none" clickable v-ripple>
-                      <q-item-section class="q-pa-none" avatar>
+                    <q-item @click="profileDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
+                      <q-item-section class="q-pa-none fix-px" avatar>
                         <q-icon color="black" name="person_pin"/>
                       </q-item-section>
-                      <q-item-section style="margin-left: -15px">Моя учетная запись</q-item-section>
+                      <q-item-section>Моя учетная запись</q-item-section>
                     </q-item>
                   </q-list>
                 </q-card-section>
                 <q-separator/>
               </template>
-              <q-card-section>
-                <span>НАСТРОЙКИ САЙТА</span>
+              <q-card-section class="q-px-none">
+                <span class="fix-px" >НАСТРОЙКИ САЙТА</span>
                 <q-list class="q-pa-none q-ma-none">
-                  <q-item class="q-pa-none q-ma-none" clickable v-ripple>
-                    <q-item-section class="q-pa-none" avatar>
+                  <q-item @click="appearanceDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
+                    <q-item-section class="q-pa-none fix-px" avatar>
                       <q-icon color="black" name="palette"/>
                     </q-item-section>
-                    <q-item-section style="margin-left: -15px">Внешний вид</q-item-section>
+                    <q-item-section>Внешний вид</q-item-section>
                   </q-item>
                 </q-list>
               </q-card-section>
               <q-separator/>
-              <q-card-section>
-                <span>ИНФОРМАЦИЯ О САЙТЕ</span>
+              <q-card-section class="q-px-none">
+                <span class="fix-px">ИНФОРМАЦИЯ О САЙТЕ</span>
                 <q-list class="q-pa-none q-ma-none">
-                  <q-item class="q-pa-none q-ma-none" clickable v-ripple>
-                    <q-item-section class="q-pa-none" avatar>
+                  <q-item @click="supportDialog = true" class="q-pa-none q-ma-none" clickable v-ripple>
+                    <q-item-section class="q-pa-none fix-px" avatar>
                       <q-icon color="black" name="report"/>
                     </q-item-section>
-                    <q-item-section style="margin-left: -15px">Поддержка</q-item-section>
+                    <q-item-section>Поддержка</q-item-section>
                   </q-item>
-                  <q-item class="q-pa-none q-ma-none" clickable v-ripple>
-                    <q-item-section class="q-pa-none" avatar>
+                  <q-item @click="goUrl('https://boosty.to/gistud.info')" class="q-pa-none q-ma-none" clickable v-ripple>
+                    <q-item-section class="q-pa-none fix-px" avatar>
+                      <q-icon color="black" name="paid"/>
+                    </q-item-section>
+                    <q-item-section>Поддержать проект</q-item-section>
+                  </q-item>
+                  <q-item disable class="q-pa-none q-ma-none" clickable v-ripple>
+                    <q-item-section class="q-pa-none fix-px" avatar>
                       <q-icon color="black" name="emoji_events"/>
                     </q-item-section>
-                    <q-item-section style="margin-left: -15px">Благодарности</q-item-section>
+                    <q-item-section>Благодарности</q-item-section>
                   </q-item>
                 </q-list>
               </q-card-section>
@@ -120,25 +126,23 @@
         </q-card>
       </q-dialog>
 
-      <q-dialog maximized square v-model="statusProfile" transition-show="slide-left" transition-hide="slide-right">
+      <q-dialog maximized square v-model="profileDialog" transition-show="slide-left" transition-hide="slide-right">
         <q-card flat square>
           <q-card-section class="row q-pa-none q-ma-none">
             <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
             <span class="title-page">Моя учетная запись</span>
           </q-card-section>
           <q-separator/>
-          <q-card-section class="q-pa-none">
-            <span class="fix-pa">ИНФОРМАЦИЯ О САЙТЕ</span>
+          <q-card-section class="q-pa-none fix-pt">
+            <span class="fix-px">ИНФОРМАЦИЯ ОБ УЧЕТНОЙ ЗАПИСИ</span>
             <q-list class="q-pa-none q-ma-none">
               <q-item class="q-pa-none q-ma-none" clickable v-ripple>
-                <div class="fix-py fix-px items-center">
-                  <span>Имя пользователя</span>
-                </div>
+                  <q-item-section class="fix-py fix-px">Имя пользователя</q-item-section>
+                  <q-item-section class="fix-py fix-px" side  style="font-size: 10px">4gname#0000</q-item-section>
               </q-item>
               <q-item class="q-pa-none q-ma-none" clickable v-ripple>
-                <div class="fix-py fix-px items-center">
-                  <span>Электронная почта</span>
-                </div>
+                <q-item-section class="fix-py fix-px">Электронная почта</q-item-section>
+                <q-item-section class="fix-py fix-px" side style="font-size: 10px">4gname@gistud.info</q-item-section>
               </q-item>
               <q-item class="q-pa-none q-ma-none" clickable v-ripple>
                 <div class="fix-py fix-px items-center">
@@ -146,6 +150,55 @@
                 </div>
               </q-item>
             </q-list>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog maximized square v-model="appearanceDialog" transition-show="slide-left" transition-hide="slide-right">
+        <q-card flat square>
+          <q-card-section class="row q-pa-none q-ma-none">
+            <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+            <span class="title-page">Внешний вид</span>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="q-pa-none fix-pt">
+            <span class="fix-px">ТЕМА</span>
+            <q-list class="q-pa-none q-ma-none">
+              <q-item @click="setDarkTheme()" class="q-pa-none q-ma-none" clickable v-ripple>
+                <q-item-section class="fix-py fix-px">Темная</q-item-section>
+                <q-item-section class="fix-px" side>
+                  <q-toggle @click="setDarkTheme()" class="fix-px q-py-none" v-model="darkTheme" color="grey"/>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
+
+      <q-dialog maximized square v-model="supportDialog" transition-show="slide-left" transition-hide="slide-right">
+        <q-card flat square>
+          <q-card-section class="row q-pa-none q-ma-none">
+            <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+            <span class="title-page">Связаться с нами</span>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="q-pa-none fix-pt">
+            <span class="fix-px">УКАЖИТЕ ВАШ EMAIL</span>
+            <q-input square style="margin-bottom: 5px" filled type="text" v-model="requestDialogEmail"
+                     label="Email адрес *" lazy-rules
+                     :rules="[(val) => !!val || 'Поле не может быть пустым', isValidEmail]" autofocus/>
+          </q-card-section>
+          <q-card-section class="q-pa-none fix-pt">
+            <span class="fix-px">УКАЖИТЕ ВАШЕ СООБЩЕНИЕ</span>
+            <q-input square input-style="resize: none;" counter filled rows="10" type="textarea"
+                     v-model="requestDialogText" label="Текст *" lazy-rules
+                     :rules="[(val) => (!!val && val.length >= 1 && val.length <= 500) || 'Текст сообщения не может быть меньше 1 символов или больше 500']"
+                     autofocus/>
+          </q-card-section>
+          <q-card-section>
+            <q-btn v-close-popup flat color="primary" no-caps label="Отправить" :disable="sendButtonModel"
+                   @click="sendUserMessage(requestDialogEmail, requestDialogText, '/userMessages/bug')"/>
+            <q-btn v-close-popup flat color="primary" no-caps label="Отмена"/>
           </q-card-section>
         </q-card>
       </q-dialog>
@@ -158,9 +211,13 @@
 
 <script>
 import {useStore} from "vuex";
-import {computed, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import EventBus from "../../common/eventBus";
-import {useRouter} from "vue-router";
+import {useRouter} from 'vue-router';
+import {Dark, useQuasar} from 'quasar'
+import {goUrl} from "src/services/other/tools";
+import UtilsService from "src/services/other/utilsService";
+import UnivRequestService from "src/services/other/userMessagesService";
 
 export default {
   name: "mProfile",
@@ -179,17 +236,64 @@ export default {
       router.push("/profile");
     };
 
+    const darkTheme = ref(false);
+
     onMounted(() => {
       let user = store.getters["auth/getCurrentUser"];
       if (user !== null) {
         let roles = user.roles;
         roles && roles.includes("ROLE_ADMIN") ? isAdmin.value = true : isAdmin.value = false;
       }
+      darkTheme.value = Dark.isActive;
+    });
+
+    const setDarkTheme = () => {
+      Dark.toggle();
+      darkTheme.value = Dark.isActive;
+    }
+
+    watch(darkTheme, (val) => {
+      localStorage.setItem("darkTheme", val ? '1':'0')
     });
 
     onBeforeUnmount(() => {
       EventBus.remove("logout");
     });
+
+    const $q = useQuasar();
+    const requestDialogEmail = ref('');
+    const requestDialogText = ref('');
+    const sendButtonModel = ref(true);
+
+    watch(requestDialogEmail, (newValue) => {
+      sendButtonModel.value = !validateInputs(newValue, requestDialogText.value);
+    })
+
+    watch(requestDialogText, (newValue) => {
+      sendButtonModel.value = !validateInputs(requestDialogEmail.value, newValue);
+    })
+
+    const validateInputs = (email, text) => {
+      let valid = true;
+      if (email.length === 0 || UtilsService.isValidEmail(email) === 'Недопустимый email') {
+        valid = false;
+      }
+      if (text.length < 1 || text.length > 500) {
+        valid = false;
+      }
+      return valid;
+    }
+
+    const sendUserMessage = (email, text, url) => {
+      UnivRequestService.createUserMessage(email, text, url)
+      $q.notify({
+        color: "green-4",
+        textColor: "white",
+        icon: "cloud_done",
+        message: "Сообщение успешно отправлено",
+      });
+    }
+
     return {
       loggedIn,
       currentUser: computed(() => store.state.auth.user),
@@ -197,7 +301,20 @@ export default {
       logout,
       isAdmin,
       statusDialog: ref(false),
-      statusProfile: ref(false),
+      profileDialog: ref(false),
+      appearanceDialog: ref(false),
+      supportDialog: ref(false),
+      Dark,
+      darkTheme,
+      setDarkTheme,
+      goUrl,
+      requestDialogEmail,
+      requestDialogText,
+      sendButtonModel,
+      isValidEmail(val) {
+        return UtilsService.isValidEmail(val);
+      },
+      sendUserMessage,
     }
   }
 }

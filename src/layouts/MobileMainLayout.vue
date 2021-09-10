@@ -13,15 +13,19 @@
 </template>
 
 <script>
-
-import {defineComponent} from 'vue'
 import mHeader from '../pages/mobile/components/mHeader.vue'
+import {defineComponent, computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {Dark} from 'quasar'
 
 export default defineComponent({
   name: 'MobileMainLayout',
   components: {
     mHeader,
   },
+  setup() {
+    return {
+    }
+  }
 })
 </script>
 <style>

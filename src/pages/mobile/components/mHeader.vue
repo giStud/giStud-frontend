@@ -12,7 +12,7 @@
       <q-icon class="nav-icon" name="feed" />
       <span>Новости</span>
     </q-btn>
-    <q-btn :to="'/announcement'" round no-caps class="nav-btn" flat>
+    <q-btn disable :to="'/announcement'" round no-caps class="nav-btn" flat>
       <q-icon class="nav-icon" name="campaign" />
       <span>Объявления</span>
     </q-btn>
