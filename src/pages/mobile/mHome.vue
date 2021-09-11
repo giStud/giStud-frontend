@@ -3,13 +3,18 @@
   <q-page class="body-color">
     <q-card flat>
       <q-card flat style="max-height: 81px;" square>
-        <q-card-section id="title-page" class="q-ma-none">Главная</q-card-section>
+        <q-card-section :class="theme('color-l', 'color-d')" id="title-page" class="q-ma-none">Главная</q-card-section>
         <q-card-section class="q-pa-none" id="top-nav-div">
-          <q-tabs id="asdasdasd" v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary"
+          <q-tabs id="asdasdasd" v-model="tab" dense class="text-grey" :active-color="theme('primary', '#d0d0d0')"
+                  :indicator-color="theme('primary', '#d0d0d0')"
                   align="justify"
                   narrow-indicator inline-label>
-            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Новости проекта</q-tab>
-            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">Подключенные университеты</q-tab>
+            <q-tab :class="theme('color-l', 'color-d')" class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">
+              Новости проекта
+            </q-tab>
+            <q-tab :class="theme('color-l', 'color-d')" class="q-px-sm top-nav tab-btn" no-caps flat name="univs">
+              Подключенные университеты
+            </q-tab>
           </q-tabs>
         </q-card-section>
         <q-separator/>
@@ -20,8 +25,8 @@
                 <q-card square flat class="q-mb-sm">
                   <q-separator/>
                   <q-card-section>
-                    <p style="font-size: 15px; margin: 0">{{ news.title }}</p>
-                    <p style="font-size: 9px; margin: 0;">{{ news.desc }}</p>
+                    <p :class="theme('color-l', 'color-d')" style="font-size: 15px; margin: 0">{{ news.title }}</p>
+                    <p :class="theme('color-l', 'color-d')" style="font-size: 9px; margin: 0;">{{ news.desc }}</p>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
                     <q-img :src="news.img"/>
@@ -38,19 +43,24 @@
                 <q-card square flat class="q-mb-sm">
                   <q-separator/>
                   <q-card-section>
-                    <p style="font-size: 15px; margin: 0; font-weight: bold">{{ news.title }}</p>
-                    <p style="font-size: 12px; margin: 0;">{{ news.desc }}</p>
+                    <p :class="theme('color-l', 'color-d')" style="font-size: 15px; margin: 0; font-weight: bold">
+                      {{ news.title }}</p>
+                    <p :class="theme('color-l', 'color-d')" style="font-size: 12px; margin: 0;">{{ news.desc }}</p>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
                     <q-img :src="news.img"/>
                     <template v-if="news.btn_url === ''">
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary" @click="dialogModel = true">
-                        <span style="color: white; font-size: 12px">{{news.btn}}</span>
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
+                             @click="dialogModel = true">
+                        <span :class="theme('color-l', 'color-d')"
+                              style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                     <template v-else>
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary" @click="goUrl(news.btn_url)">
-                        <span style="color: white; font-size: 12px">{{news.btn}}</span>
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
+                             @click="goUrl(news.btn_url)">
+                        <span :class="theme('color-l', 'color-d')"
+                              style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                   </q-card-section>
@@ -119,6 +129,7 @@ export default {
 .bg-none-l {
   background-color: rgb(238, 238, 238);
 }
+
 .bg-none-d {
   background-color: #2f3136;
 }
@@ -155,6 +166,11 @@ export default {
   font-size: 10px;
 }
 
-.tab-btn:hover {
+.color-d {
+  color: #d0d0d0;
+}
+
+.color-l {
+  color: gray;
 }
 </style>
