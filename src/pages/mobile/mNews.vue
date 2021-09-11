@@ -109,7 +109,7 @@ export default {
   background-color: rgb(238, 238, 238);
 }
 .bg-none-d {
-  background-color: rgb(53, 55, 57);
+  background-color: #2f3136;
 }
 
 .body-color {

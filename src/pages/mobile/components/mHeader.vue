@@ -1,5 +1,5 @@
 <template>
-  <q-card square class="row bg-white q-ma-none q-pa-none justify-between" style="max-height: 50px ; text-align: center">
+  <q-card square :class="theme('bg-none-l', 'bg-none-d')" class="row q-ma-none q-pa-none justify-between" style="max-height: 50px ; text-align: center">
     <q-btn :to="'/'" round no-caps class="q-ml-sm nav-btn" flat>
       <q-icon class="nav-icon" name="home" />
       <span>Главная</span>
@@ -24,16 +24,31 @@
 </template>
 
 <script>
+import {theme} from "src/services/other/tools";
+
 export default {
-  name: "mHeader"
+  name: "mHeader",
+  setup() {
+    return {
+      theme,
+    }
+  }
 }
 </script>
 
 <style scoped>
+
+.bg-none-l {
+  background-color: rgb(238, 238, 238);
+}
+.bg-none-d {
+  background-color: #2f3136;
+}
+
 .nav-btn {
   height: 50px;
   width: 50px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0);
 }
 .nav-icon {
   color: gray;
