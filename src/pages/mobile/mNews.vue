@@ -4,64 +4,76 @@
       <q-card flat style="max-height: 81px;" square>
         <q-card-section id="title-page" class="q-ma-none">Студенческие новости</q-card-section>
         <q-card-section class="q-pa-none" id="top-nav-div">
-          <q-tabs id="asdasdasd" v-model="tab" dense class="text-grey" active-color="primary" indicator-color="primary"
+          <q-tabs id="asdasdasd" v-model="newsTabPanel" dense class="text-grey" active-color="primary" indicator-color="primary"
                   align="justify"
                   narrow-indicator inline-label>
-            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Все</q-tab>
-            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">авто_ген_группа</q-tab>
+<!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Все</q-tab>-->
+<!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">авто_ген_группа</q-tab>-->
+            <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
+              <q-tab class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type">{{ type.type }}</q-tab>
+            </template>
           </q-tabs>
         </q-card-section>
         <q-separator/>
-        <q-tab-panels swipeable v-model="tab" animated>
-          <q-tab-panel :class="theme('bg-none-l', 'bg-none-d')" class=" q-px-none q-pt-sm" name="newsProject">
-            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
-              <template v-for="news in texts.newsProject" :key="news">
+        <q-tab-panels
+          v-model="newsTabPanel"
+          animated
+          swipeable
+          infinite
+        >
+          <q-tab-panel name="newsTab1" class="q-pa-none">
+            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')" v-touch-swipe.right="scaleNewsTypeIndex(-1)" v-touch-swipe.left="scaleNewsTypeIndex(1)">
+              <template v-for="itemNews in news" :key="itemNews">
                 <q-card square flat class="q-mb-sm">
                   <q-separator/>
                   <q-card-section>
-                    <p style="font-size: 15px; margin: 0">{{ news.title }}</p>
-                    <p style="font-size: 9px; margin: 0;">{{ news.desc }}</p>
+                    <p style="font-size: 15px; margin: 0">{{ itemNews.title }}</p>
+                    <div v-html="itemNews.shortText" style="margin: 0;"></div>
+                    <q-btn type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">читать дальше...</q-btn>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
-                    <q-img :src="news.img"/>
+                    <q-img :src="itemNews.imgSrc"/>
                   </q-card-section>
                   <q-separator/>
                 </q-card>
               </template>
             </q-card>
-            <div style="height: 50px;"></div>
           </q-tab-panel>
-          <q-tab-panel :class="theme('bg-none-l', 'bg-none-d')" class="q-px-none q-pt-sm" name="univs">
-            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
-              <template v-for="news in texts.connectedUniversities" :key="news">
+
+          <q-tab-panel name="newsTab2" class="q-pa-none">
+            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')" v-touch-swipe.right="scaleNewsTypeIndex(-1)" v-touch-swipe.left="scaleNewsTypeIndex(1)">
+              <template v-for="itemNews in news" :key="itemNews">
                 <q-card square flat class="q-mb-sm">
                   <q-separator/>
                   <q-card-section>
-                    <p style="font-size: 15px; margin: 0; font-weight: bold">{{ news.title }}</p>
-                    <p style="font-size: 12px; margin: 0;">{{ news.desc }}</p>
+                    <p style="font-size: 15px; margin: 0">{{ itemNews.title }}</p>
+                    <div v-html="itemNews.shortText" style="margin: 0;"></div>
+                    <q-btn type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">читать дальше...</q-btn>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
-                    <q-img :src="news.img"/>
-                    <template v-if="news.btn_url === ''">
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
-                             @click="dialogModel = true">
-                        <span style="color: white; font-size: 12px">{{ news.btn }}</span>
-                      </q-btn>
-                    </template>
-                    <template v-else>
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
-                             @click="goUrl(news.btn_url)">
-                        <span style="color: white; font-size: 12px">{{ news.btn }}</span>
-                      </q-btn>
-                    </template>
+                    <q-img :src="itemNews.imgSrc"/>
                   </q-card-section>
                   <q-separator/>
                 </q-card>
               </template>
             </q-card>
-            <div style="height: 40px;"></div>
           </q-tab-panel>
         </q-tab-panels>
+
+
+        <q-dialog maximized square v-model="newsDialog" transition-show="slide-left" transition-hide="slide-right">
+          <q-card flat>
+            <q-card-section class="row q-pa-none q-ma-none">
+              <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+              <span class="title-page">Источник:</span>
+              <q-btn class="q-ma-sm " icon="fas fa-external-link-alt" @click="goUrl(newsSrc)" flat round dense/>
+            </q-card-section>
+            <q-separator/>
+            <q-card-section v-html="newsText">
+
+            </q-card-section>
+          </q-card>
+        </q-dialog>
       </q-card>
     </q-card>
 
@@ -73,32 +85,105 @@ import {customClass, goUrl, theme} from "src/services/other/tools";
 import {onMounted, ref, watch} from "vue";
 import {useQuasar} from "quasar";
 import texts from "src/info/texts";
+import {useStore} from "vuex";
+import NewsService from "src/services/news/newsService";
 
 export default {
   name: "mNews",
 
   setup() {
-    const tab = ref('');
+    const newsTabPanel = ref('newsTab1');
     const $q = useQuasar();
-    onMounted(async () => {
-      tab.value = (localStorage.getItem("mHomeCurrentTab") === null) ? 'all' : localStorage.getItem("mHomeCurrentTab");
-    });
-
-    watch(tab, (val) => {
-      localStorage.setItem("mHomeCurrentTab", val)
-    });
-
+    const store = useStore();
+    const news = ref([]);
+    const newsTitle = ref("");
+    const newsText = ref("");
+    const newsDialog = ref(false);
+    const newsSrc = ref("");
+    const allTypeObj = {newsTypeId : -1, type: 'Все', iconName : 'apps'}
+    const newsTypeValue = ref(allTypeObj);
+    const newsTypesOptions = ref([]);
     const dialogModel = ref(false);
-    const url = (string) => {
-      window.open(string);
+    const currentNewsTypeIndex = ref(0);
+
+    const getNews = (title, text, sources) => {
+      newsDialog.value = true;
+      newsTitle.value = title;
+      newsText.value = text;
+      newsSrc.value = sources;
     };
+
+    const loadNextPage = async () => {
+      let idsOfExistingsNews = [];
+      for (let item of news.value) {
+        idsOfExistingsNews.push(item.newsId);
+      }
+      if (newsTypeValue.value.type === 'Все') {
+        await store.dispatch('news/getNewsPage', {existingNews: idsOfExistingsNews});
+      } else {
+        await store.dispatch('news/getNewsPageByType', {
+          existingNews: idsOfExistingsNews,
+          typeId: newsTypeValue.value.newsTypeId
+        })
+      }
+    }
+
+    const filterByNewsType = async (type) => {
+      if (type) {
+        store.commit('news/clearNews')
+        if (type.type === 'Все') {
+          await store.dispatch('news/getNewsPage', {existingNews: []})
+        } else {
+          await store.dispatch('news/getNewsPageByType', {existingNews: [], typeId: type.newsTypeId})
+        }
+      }
+    }
+
+    const scaleNewsTypeIndex = (val) => {
+      if (newsTypesOptions.value.length !== 0) {
+        let size = newsTypesOptions.value.length - 1;
+        let newVal = currentNewsTypeIndex.value + val;
+        if (newVal > size) {
+          newVal = size;
+        }
+        if (newVal < 0) {
+          newVal = 0;
+        }
+        currentNewsTypeIndex.value = newVal;
+      }
+    }
+
+    watch(currentNewsTypeIndex, (newVal)=> {
+      newsTypeValue.value = newsTypesOptions[newVal];
+    })
+
+    watch(newsTypeValue, filterByNewsType);
+
+    onMounted(async () => {
+      store.commit('news/clearNews')
+      await store.dispatch('news/getNewsPage', {existingNews: []})
+      await store.dispatch('news/getNewsTypes')
+      newsTypesOptions.value[0] = allTypeObj;
+      newsTypesOptions.value.push.apply(newsTypesOptions.value, store.getters['news/getNewsTypes']);
+      news.value = store.getters['news/getNews'];
+    });
+
     return {
-      tab,
-      $q,
+      newsTabPanel,
       texts,
-      goUrl,
+      news,
+      newsDialog,
+      newsTitle,
+      newsText,
+      newsSrc,
+      newsTypeValue,
+      newsTypesOptions,
       dialogModel,
-      url,
+      currentNewsTypeIndex,
+      scaleNewsTypeIndex,
+      loadNextPage,
+      getNews,
+      goUrl,
       theme,
     }
   }

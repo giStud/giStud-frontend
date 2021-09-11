@@ -60,7 +60,7 @@
           <q-item-section>
             <div>
               <q-item-label>
-                <q-chip square color="grey">
+                <q-chip square>
                   {{ lesson.lessonNumber }}
                 </q-chip>
               </q-item-label>
