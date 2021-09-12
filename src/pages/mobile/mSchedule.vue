@@ -1,149 +1,188 @@
 <template>
   <q-page>
-    <div>
-      <q-dialog maximized square v-model="groupSelectDialog" transition-show="slide-left" transition-hide="slide-right">
-       <q-card flat>
-         <q-card-section class="row q-pa-none q-ma-none">
-           <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
-           <span class="title-page">Выбор группы</span>
-         </q-card-section>
-         <q-separator/>
-         <q-card-section>
-           <q-select square borderless outlined dense v-model="univSelectValue" use-input hide-selected fill-input
-                     :options="univFilteredOptions" option-label="univName"
-                     @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots
-                     behavior="menu">
-             <template v-slot:option="scope">
-               <q-item v-bind="scope.itemProps">
-                 <q-item-section>
-                   <q-item-label v-html="scope.opt.univName"/>
-                   <q-item-label caption>{{ scope.opt.city }}</q-item-label>
-                 </q-item-section>
-               </q-item>
-             </template>
-             <template v-slot:no-option>
-               <q-item>
-                 <q-item-section class="text-grey">Не найдено</q-item-section>
-               </q-item>
-             </template>
-             <template v-slot:append>
-               <q-icon name="search"/>
-             </template>
-           </q-select>
-           <q-select style="margin-top: -15px; max-height: 100px" square borderless outlined v-model="groupSelectValue"
-                     use-input
-                     hide-selected fill-input dense :options="groupsFilteredOptions"
-                     option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up" transition-hide="jump-up"
-                     bottom-slots tabindex="5" behavior="menu">
-             <template v-slot:option="scope">
-               <q-item v-bind="scope.itemProps">
-                 <q-item-section>
-                   <q-item-label v-html="scope.opt.groupName"/>
-                   <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
-                 </q-item-section>
-               </q-item>
-             </template>
-             <template v-slot:no-option>
-               <q-item>
-                 <q-item-section class="text-grey">Не найдено</q-item-section>
-               </q-item>
-             </template>
-             <template v-slot:append>
-               <q-icon name="search"/>
-             </template>
-           </q-select>
-         </q-card-section>
-       </q-card>
-      </q-dialog>
-
-      <q-dialog maximized square v-model="settingsDialog" transition-show="slide-left" transition-hide="slide-right">
-        <q-card flat>
-          <q-card-section class="row q-pa-none q-ma-none">
-            <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
-            <span class="title-page">Выбор группы</span>
+    <q-card flat>
+      <q-card flat style="max-height: 81px;" square>
+        <q-card flat square class="row justify-between q-pa-none">
+          <q-card-section class="q-pa-none">
+            <q-card-section :class="theme('color-l', 'color-d')" id="title-page" class="q-ma-none q-pa-none fix-px fix-pt">Расписание</q-card-section>
+            <q-card-section @click="groupSelectDialog = true" class="q-pa-none q-pb-sm" id="top-nav-div">
+              <span v-if="groupSelectValue" class="title-page fix-px">{{ groupName }}</span>
+              <span v-else class="title-page fix-px">Выберите группу</span>
+            </q-card-section>
           </q-card-section>
-          <q-separator/>
-          <q-card-section>
-            <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
-          </q-card-section>
-          <q-card-section>
-            <template v-if="rawLessonStringMode">
-              2п (л/р ) Электротех. и электроника асс.Белых М.А. ауд.307/3 числитель
-            </template>
-            <template v-else>
-              2п Электротех. и электроника асс.Белых М.А. ауд.307/3
-            </template>
+          <q-card-section class="q-pa-none q-py-sm q-px-sm">
+            <q-btn size="16px" flat round icon="search" @click="groupSelectDialog = true"/>
           </q-card-section>
         </q-card>
-      </q-dialog>
+        <q-separator class="fix-mx"/>
+        <q-card-section class="row justify-between fix-pa">
+          <q-card class="q-py-sm" square flat>
+            <span style="font-size: 12px">{{
+                selectedDate.getDate() + ' ' + getMonthStringByDate(selectedDate) + ', ' + currentWeekType
+              }}</span>
+          </q-card>
+          <q-card square flat>
+            <q-btn style="margin-top: 3px" class="q-py-sm" size="11px" flat round icon="help_outline"
+                   @click="helpDialog = true"/>
+            <q-btn style="margin-top: 3px" class="q-py-sm" size="11px" flat round icon="settings"
+                   @click="settingsDialog = true"/>
+            <q-btn style="margin-top: 3px" class="q-py-sm" size="11px" color="black" round flat no-caps icon="today">
+              <q-popup-proxy transition-show="scale" transition-hide="scale">
+                <q-date v-model="datePickerDate"
+                        :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
+                  <div class="row items-center justify-end q-gutter-sm">
+                    <q-btn label="Перейти" color="primary" flat @click="selectedDate = new Date(datePickerDate)"
+                           v-close-popup/>
+                    <q-btn label="Отмена" color="primary" flat v-close-popup/>
+                  </div>
+                </q-date>
+              </q-popup-proxy>
+            </q-btn>
+          </q-card>
 
-      <q-dialog maximized square v-model="helpDialog">
-        <q-card flat>
-          <q-card-section class="row q-pa-none q-ma-none">
-            <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
-            <span class="title-page">0 помощи</span>
-          </q-card-section>
-          <q-separator/>
+
+        </q-card-section>
+
+        <q-card class="q-px-none">
+          <q-card square flat>
+
+            <q-card-section class="q-pa-none fix-pb">
+
+              <q-tab-panels v-model="daysButtonsPanel" animated swipeable infinite>
+                <q-tab-panel class="q-pa-none" name="weekButtonTab1">
+                  <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+                </q-tab-panel>
+                <q-tab-panel class="q-pa-none" name="weekButtonTab2">
+                  <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+                </q-tab-panel>
+
+              </q-tab-panels>
+
+            </q-card-section>
+
+          </q-card>
         </q-card>
-      </q-dialog>
 
-      <div v-if="groupSelectValue">
-        {{groupName}}
-      </div>
-      <div v-else>
-        Выберите группу
-      </div>
-      <div>
-        {{ selectedDate.getDate() + ' ' + getMonthStringByDate(selectedDate) + ',' + currentWeekType }}
-      </div>
 
-      <div>
-        <q-btn class="" color="black" round flat no-caps icon="today">
-          <q-popup-proxy transition-show="scale" transition-hide="scale">
-            <q-date v-model="datePickerDate"
-                    :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
-              <div class="row items-center justify-end q-gutter-sm">
-                <q-btn label="Перейти" color="primary" flat @click="selectedDate = new Date(datePickerDate)" v-close-popup/>
-                <q-btn label="Отмена" color="primary" flat v-close-popup/>
-              </div>
-            </q-date>
-          </q-popup-proxy>
-        </q-btn>
-      </div>
 
-      <q-btn @click="groupSelectDialog = true">GAVNO</q-btn>
-      <q-btn @click="settingsDialog = true">GAVNO SETTINGS</q-btn>
-      <q-btn @click="helpDialog = true">Помощь</q-btn>
-      <q-tab-panels
-        v-model="daysButtonsPanel"
-        animated
-        swipeable
-        infinite
-      >
-        <q-tab-panel name="weekButtonTab1">
-          <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
-        </q-tab-panel>
+        <div>
 
-        <q-tab-panel name="weekButtonTab2">
-          <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
-        </q-tab-panel>
+        </div>
 
-      </q-tab-panels>
-      <q-tab-panels
-        v-model="schedulePanel"
-        animated
-        swipeable
-        infinite
+        <div>
 
-      >
-        <q-tab-panel name="scheduleTab1" class="q-pa-none">
-          <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate" @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
-        </q-tab-panel>
-        <q-tab-panel name="scheduleTab2" class="q-pa-none">
-          <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate" @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
-        </q-tab-panel>
-      </q-tab-panels>
-    </div>
+        </div>
+
+
+
+        <q-tab-panels
+          v-model="schedulePanel"
+          animated
+          swipeable
+          infinite
+
+        >
+          <q-tab-panel name="scheduleTab1" class="q-pa-none">
+            <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate"
+                             @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
+          </q-tab-panel>
+          <q-tab-panel name="scheduleTab2" class="q-pa-none">
+            <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate"
+                             @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
+          </q-tab-panel>
+        </q-tab-panels>
+      </q-card>
+    </q-card>
+
+    <q-dialog maximized square v-model="groupSelectDialog" transition-show="slide-left"
+              transition-hide="slide-right">
+      <q-card flat>
+        <q-card-section class="row q-pa-none q-ma-none">
+          <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+          <span class="title-page">Выбор группы</span>
+        </q-card-section>
+        <q-separator/>
+        <q-card-section>
+          <q-select square borderless outlined dense v-model="univSelectValue" use-input hide-selected fill-input
+                    :options="univFilteredOptions" option-label="univName"
+                    @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots
+                    behavior="menu">
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps">
+                <q-item-section>
+                  <q-item-label v-html="scope.opt.univName"/>
+                  <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">Не найдено</q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:append>
+              <q-icon name="search"/>
+            </template>
+          </q-select>
+          <q-select style="margin-top: -15px; max-height: 100px" square borderless outlined
+                    v-model="groupSelectValue"
+                    use-input
+                    hide-selected fill-input dense :options="groupsFilteredOptions"
+                    option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up"
+                    transition-hide="jump-up"
+                    bottom-slots tabindex="5" behavior="menu">
+            <template v-slot:option="scope">
+              <q-item v-bind="scope.itemProps">
+                <q-item-section>
+                  <q-item-label v-html="scope.opt.groupName"/>
+                  <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:no-option>
+              <q-item>
+                <q-item-section class="text-grey">Не найдено</q-item-section>
+              </q-item>
+            </template>
+            <template v-slot:append>
+              <q-icon name="search"/>
+            </template>
+          </q-select>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog maximized square v-model="settingsDialog" transition-show="slide-left" transition-hide="slide-right">
+      <q-card flat>
+        <q-card-section class="row q-pa-none q-ma-none">
+          <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+          <span class="title-page">Выбор группы</span>
+        </q-card-section>
+        <q-separator/>
+        <q-card-section>
+          <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
+        </q-card-section>
+        <q-card-section>
+          <template v-if="rawLessonStringMode">
+            2п (л/р ) Электротех. и электроника асс.Белых М.А. ауд.307/3 числитель
+          </template>
+          <template v-else>
+            2п Электротех. и электроника асс.Белых М.А. ауд.307/3
+          </template>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog maximized square v-model="helpDialog">
+      <q-card flat>
+        <q-card-section class="row q-pa-none q-ma-none">
+          <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+          <span class="title-page">0 помощи</span>
+        </q-card-section>
+        <q-separator/>
+      </q-card>
+    </q-dialog>
+
   </q-page>
 </template>
 
@@ -151,18 +190,19 @@
 import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {
+  getDateOfMonday,
   getLessonFromSelectedDate,
+  getMonthStringByDate,
   getNumberOfWeek,
   getScheduleCellColor,
-  isCurrentLessonGoes,
-  getDateOfMonday,
-  getMonthStringByDate,
   getTypeOfWeek,
+  isCurrentLessonGoes,
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
 import ScheduleDayList from "components/mobile/schedule/ScheduleDayList";
 import UtilsService from "src/services/other/utilsService";
+import {theme} from "src/services/other/tools";
 
 function formatDate(date) {
   let dd = date.getDate();
@@ -175,7 +215,7 @@ function formatDate(date) {
 
 export default {
   name: "mSchedule.vue",
-  components : {
+  components: {
     ScheduleWeekButtons,
     ScheduleDayList
   },
@@ -301,7 +341,7 @@ export default {
       buttonsData.value[6].selected = tempDate.toString() === selectedDate.value.toString();
     }
 
-    const decrementWeek = async ()=> {
+    const decrementWeek = async () => {
       await UtilsService.sleep(200);
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() - 7)
@@ -315,14 +355,14 @@ export default {
       selectedDate.value = tempDate;
     }
 
-    const swipeRightSchedule = async() => {
+    const swipeRightSchedule = async () => {
       await UtilsService.sleep(150);
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() + 1)
       selectedDate.value = tempDate;
     }
 
-    const swipeLeftSchedule = async() => {
+    const swipeLeftSchedule = async () => {
       await UtilsService.sleep(150);
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() - 1)
@@ -341,7 +381,7 @@ export default {
 
       if (index > indexOfSelectedDate) {
         changeSelectedDateByOffset(index - indexOfSelectedDate)
-      } else if(index < indexOfSelectedDate){
+      } else if (index < indexOfSelectedDate) {
         changeSelectedDateByOffset(-(indexOfSelectedDate - index))
         console.log(-(indexOfSelectedDate - index))
       }
@@ -433,6 +473,7 @@ export default {
       swipeRightSchedule,
       swipeLeftSchedule,
       getMonthStringByDate,
+      theme,
       debug(val) {
         console.log(val)
       }
@@ -442,5 +483,60 @@ export default {
 </script>
 
 <style>
+.bg-none-l {
+  background-color: rgb(238, 238, 238);
+}
 
+.bg-none-d {
+  background-color: #2f3136;
+}
+
+#title-page {
+  font-size: 18px;
+}
+
+#top-nav-div {
+  width: auto;
+  font-size: 10px;
+  color: #1976D2;
+}
+
+.title-page {
+  font-size: 12px;
+  line-height: 13px;
+}
+
+.fix-pa {
+  padding: 15px;
+}
+
+.fix-py {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.fix-px {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+.fix-mx {
+  margin-right: 15px;
+  margin-left: 15px;
+}
+
+.fix-pt {
+  padding-top: 15px;
+}
+
+.fix-pb {
+  padding-bottom: 15px;
+}
+
+.fix-pr {
+  padding-right: 15px;
+}
+
+.fix-pl {
+  padding-left: 15px;
+}
 </style>

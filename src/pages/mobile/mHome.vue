@@ -115,7 +115,6 @@ export default {
     return {
       tab,
       theme,
-      $q,
       texts,
       goUrl,
       dialogModel,

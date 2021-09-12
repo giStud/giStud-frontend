@@ -94,7 +94,6 @@ export default {
     };
     return {
       tab,
-      $q,
       texts,
       goUrl,
       dialogModel,

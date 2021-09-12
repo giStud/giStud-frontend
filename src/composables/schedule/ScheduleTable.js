@@ -350,7 +350,7 @@ export function getScheduleCellColor(dayObject, splitterMode) {
 
 export function isCurrentLessonGoes(selectedWeek, lessonDay, lessonBeginTime, lessonFinishTime) {
   //const currentDate = new Date();
-  const currentDate = new Date(2021,8,6,15,20);
+  const currentDate = new Date(2021,8,6,8,20);
   const currentWeek = getNumberOfWeek(currentDate);
 
 

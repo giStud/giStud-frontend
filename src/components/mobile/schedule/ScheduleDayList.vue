@@ -1,28 +1,27 @@
 <template>
-  <q-list v-touch-swipe.right="swipeLeftSchedule" v-touch-swipe.left="swipeRightSchedule">
-    <q-item-label id="header-news" style="color: #1976D2; text-align: center" header>
-      Расписание
-      <q-separator class="q-my-sm" style="margin-left: 50px; margin-right: 50px"/>
-    </q-item-label>
+  <q-list v-touch-swipe.left="swipeRightSchedule" v-touch-swipe.right="swipeLeftSchedule">
     <template v-for="lesson in currentDayLessons" :key="lesson.lessonId">
 
       <template v-if="lesson.lessons.length === 1">
-        <q-item style="text-align: center" clickable @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
+        <q-item class="q-pa-none q-ma-none" clickable style="text-align: center" @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
           <q-item-section style="text-align: left">
-            <div>
-              <q-item-label>
-                <q-chip square :style="getScheduleCellColor(lesson.lessons[0])">
-                  {{ lesson.lessonNumber }}
+            <div> <!-- Див для одной строчки -->
+              <q-item-label class="row justify-between">
+                <div class="row justify-start items-center">
+                  <q-chip size="10px" :style="getScheduleCellColor(lesson.lessons[0])" class="q-ma-none q-px-md q-py-sm chip-number" square>
+                    {{ lesson.lessonNumber }}
+                  </q-chip>
+                  <q-item-label class="q-px-sm q-py-sm">
+                    <span>{{ lesson.time.lessonBeginTime }}</span><span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
+                  </q-item-label>
+                </div>
+                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 12px" text-color="white">
                 </q-chip>
               </q-item-label>
-              <q-item-label>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</q-item-label>
-              <q-chip style="border: none; font-size: 12px"
-                      v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                      outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас"/>
             </div>
-            <div>
-              <q-item-label class="list-title">{{  rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}</q-item-label>
-            </div>
+              <div class="q-pa-none q-ma-none" style="min-height: 10px">
+                {{ rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}
+              </div>
           </q-item-section>
         </q-item>
       </template>
@@ -32,24 +31,26 @@
           <q-item-section>
             <div>
               <q-item-label>
-                <q-chip square :style="getScheduleCellColor(lesson.lessons[0])">
+                <q-chip :style="getScheduleCellColor(lesson.lessons[0])" square>
                   {{ lesson.lessonNumber }}
                 </q-chip>
               </q-item-label>
               <q-item-label>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</q-item-label>
-              <q-chip style="border: none; font-size: 12px"
-                      v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDate), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                      outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас"/>
+              <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDate), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 12px" text-color="white" />
             </div>
           </q-item-section>
           <q-item-section>
             <q-item clickable @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
-              <q-item-label class="list-title">{{  rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}</q-item-label>
+              <q-item-label class="list-title">
+                {{ rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}
+              </q-item-label>
             </q-item>
           </q-item-section>
           <q-item-section>
             <q-item clickable @click="openLessonInfoDialog(lesson.lessons[1], lesson.time)">
-              <q-item-label class="list-title">{{  rawLessonStringMode ? lesson.lessons[1].rawLessonString : lesson.lessons[1].name }}</q-item-label>
+              <q-item-label class="list-title">
+                {{ rawLessonStringMode ? lesson.lessons[1].rawLessonString : lesson.lessons[1].name }}
+              </q-item-label>
             </q-item>
           </q-item-section>
         </q-item>
@@ -60,7 +61,7 @@
           <q-item-section>
             <div>
               <q-item-label>
-                <q-chip square color="grey">
+                <q-chip color="grey" square>
                   {{ lesson.lessonNumber }}
                 </q-chip>
               </q-item-label>
@@ -71,47 +72,53 @@
       </template>
     </template>
   </q-list>
-  <q-dialog square v-model="lessonInfoDialog" position="bottom">
+  <q-dialog v-model="lessonInfoDialog" position="bottom" square>
     <q-card flat>
-      <q-card-section class="row q-pa-none q-ma-none" >
-        <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+      <q-card-section class="row q-pa-none q-ma-none">
+        <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
         <span class="title-page">Информация о занятии</span>
       </q-card-section>
-      <q-separator/>
+      <q-separator />
       <template v-if="lessonInfoType">
         <q-card-section :style="getTypeColorByValue(lessonInfoType)">
-          {{getTypeNameByValue(lessonInfoType)}}
+          {{ getTypeNameByValue(lessonInfoType) }}
         </q-card-section>
-        <q-separator/>
+        <q-separator />
       </template>
       <q-card-section>
-        {{lessonInfoTimeString}}
+        {{ lessonInfoTimeString }}
       </q-card-section>
       <q-card-section>
-        {{lessonInfoText}}
+        {{ lessonInfoText }}
       </q-card-section>
-<!--      <template v-if="lessonInfoAudience">-->
-<!--        <q-separator/>-->
-<!--        <q-card-section >-->
-<!--          {{lessonInfoAudience}}-->
-<!--        </q-card-section>-->
-<!--      </template>-->
+      <!--      <template v-if="lessonInfoAudience">-->
+      <!--        <q-separator/>-->
+      <!--        <q-card-section >-->
+      <!--          {{lessonInfoAudience}}-->
+      <!--        </q-card-section>-->
+      <!--      </template>-->
     </q-card>
   </q-dialog>
 </template>
 
 <script>
-import {toRefs, ref, watch} from 'vue'
-import {isCurrentLessonGoes, getNumberOfWeek, getScheduleCellColor,getTypeNameByValue, getTypeColorByValue} from "src/composables/schedule/ScheduleTable";
+import {ref, toRefs} from 'vue'
+import {
+  getNumberOfWeek,
+  getScheduleCellColor,
+  getTypeColorByValue,
+  getTypeNameByValue,
+  isCurrentLessonGoes
+} from "src/composables/schedule/ScheduleTable";
 
 export default {
   name: "ScheduleDayList",
-  props : {
-    lessons : Array,
-    selectedDate : Date,
-    rlsMode : Boolean,
+  props: {
+    lessons: Array,
+    selectedDate: Date,
+    rlsMode: Boolean,
   },
-  emits : [
+  emits: [
     'swipeRightSchedule',
     'swipeLeftSchedule'
   ],
@@ -124,11 +131,11 @@ export default {
     const lessonInfoAudience = ref('');
     const lessonInfoTimeString = ref('');
 
-    const swipeRightSchedule = ()=> {
+    const swipeRightSchedule = () => {
       emit('swipeRightSchedule')
     }
 
-    const swipeLeftSchedule = ()=> {
+    const swipeLeftSchedule = () => {
       emit('swipeLeftSchedule')
     }
 
@@ -136,12 +143,12 @@ export default {
       if (lesson.name && lesson.name !== '' && time) {
         lessonInfoDialog.value = true;
         const audienceValue = lesson.audienceEntity.audience;
-        const typeValue =  lesson.typeEntity.typeName;
-        lessonInfoAudience.value = audienceValue !== 'UNKNOWN' &&  audienceValue !== '' ? audienceValue : null;
-        lessonInfoType.value = typeValue !== 'UNKNOWN' &&  typeValue !== '' ? typeValue : null;
+        const typeValue = lesson.typeEntity.typeName;
+        lessonInfoAudience.value = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
+        lessonInfoType.value = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
         lessonInfoText.value = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
-        lessonInfoTimeString.value = time.lessonBeginTime +  '-'  + time.lessonFinishTime;
-    }
+        lessonInfoTimeString.value = time.lessonBeginTime + '-' + time.lessonFinishTime;
+      }
     }
 
     return {
@@ -151,8 +158,8 @@ export default {
       lessonInfoType,
       lessonInfoAudience,
       lessonInfoTimeString,
-      currentDayLessons : ref(lessons),
-      selectedDateValue : ref(selectedDate),
+      currentDayLessons: ref(lessons),
+      selectedDateValue: ref(selectedDate),
       swipeRightSchedule,
       swipeLeftSchedule,
       isCurrentLessonGoes,
@@ -167,5 +174,7 @@ export default {
 </script>
 
 <style scoped>
-
+.chip-number {
+  border-radius: 0 5px 5px 0;
+}
 </style>
