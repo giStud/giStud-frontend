@@ -195,7 +195,6 @@ export default {
     const filterByNewsType = async (type) => {
       if (type) {
         store.commit('news/clearNews')
-        console.log(type)
         if (type.type === 'Все') {
           await store.dispatch('news/getNewsPage', {existingNews: []})
         } else {
@@ -217,7 +216,6 @@ export default {
       const newsId = props.newsId;
       if (props.newsId !== null) {
         const selectedNewsItem = await NewsService.getNewsItemById(newsId);
-        console.log(selectedNewsItem);
         getNews(selectedNewsItem.title, selectedNewsItem.fullText, selectedNewsItem.source);
       }
     });
