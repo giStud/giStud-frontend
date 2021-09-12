@@ -10,55 +10,55 @@
 <!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Все</q-tab>-->
 <!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">авто_ген_группа</q-tab>-->
             <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
-              <q-tab class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type">{{ type.type }}</q-tab>
+              <q-tab class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type" @update:model-value="filterByNewsType(type)">{{ type.type }}</q-tab>
             </template>
           </q-tabs>
         </q-card-section>
         <q-separator/>
-        <q-tab-panels
-          v-model="newsTabPanel"
-          animated
-          swipeable
-          infinite
-        >
-          <q-tab-panel name="newsTab1" class="q-pa-none">
-            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')" v-touch-swipe.right="scaleNewsTypeIndex(-1)" v-touch-swipe.left="scaleNewsTypeIndex(1)">
-              <template v-for="itemNews in news" :key="itemNews">
-                <q-card square flat class="q-mb-sm">
-                  <q-separator/>
-                  <q-card-section>
-                    <p style="font-size: 15px; margin: 0">{{ itemNews.title }}</p>
-                    <div v-html="itemNews.shortText" style="margin: 0;"></div>
-                    <q-btn type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">читать дальше...</q-btn>
-                  </q-card-section>
-                  <q-card-section class="q-pt-none q-px-none">
-                    <q-img :src="itemNews.imgSrc"/>
-                  </q-card-section>
-                  <q-separator/>
-                </q-card>
-              </template>
-            </q-card>
-          </q-tab-panel>
+<!--        <q-tab-panels-->
+<!--          v-model="newsTabPanel"-->
+<!--          animated-->
+<!--          swipeable-->
+<!--          infinite-->
+<!--        >-->
+<!--          <q-tab-panel name="newsTab1" class="q-pa-none">-->
+<!--            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')" v-touch-swipe.right="scaleNewsTypeIndex(-1)" v-touch-swipe.left="scaleNewsTypeIndex(1)">-->
+<!--              <template v-for="itemNews in news" :key="itemNews">-->
+<!--                <q-card square flat class="q-mb-sm">-->
+<!--                  <q-separator/>-->
+<!--                  <q-card-section>-->
+<!--                    <p style="font-size: 15px; margin: 0">{{ itemNews.title }}</p>-->
+<!--                    <div v-html="itemNews.shortText" style="margin: 0;"></div>-->
+<!--                    <q-btn type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">читать дальше...</q-btn>-->
+<!--                  </q-card-section>-->
+<!--                  <q-card-section class="q-pt-none q-px-none">-->
+<!--                    <q-img :src="itemNews.imgSrc"/>-->
+<!--                  </q-card-section>-->
+<!--                  <q-separator/>-->
+<!--                </q-card>-->
+<!--              </template>-->
+<!--            </q-card>-->
+<!--          </q-tab-panel>-->
 
-          <q-tab-panel name="newsTab2" class="q-pa-none">
-            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')" v-touch-swipe.right="scaleNewsTypeIndex(-1)" v-touch-swipe.left="scaleNewsTypeIndex(1)">
-              <template v-for="itemNews in news" :key="itemNews">
-                <q-card square flat class="q-mb-sm">
-                  <q-separator/>
-                  <q-card-section>
-                    <p style="font-size: 15px; margin: 0">{{ itemNews.title }}</p>
-                    <div v-html="itemNews.shortText" style="margin: 0;"></div>
-                    <q-btn type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">читать дальше...</q-btn>
-                  </q-card-section>
-                  <q-card-section class="q-pt-none q-px-none">
-                    <q-img :src="itemNews.imgSrc"/>
-                  </q-card-section>
-                  <q-separator/>
-                </q-card>
-              </template>
-            </q-card>
-          </q-tab-panel>
-        </q-tab-panels>
+<!--          <q-tab-panel name="newsTab2" class="q-pa-none">-->
+<!--            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')" v-touch-swipe.right="scaleNewsTypeIndex(-1)" v-touch-swipe.left="scaleNewsTypeIndex(1)">-->
+<!--              <template v-for="itemNews in news" :key="itemNews">-->
+<!--                <q-card square flat class="q-mb-sm">-->
+<!--                  <q-separator/>-->
+<!--                  <q-card-section>-->
+<!--                    <p style="font-size: 15px; margin: 0">{{ itemNews.title }}</p>-->
+<!--                    <div v-html="itemNews.shortText" style="margin: 0;"></div>-->
+<!--                    <q-btn type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">читать дальше...</q-btn>-->
+<!--                  </q-card-section>-->
+<!--                  <q-card-section class="q-pt-none q-px-none">-->
+<!--                    <q-img :src="itemNews.imgSrc"/>-->
+<!--                  </q-card-section>-->
+<!--                  <q-separator/>-->
+<!--                </q-card>-->
+<!--              </template>-->
+<!--            </q-card>-->
+<!--          </q-tab-panel>-->
+<!--        </q-tab-panels>-->
 
 
         <q-dialog maximized square v-model="newsDialog" transition-show="slide-left" transition-hide="slide-right">
@@ -129,6 +129,7 @@ export default {
     }
 
     const filterByNewsType = async (type) => {
+      console.log(type)
       if (type) {
         store.commit('news/clearNews')
         if (type.type === 'Все') {
@@ -182,6 +183,7 @@ export default {
       dialogModel,
       currentNewsTypeIndex,
       scaleNewsTypeIndex,
+      filterByNewsType,
       loadNextPage,
       getNews,
       goUrl,
