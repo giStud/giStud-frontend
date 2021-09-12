@@ -3,75 +3,94 @@
     <template v-for="lesson in currentDayLessons" :key="lesson.lessonId">
 
       <template v-if="lesson.lessons.length === 1">
-        <q-item class="q-pa-none q-ma-none" clickable style="text-align: center" @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
-          <q-item-section style="text-align: left">
+        <q-item class="q-pa-none q-ma-none" clickable style="text-align: center">
+          <q-item-section class="q-pb-md" style="text-align: left">
             <div> <!-- Див для одной строчки -->
               <q-item-label class="row justify-between">
                 <div class="row justify-start items-center">
-                  <q-chip size="10px" :style="getScheduleCellColor(lesson.lessons[0])" class="q-ma-none q-px-md q-py-sm chip-number" square>
+                  <q-chip :style="getScheduleCellColor(lesson.lessons[0])" class="q-ma-none q-px-md q-py-sm chip-number" size="12px" square>
                     {{ lesson.lessonNumber }}
                   </q-chip>
-                  <q-item-label class="q-px-sm q-py-sm">
-                    <span>{{ lesson.time.lessonBeginTime }}</span><span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
+                  <q-item-label class="q-px-sm q-py-none">
+                    <span>{{ lesson.time.lessonBeginTime }}</span>
+                    <span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
                   </q-item-label>
                 </div>
-                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 12px" text-color="white">
+                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 10px" text-color="white">
                 </q-chip>
               </q-item-label>
             </div>
-              <div class="q-pa-none q-ma-none" style="min-height: 10px">
-                {{ rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}
-              </div>
+            <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable style="background-color: #e6edf5" @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
+              <span v-if="lesson.lessons[0].rawLessonString === '' || lesson.lessons[0].name === ''" class="text-grey">Нет занятий</span>
+              <span v-else>{{ rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}</span>
+            </q-item>
           </q-item-section>
         </q-item>
       </template>
 
       <template v-else-if="lesson.lessons.length === 2">
-        <q-item style="text-align: center">
-          <q-item-section>
-            <div>
-              <q-item-label>
-                <q-chip :style="getScheduleCellColor(lesson.lessons[0])" square>
-                  {{ lesson.lessonNumber }}
+        <q-item class="q-pa-none q-ma-none" clickable style="text-align: center">
+          <q-item-section class="q-pb-md" style="text-align: left">
+            <div> <!-- Див для одной строчки -->
+              <q-item-label class="row justify-between">
+                <div class="row justify-start items-center">
+                  <q-chip :style="getScheduleCellColor(lesson.lessons[0])" class="q-ma-none q-px-md q-py-sm chip-number" size="12px" square>
+                    {{ lesson.lessonNumber }}
+                  </q-chip>
+                  <q-item-label class="q-px-sm q-py-none">
+                    <span>{{ lesson.time.lessonBeginTime }}</span>
+                    <span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
+                  </q-item-label>
+                </div>
+                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 10px" text-color="white">
                 </q-chip>
               </q-item-label>
-              <q-item-label>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</q-item-label>
-              <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDate), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 12px" text-color="white" />
             </div>
-          </q-item-section>
-          <q-item-section>
-            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
-              <q-item-label class="list-title">
-                {{ rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}
-              </q-item-label>
-            </q-item>
-          </q-item-section>
-          <q-item-section>
-            <q-item clickable @click="openLessonInfoDialog(lesson.lessons[1], lesson.time)">
-              <q-item-label class="list-title">
-                {{ rawLessonStringMode ? lesson.lessons[1].rawLessonString : lesson.lessons[1].name }}
-              </q-item-label>
-            </q-item>
+            <div class="q-pa-none fix-px q-ma-none" style="background-color: #e6edf5">
+              <q-item class="q-pa-none q-py-sm  items-center" clickable @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
+                <span v-if="lesson.lessons[0].rawLessonString === '' || lesson.lessons[0].name === ''" class="text-grey">Нет занятий</span>
+                <span v-else>{{
+                    rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name
+                  }}</span>
+              </q-item>
+              <q-separator class="" />
+              <q-item class="q-pa-none q-py-s items-center" clickable @click="openLessonInfoDialog(lesson.lessons[1], lesson.time)">
+                <span v-if="lesson.lessons[1].rawLessonString === '' || lesson.lessons[1].name === ''" class="text-grey" style="line-height: 14px">Нет занятий</span>
+                <span v-else style="line-height: 14px">{{
+                    rawLessonStringMode ? lesson.lessons[1].rawLessonString : lesson.lessons[1].name
+                  }}</span>
+              </q-item>
+            </div>
           </q-item-section>
         </q-item>
       </template>
 
       <template v-else>
-        <q-item>
-          <q-item-section>
-            <div>
-              <q-item-label>
-                <q-chip color="grey" square>
-                  {{ lesson.lessonNumber }}
-                </q-chip>
+        <q-item class="q-pa-none q-ma-none" clickable style="text-align: center">
+          <q-item-section class="q-pb-md" style="text-align: left">
+            <div> <!-- Див для одной строчки -->
+              <q-item-label class="row justify-between">
+                <div class="row justify-start items-center">
+                  <q-chip class="q-ma-none q-px-md q-py-sm chip-number" size="12px" square>
+                    {{ lesson.lessonNumber }}
+                  </q-chip>
+                  <q-item-label class="q-px-sm q-py-none">
+                    <span>{{ lesson.time.lessonBeginTime }}</span>
+                    <span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
+                  </q-item-label>
+                </div>
               </q-item-label>
-              <q-item-label>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</q-item-label>
             </div>
+            <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable style="background-color: #e6edf5">
+              <span class="text-grey">Нет занятий</span>
+            </q-item>
           </q-item-section>
         </q-item>
       </template>
+
     </template>
   </q-list>
+
   <q-dialog v-model="lessonInfoDialog" position="bottom" square>
     <q-card flat>
       <q-card-section class="row q-pa-none q-ma-none">
@@ -176,5 +195,15 @@ export default {
 <style scoped>
 .chip-number {
   border-radius: 0 5px 5px 0;
+}
+
+.fix-px {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.fix-mx {
+  margin-right: 15px;
+  margin-left: 15px;
 }
 </style>

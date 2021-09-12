@@ -91,6 +91,7 @@
                              @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
           </q-tab-panel>
         </q-tab-panels>
+        <div style="height: 40px;"></div>
       </q-card>
     </q-card>
 
