@@ -29,3 +29,7 @@ export function theme(light, darkT) {
 export function goUrl(url) {
   window.open(url);
 }
+
+export function debug(val) {
+  console.log(val)
+}

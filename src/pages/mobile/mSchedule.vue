@@ -64,17 +64,6 @@
         </q-card>
 
 
-
-        <div>
-
-        </div>
-
-        <div>
-
-        </div>
-
-
-
         <q-tab-panels
           v-model="schedulePanel"
           animated
@@ -475,9 +464,6 @@ export default {
       swipeLeftSchedule,
       getMonthStringByDate,
       theme,
-      debug(val) {
-        console.log(val)
-      }
     }
   }
 }

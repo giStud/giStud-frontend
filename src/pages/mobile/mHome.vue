@@ -98,10 +98,10 @@ export default {
     UserMessageDialog
   },
   setup() {
-    const tab = ref('');
+    const tab = ref('newsProject');
     const $q = useQuasar();
     onMounted(async () => {
-      tab.value = (localStorage.getItem("mHomeCurrentTab") === null) ? 'all' : localStorage.getItem("mHomeCurrentTab");
+      tab.value = (localStorage.getItem("mHomeCurrentTab") === null) ? 'newsProject' : localStorage.getItem("mHomeCurrentTab");
     });
 
     watch(tab, (val) => {
