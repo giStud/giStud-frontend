@@ -10,7 +10,7 @@
             <!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Все</q-tab>-->
             <!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">авто_ген_группа</q-tab>-->
             <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
-              <q-tab swipable class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type" @click="filterByNewsType(type)">
+              <q-tab swipable class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type" @click="newsTypeValue = type">
                 {{ type.type }}
               </q-tab>
             </template>
@@ -72,7 +72,6 @@ export default {
   name: "mNews",
 
   setup() {
-    const newsTabPanel = ref('');
     const $q = useQuasar();
     const store = useStore();
     const news = ref([]);
@@ -81,6 +80,7 @@ export default {
     const newsDialog = ref(false);
     const newsSrc = ref("");
     const allTypeObj = {newsTypeId: -1, type: 'Все', iconName: 'apps'}
+    const newsTabPanel = ref(allTypeObj.type);
     const newsTypeValue = ref(allTypeObj);
     const newsTypesOptions = ref([]);
     const dialogModel = ref(false);
@@ -137,8 +137,6 @@ export default {
       newsTypeValue.value = newsTypesOptions[newVal];
     })
 
-    watch(newsTypeValue, filterByNewsType);
-
     onMounted(async () => {
       store.commit('news/clearNews')
       await store.dispatch('news/getNewsPage', {existingNews: []})
@@ -146,7 +144,10 @@ export default {
       newsTypesOptions.value[0] = allTypeObj;
       newsTypesOptions.value.push.apply(newsTypesOptions.value, store.getters['news/getNewsTypes']);
       news.value = store.getters['news/getNews'];
+      newsTypeValue.value = allTypeObj;
     });
+
+    watch(newsTypeValue, filterByNewsType);
 
     return {
       newsTabPanel,
