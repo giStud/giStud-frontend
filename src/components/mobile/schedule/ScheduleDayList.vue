@@ -16,7 +16,7 @@
                     <span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
                   </q-item-label>
                 </div>
-                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 10px" text-color="white">
+                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 10px" text-color="white">
                 </q-chip>
               </q-item-label>
             </div>
@@ -42,7 +42,7 @@
                     <span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
                   </q-item-label>
                 </div>
-                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0].day, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 10px" text-color="white">
+                <q-chip v-if="isCurrentLessonGoes(getNumberOfWeek(selectedDateValue), lesson.lessons[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)" class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square style="border: none; font-size: 10px" text-color="white">
                 </q-chip>
               </q-item-label>
             </div>

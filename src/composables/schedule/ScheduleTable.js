@@ -348,24 +348,30 @@ export function getScheduleCellColor(dayObject, splitterMode) {
   }
 }
 
-export function isCurrentLessonGoes(selectedWeek, lessonDay, lessonBeginTime, lessonFinishTime) {
-  //const currentDate = new Date();
-  const currentDate = new Date(2021,8,6,8,20);
+export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lessonFinishTime) {
+  if (!lesson) {
+    return false;
+  }
+
+  if (lesson.name === '' || lesson.rawLessonString === '') {
+    return false;
+  }
+
+  const lessonDay = lesson.day;
+  const currentDate = new Date();
+  const currentDay = getWeekDayStringFromDate(currentDate);
+  //const currentDate = new Date(2021,8,6,8,20);
+  //const currentDay = 'MONDAY';
   const currentWeek = getNumberOfWeek(currentDate);
-
-
-  //const currentDay = getWeekDayStringFromDate(currentDate);
-  const currentDay = 'MONDAY';
-
 
   if (currentWeek === selectedWeek && currentDay === lessonDay) {
     const beginLessonArray = lessonBeginTime.split(":");
     const finishLessonArray = lessonFinishTime.split(":");
-    let startDate = new Date(2021,8,6);
+    let startDate = new Date();
     startDate.setHours(beginLessonArray[0])
     startDate.setMinutes(beginLessonArray[1])
     startDate.setSeconds(0);
-    let finishDate = new Date(2021,8,6);
+    let finishDate = new Date();
     finishDate.setHours(finishLessonArray[0])
     finishDate.setMinutes(finishLessonArray[1])
     startDate.setSeconds(0);

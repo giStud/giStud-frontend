@@ -185,8 +185,7 @@ import {
   getMonthStringByDate,
   getNumberOfWeek,
   getScheduleCellColor,
-  getTypeOfWeek,
-  isCurrentLessonGoes,
+  getTypeOfWeek
 } from "src/composables/schedule/ScheduleTable";
 import {useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
@@ -455,7 +454,6 @@ export default {
       filterUniversitiesFn,
       filterGroupsFn,
       getScheduleCellColor,
-      isCurrentLessonGoes,
       getNumberOfWeek,
       decrementWeek,
       incrementWeek,
