@@ -2,15 +2,14 @@
   <q-page class="body-color">
     <q-card flat>
       <q-card flat style="max-height: 81px;" square>
-        <q-card-section id="title-page" class="q-ma-none">Студенческие новости</q-card-section>
+        <q-card-section :class="theme('color-l', 'color-d')" id="title-page" class="q-ma-none">Студенческие новости</q-card-section>
         <q-card-section class="q-pa-none" id="top-nav-div">
-          <q-tabs id="asdasdasd" v-model="newsTabPanel" dense class="text-grey" active-color="primary" indicator-color="primary"
+          <q-tabs id="asdasdasd" v-model="newsTabPanel" dense class="text-grey" :active-color="theme('primary', '#d0d0d0')"
+                  :indicator-color="theme('primary', '#d0d0d0')"
                   align="justify"
                   narrow-indicator inline-label>
-            <!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">Все</q-tab>-->
-            <!--            <q-tab class="q-px-sm top-nav tab-btn" no-caps flat name="univs">авто_ген_группа</q-tab>-->
             <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
-              <q-tab swipable class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type" @click="newsTypeValue = type">
+              <q-tab :class="theme('color-l', 'color-d')" swipable class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type" @click="newsTypeValue = type">
                 {{ type.type }}
               </q-tab>
             </template>
@@ -22,11 +21,11 @@
               <q-card square flat class="q-mb-sm">
                 <q-separator />
                 <q-card-section>
-                  <p style="font-size: 15px; margin: 0">{{ itemNews.title }}</p>
-                  <div v-html="itemNews.shortText" style="margin: 0;"></div>
-                  <q-btn type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">читать
-                    дальше...
-                  </q-btn>
+                  <p :class="theme('text-black', 'text-white')" style="font-size: 15px; margin: 0 0 10px 0; font-weight: bold" class="text-justify">{{ itemNews.title }}</p>
+                  <div class="text-justify alodaun" v-html="itemNews.shortText" :style="theme('', 'color: white')" style="margin: 0;"/>
+                  <a :class="theme('text-primary', 'text-grey')" style="transform: none" type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">
+                    Открыть полностью...
+                  </a>
                 </q-card-section>
                 <q-card-section class="q-pt-none q-px-none">
                   <q-img :src="itemNews.imgSrc" />
@@ -36,20 +35,22 @@
             </template>
         </q-card>
         <div class="q-px-lg q-py-sm">
-          <q-btn flat @click="loadNextPage">Загрузить ещё</q-btn>
+          <q-btn v-if="(news.length % 5 === 0) && (news.length !== 0)" flat @click="loadNextPage">Загрузить ещё</q-btn>
         </div>
 
         <div style="height: 40px;"></div>
 
         <q-dialog maximized square v-model="newsDialog" transition-show="slide-left" transition-hide="slide-right">
           <q-card flat>
-            <q-card-section class="row q-pa-none q-ma-none">
+            <q-card-section class="row q-pa-none q-ma-none justify-between">
               <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup />
-              <span class="title-page">Источник:</span>
-              <q-btn class="q-ma-sm " icon="fas fa-external-link-alt" @click="goUrl(newsSrc)" flat round dense />
+              <q-btn size="10px" class="q-ma-sm " icon="fas fa-external-link-alt" @click="goUrl(newsSrc)" flat round dense />
             </q-card-section>
             <q-separator />
-            <q-card-section v-html="newsText">
+            <q-card-section class="q-pb-none text-justify" style="font-weight: bold; font-size: 14px">
+              {{ newsTitle }}
+            </q-card-section>
+            <q-card-section class="q-pt-sm text-justify" v-html="newsText">
 
             </q-card-section>
           </q-card>
@@ -173,6 +174,9 @@ export default {
 }
 </script>
 <style scoped>
+.alodaun span {
+  color: white;
+}
 .bg-none-l {
   background-color: rgb(238, 238, 238);
 }
@@ -213,6 +217,13 @@ export default {
   font-size: 10px;
 }
 
+.color-d {
+  color: #d0d0d0;
+}
+
+.color-l {
+  color: gray;
+}
 .tab-btn:hover {
 }
 </style>
