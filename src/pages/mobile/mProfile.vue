@@ -4,20 +4,22 @@
       <q-card flat style="max-height: 81px;" square>
         <q-card-section class="row justify-between q-pa-none q-ma-none">
           <span class="title-page">Профиль</span>
-          <template v-if="isAdmin /* TODO поправить и сделать что был залогинен пользователь*/">
-            <q-btn style="width: 48px;" @click="logout; isAdmin = !isAdmin /* TODO тоже самое*/" flat round
-                   icon="logout"/>
-          </template>
-          <template v-else>
-            <q-btn style="width: 48px;" @click="logout; isAdmin = !isAdmin /* TODO тоже самое*/" flat round
-                   icon="login"/>
+          <template v-if="isAdmin">
+            <template v-if="loggedIn">
+              <q-btn style="width: 48px;" @click="logout" flat round
+                     icon="logout"/>
+            </template>
+            <template v-else>
+              <q-btn style="width: 48px;" @click="login" flat round
+                     icon="login"/>
+            </template>
           </template>
         </q-card-section>
         <q-separator/>
 
         <q-card :class="theme('bg-none-l', 'bg-none-d')" class="q-px-none">
           <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
-            <template v-if="isAdmin /* TODO поправить и сделать что был залогинен пользователь*/">
+            <template v-if="loggedIn">
               <q-card flat square style="background-color:rgba(114,114,114,0.25);">
                 <q-card-section class="row justify-between q-pa-none fix-px fix-py">
                   <q-avatar color="primary" text-color="white">?</q-avatar>
@@ -27,13 +29,13 @@
                   </div>
                 </q-card-section>
                 <q-card-section class="q-pa-none fix-px fix-pb">
-                  <span class="text-h6">4gname<span style="color: gray">#0000</span></span>
+                  <span class="text-h6">{{currentUser.username}}<span style="color: gray">#0000</span></span>
                 </q-card-section>
               </q-card>
             </template>
 
             <q-card flat square>
-              <template v-if="isAdmin /* TODO поправить и сделать что был залогинен пользователь*/">
+              <template v-if="loggedIn">
                 <q-card-section class="q-px-none">
                   <span class="fix-px" :class="theme('text-grey-8', 'text-white')">НАСТРОЙКИ ПОЛЬЗОВАТЕЛЯ</span>
                   <q-list class="q-pa-none q-ma-none">
@@ -190,7 +192,7 @@
           </q-card-section>
           <q-card-section class="q-pa-none fix-pt">
             <span class="fix-px">УКАЖИТЕ ВАШЕ СООБЩЕНИЕ</span>
-            <q-input square input-style="resize: none;" counter filled rows="10" type="textarea"
+            <q-input square input-style="resize: none;" style="height: auto" counter filled rows="10" type="textarea"
                      v-model="requestDialogText" label="Текст *" lazy-rules
                      :rules="[(val) => (!!val && val.length >= 1 && val.length <= 500) || 'Текст сообщения не может быть меньше 1 символов или больше 500']"
                      autofocus/>
@@ -225,8 +227,8 @@ export default {
     const store = useStore();
     const router = useRouter();
     const dialogModel = ref(false);
-    const loggedIn = computed(() => store.state.auth.loggedIn);
-    const isAdmin = ref(true);
+    const loggedIn = computed(() => store.getters['auth/isLogged']);
+    const isAdmin = ref(false);
     /**
      * TODO Delete this after creating normal authorization
      */
@@ -235,6 +237,9 @@ export default {
       store.dispatch("auth/logoutAction");
       router.push("/profile");
     };
+    const login = () => {
+
+    }
 
     const darkTheme = ref(false);
 
@@ -242,7 +247,7 @@ export default {
       let user = store.getters["auth/getCurrentUser"];
       if (user !== null) {
         let roles = user.roles;
-        roles && roles.includes("ROLE_ADMIN") ? isAdmin.value = true : isAdmin.value = false;
+        isAdmin.value = roles && roles.includes("ROLE_ADMIN");
       }
       darkTheme.value = Dark.isActive;
     });
@@ -296,21 +301,22 @@ export default {
 
     return {
       loggedIn,
-      currentUser: computed(() => store.state.auth.user),
       dialogModel,
-      logout,
       isAdmin,
+      darkTheme,
+      requestDialogEmail,
+      requestDialogText,
+      sendButtonModel,
+      login,
+      logout,
+      currentUser: computed(() => store.getters['auth/getCurrentUser']),
       statusDialog: ref(false),
       profileDialog: ref(false),
       appearanceDialog: ref(false),
       supportDialog: ref(false),
       Dark,
-      darkTheme,
       setDarkTheme,
       goUrl,
-      requestDialogEmail,
-      requestDialogText,
-      sendButtonModel,
       isValidEmail(val) {
         return UtilsService.isValidEmail(val);
       },
