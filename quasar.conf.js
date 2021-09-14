@@ -52,7 +52,7 @@ module.exports = configure(function (ctx) {
       vueRouterMode: 'history', // available values: 'hash', 'history'
 
       env: {
-        API: ctx.dev ? 'http://192.168.10.152:8080' : '/api'
+        API: ctx.dev ? 'http://localhost:8080' : '/api'
       },
       // transpile: false,
 
