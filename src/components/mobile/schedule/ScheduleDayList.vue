@@ -20,7 +20,7 @@
                 </q-chip>
               </q-item-label>
             </div>
-            <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable style="background-color: #e6edf5" @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
+            <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable :style="theme('background-color: #e6edf5', 'background-color: #2f3136')" @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
               <span v-if="lesson.lessons[0].rawLessonString === '' || lesson.lessons[0].name === ''" class="text-grey">Нет занятий</span>
               <span v-else>{{ rawLessonStringMode ? lesson.lessons[0].rawLessonString : lesson.lessons[0].name }}</span>
             </q-item>
@@ -37,7 +37,7 @@
                   <q-chip :style="getScheduleCellColor(lesson.lessons[0])" class="q-ma-none q-px-md q-py-sm chip-number" size="12px" square>
                     {{ lesson.lessonNumber }}
                   </q-chip>
-                  <q-item-label class="q-px-sm q-py-none">
+                  <q-item-label class="q-px-sm q-py-none" >
                     <span>{{ lesson.time.lessonBeginTime }}</span>
                     <span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
                   </q-item-label>
@@ -46,7 +46,7 @@
                 </q-chip>
               </q-item-label>
             </div>
-            <div class="q-pa-none fix-px q-ma-none" style="background-color: #e6edf5">
+            <div class="q-pa-none fix-px q-ma-none" :style="theme('background-color: #e6edf5', 'background-color: #2f3136')">
               <q-item class="q-pa-none q-py-sm  items-center" clickable @click="openLessonInfoDialog(lesson.lessons[0], lesson.time)">
                 <span v-if="lesson.lessons[0].rawLessonString === '' || lesson.lessons[0].name === ''" class="text-grey">Нет занятий</span>
                 <span v-else>{{
@@ -71,17 +71,17 @@
             <div> <!-- Див для одной строчки -->
               <q-item-label class="row justify-between">
                 <div class="row justify-start items-center">
-                  <q-chip class="q-ma-none q-px-md q-py-sm chip-number" size="12px" square>
+                  <q-chip class="q-ma-none q-px-md q-py-sm chip-number" size="12px" square :style="theme('', 'background-color: gray')">
                     {{ lesson.lessonNumber }}
                   </q-chip>
-                  <q-item-label class="q-px-sm q-py-none">
+                  <q-item-label class="q-px-sm q-py-none" >
                     <span>{{ lesson.time.lessonBeginTime }}</span>
                     <span style="color: gray"> - {{ lesson.time.lessonFinishTime }}</span>
                   </q-item-label>
                 </div>
               </q-item-label>
             </div>
-            <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable style="background-color: #e6edf5">
+            <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable :style="theme('background-color: #e6edf5', 'background-color: #2f3136')">
               <span class="text-grey">Нет занятий</span>
             </q-item>
           </q-item-section>
@@ -129,6 +129,7 @@ import {
   getTypeNameByValue,
   isCurrentLessonGoes
 } from "src/composables/schedule/ScheduleTable";
+import {theme} from "src/services/other/tools";
 
 export default {
   name: "ScheduleDayList",
@@ -186,7 +187,8 @@ export default {
       getScheduleCellColor,
       openLessonInfoDialog,
       getTypeNameByValue,
-      getTypeColorByValue
+      getTypeColorByValue,
+      theme
     }
   }
 }

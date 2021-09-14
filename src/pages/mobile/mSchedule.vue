@@ -4,12 +4,12 @@
       <q-card flat square style="max-height: 81px;">
         <q-card class="row justify-between q-pa-none" flat square>
           <q-card-section class="q-pa-none">
-            <q-card-section id="title-page" :class="theme('color-l', 'color-d')" class="q-ma-none q-pa-none fix-px fix-pt">
+            <q-card-section id="title-page" :class="theme('', 'bg-dark')" class="q-ma-none q-pa-none fix-px fix-pt">
               Расписание
             </q-card-section>
             <q-card-section id="top-nav-div" class="q-pa-none q-pb-sm" @click="groupSelectDialog = true">
-              <span v-if="groupSelectValue" class="title-page fix-px">{{ groupName }}</span>
-              <span v-else class="title-page fix-px">Выберите группу</span>
+              <span v-if="groupSelectValue" :class="theme('', 'text-grey')" class="title-page fix-px">{{ groupName }}</span>
+              <span v-else :class="theme('', 'text-grey')" class="title-page fix-px">Выберите группу</span>
             </q-card-section>
           </q-card-section>
           <q-card-section class="q-pa-none q-py-sm q-px-sm">
@@ -17,7 +17,7 @@
           </q-card-section>
         </q-card>
         <q-separator class="fix-mx" />
-        <q-card-section class="row justify-between fix-pa">
+        <q-card-section :class="theme('', 'bg-dark')" class="row justify-between fix-pa">
           <q-card class="q-py-sm" flat square>
             <q-card-section class="q-pa-none" style="font-size: 12px">
               Неделя: {{currentWeek}}, {{currentWeekType}}
@@ -31,14 +31,14 @@
                    @click="helpDialog = true" />
             <q-btn class="q-py-sm" flat icon="settings" round size="12px"
                    @click="settingsDialog = true" />
-            <q-btn class="q-py-sm" color="black" flat icon="today" no-caps round size="12px">
+            <q-btn class="q-py-sm" flat icon="today" no-caps round size="12px">
               <q-popup-proxy transition-hide="scale" transition-show="scale">
-                <q-date v-model="datePickerDate"
+                <q-date :color="theme('primary','grey')" v-model="datePickerDate"
                         :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
                   <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn v-close-popup color="primary" flat label="Перейти"
+                    <q-btn v-close-popup :color="theme('primary','white')" flat label="Перейти"
                            @click="selectedDate = new Date(datePickerDate)" />
-                    <q-btn v-close-popup color="primary" flat label="Отмена" />
+                    <q-btn v-close-popup :color="theme('primary','white')" flat label="Отмена" />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -99,7 +99,7 @@
         <q-separator />
         <q-card-section>
           <span style="font-size: 12px">ВЫБОР УНИВЕРСИТЕТА:</span>
-          <q-select v-model="univSelectValue" :options="univFilteredOptions" behavior="menu" borderless bottom-slots dense fill-input hide-selected
+          <q-select :color="theme('primary','white')" v-model="univSelectValue" :options="univFilteredOptions" behavior="menu" borderless bottom-slots dense fill-input hide-selected
                     option-label="univName" outlined
                     square transition-hide="jump-up" transition-show="jump-up" use-input
                     @filter="filterUniversitiesFn">
@@ -121,7 +121,7 @@
             </template>
           </q-select>
           <span style="font-size: 12px">ВЫБОР ГРУППЫ:</span>
-          <q-select v-model="groupSelectValue" :options="groupsFilteredOptions" behavior="menu" borderless
+          <q-select :color="theme('primary','white')" v-model="groupSelectValue" :options="groupsFilteredOptions" behavior="menu" borderless
                     bottom-slots
                     dense
                     fill-input hide-selected option-label="groupName" outlined
@@ -157,7 +157,7 @@
         </q-card-section>
         <q-separator />
         <q-card-section>
-          <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label />
+          <q-toggle :color="theme('primary','white')" v-model="rawLessonStringMode" label="Режим без обработки: " left-label />
         </q-card-section>
         <q-card-section class="q-pa-none ">
           <q-item class="q-pa-none q-ma-none" clickable style="text-align: center">
@@ -176,7 +176,7 @@
                   </div>
                 </q-item-label>
               </div>
-              <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable style="background-color: #e6edf5">
+              <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable :style="theme('background-color: #e6edf5', 'background-color: gray')">
                 <span>
                   <template v-if="rawLessonStringMode">
                     2п (пр) Электротех. и электроника асс.Белых М.А. ауд.307/3 числитель
@@ -220,7 +220,7 @@ import {useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
 import ScheduleDayList from "components/mobile/schedule/ScheduleDayList";
 import UtilsService from "src/services/other/utilsService";
-import {theme} from "src/services/other/tools";
+import {customClass, theme} from "src/services/other/tools";
 
 function formatDate(date) {
   let dd = date.getDate();
@@ -496,6 +496,7 @@ export default {
       swipeLeftSchedule,
       getMonthStringByDate,
       theme,
+      customClass
     }
   }
 }
@@ -568,5 +569,13 @@ export default {
 
 .chip-number {
   border-radius: 0 5px 5px 0;
+}
+
+.color-d {
+  color: #d0d0d0;
+}
+
+.color-l {
+  color: gray;
 }
 </style>

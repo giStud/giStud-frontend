@@ -1,4 +1,6 @@
 import UtilsService from '../../services/other/utilsService'
+import {theme} from "src/services/other/tools";
+import {Dark} from "quasar";
 
 export function getTableRowsFromLessons(lessons, week) {
   let timeArray = [];
@@ -462,9 +464,9 @@ export function getTypeColorByValue(type) {
       case 'PRACTICE_AND_LAB' : return 'background-color: rgba(191,253,222,0.9);';
       case 'MILITARY_TRAINING' : return 'background-color: rgba(203,182,155,0.9);';
       case 'RELOCATION' : return 'background-color: rgba(195,171,7,0.4);';
-      default: return '';
+      default: return Dark.isActive? 'background-color: gray' : '';
     }
   } else {
-    return '';
+    return Dark.isActive? 'background-color: gray' : '';
   }
 }
