@@ -2,7 +2,7 @@
   <q-layout>
     <Header class="mobile-hide" />
     <mobileHeader class="desktop-hide" />
-    <q-page-container class="q-pa-none">
+    <q-page-container class="q-pa-none" style="padding-top: 0">
       <router-view />
     </q-page-container>
 
