@@ -3,7 +3,7 @@ body {
   background-color: rgb(238, 238, 238);
 }
 
-#logo {
+.logo {
   height: 50px;
   width: 150px;
   margin-right: 20px;

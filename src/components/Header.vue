@@ -1,10 +1,13 @@
 <template>
   <div class="q-pa-md" style="min-width: 1248px; padding-left: 24px; padding-right: 24px">
     <q-toolbar class="bg-primary text-white">
-      <q-btn class="q-pa-none bg-none" :to="'/'" flat color="primary">
-      <q-avatar id="logo" square>
-        <img src="../assets/logo.svg">
-      </q-avatar>
+
+      <q-btn class=" q-pa-none bg-none" :to="'/'" flat color="primary">
+        <q-avatar style="width: 150px" class="q-pa-none" square>
+          <q-img
+            src="../assets/logo.svg"
+          />
+        </q-avatar>
       </q-btn>
 
       <q-separator dark vertical inset/>
