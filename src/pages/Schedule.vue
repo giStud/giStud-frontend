@@ -266,7 +266,7 @@
                                   :style="getScheduleCellColor(cell[0])">
                             <div class="col-12">
                               <div class="col-6">{{ rawLessonStringMode ? cell[0].rawLessonString : cell[1].name }}</div>
-                              <div class="col-6"> <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[0].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
+                              <div class="col-6"> <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[0], props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
                             </div>
                           </q-item>
                         </div>
@@ -275,7 +275,7 @@
                                 :style="getScheduleCellColor(cell[1])">
                           <div class="col-12">
                             <div class="col-6">{{ rawLessonStringMode ? cell[1].rawLessonString : cell[1].name }}</div>
-                            <div class="col-6"><q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[1].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
+                            <div class="col-6"><q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[1], props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" /></div>
                           </div>
                         </q-item>
                       </q-list>
@@ -286,7 +286,7 @@
                       {{ rawLessonStringMode ? cell[0].rawLessonString : cell[0].name }}
                     </div>
                     <div>
-                      <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[0].day, props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" />
+                      <q-chip style="border: none; font-size: 12px" v-if="isCurrentLessonGoes(selectedWeek, cell[0], props.row.time.lessonBeginTime, props.row.time.lessonFinishTime)" outline square color="red" text-color="white" icon="alarm" label="Идёт сейчас" />
                     </div>
                   </template>
                 </q-td>

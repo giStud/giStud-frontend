@@ -304,33 +304,35 @@ export function getScheduleCellColor(dayObject, splitterMode) {
   }
 }
 
-export function isCurrentLessonGoes(selectedWeek, lessonDay, lessonBeginTime, lessonFinishTime) {
-  //const currentDate = new Date();
-  const currentDate = new Date(2021,8,8,15,16);
+export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lessonFinishTime) {
+  if (!lesson) {
+    return false;
+  }
+
+  if (lesson.name === '' || lesson.rawLessonString === '') {
+    return false;
+  }
+
+  const lessonDay = lesson.day;
+  const currentDate = new Date();
   const currentWeek = getNumberOfWeek(currentDate);
   let dayWeek = [7, 1, 2, 3, 4, 5, 6][currentDate.getDay()];
-  //const currentDay = getDayStringFromNumberOfDay(dayWeek);
-  const currentDay = 'MONDAY';
+  const currentDay = getDayStringFromNumberOfDay(dayWeek);
+  //const currentDate = new Date(2021,8,8,15,16);
+  //const currentDay = 'MONDAY';
 
 
   if (currentWeek === selectedWeek && currentDay === lessonDay) {
-    console.log('ВОШЁЛ')
     const beginLessonArray = lessonBeginTime.split(":");
     const finishLessonArray = lessonFinishTime.split(":");
-    console.log(beginLessonArray)
-    console.log(finishLessonArray)
     let startDate = new Date();
     startDate.setHours(beginLessonArray[0])
     startDate.setMinutes(beginLessonArray[1])
     startDate.setSeconds(0);
-    console.log(startDate)
     let finishDate = new Date();
     finishDate.setHours(finishLessonArray[0])
     finishDate.setMinutes(finishLessonArray[1])
     startDate.setSeconds(0);
-    console.log(finishDate)
-
-    console.log(currentDate)
 
     return currentDate >= startDate && currentDate <= finishDate;
   } else {

@@ -125,7 +125,9 @@ body {
 }
 
 #main-table-rasp-time {
-  width: 95px;
+  min-width: 110px;
+  width: 110px;
+  max-width: 110px;
   text-align: center;
 }
 
