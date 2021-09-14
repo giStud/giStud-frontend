@@ -1,9 +1,11 @@
 <template>
   <q-header elevated >
     <q-toolbar class="bg-primary text-white">
-      <q-btn class="q-pa-none bg-none" :to="'/'" flat color="primary">
-        <q-avatar id="logo" square>
-          <img src="../../assets/logo.svg">
+      <q-btn class="logo q-pa-none bg-none" :to="'/'" flat color="primary">
+        <q-avatar style="width: 150px" class="q-pa-none" square>
+          <q-img
+            src="../../assets/logo.svg"
+          />
         </q-avatar>
       </q-btn>
       <q-space/>
