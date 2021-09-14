@@ -609,7 +609,8 @@ export default {
             grId: selectedGroupId,
           });
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
-          localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
+          //localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
+          localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val))
           scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
           mobileMondayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'MONDAY');
           mobileTuesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'TUESDAY');
@@ -622,7 +623,8 @@ export default {
           console.log('Find deleted group');
         }
       } catch (e) {
-        localStorage.removeItem("lastLoadedGroup");
+        //localStorage.removeItem("lastLoadedGroup");
+        localStorage.removeItem("lastLoadedGroupNew");
         groupSelectValue.value = null;
       }
 
@@ -769,7 +771,8 @@ export default {
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
-      let lastLoadedGroup = localStorage.getItem('lastLoadedGroup');
+      //let lastLoadedGroup = localStorage.getItem('lastLoadedGroup');
+      let lastLoadedGroup = localStorage.getItem('lastLoadedGroupNew');
 
       if (rlsMode === 'true') {
         rawLessonStringMode.value = true;
