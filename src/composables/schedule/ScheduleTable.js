@@ -452,7 +452,7 @@ export function getTypeNameByValue(type) {
 export function getTypeColorByValue(type) {
   if (type) {
     switch (type) {
-      case 'LAB' : return 'background-color: rgba(204,220,236,0.9);';
+      case 'LAB' : return 'background-color: rgba(175,220,236,0.9);';
       case 'LECTURE' : return 'background-color: rgba(213,218,175,0.9);';
       case 'PRACTICE' : return 'background-color: rgba(248,201,201,0.9);';
       case 'PE' : return 'background-color: rgba(41, 58, 128, 0.4)';

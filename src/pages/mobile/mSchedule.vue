@@ -1,39 +1,44 @@
 <template>
   <q-page>
     <q-card flat>
-      <q-card flat style="max-height: 81px;" square>
-        <q-card flat square class="row justify-between q-pa-none">
+      <q-card flat square style="max-height: 81px;">
+        <q-card class="row justify-between q-pa-none" flat square>
           <q-card-section class="q-pa-none">
-            <q-card-section :class="theme('color-l', 'color-d')" id="title-page" class="q-ma-none q-pa-none fix-px fix-pt">Расписание</q-card-section>
-            <q-card-section @click="groupSelectDialog = true" class="q-pa-none q-pb-sm" id="top-nav-div">
+            <q-card-section id="title-page" :class="theme('color-l', 'color-d')" class="q-ma-none q-pa-none fix-px fix-pt">
+              Расписание
+            </q-card-section>
+            <q-card-section id="top-nav-div" class="q-pa-none q-pb-sm" @click="groupSelectDialog = true">
               <span v-if="groupSelectValue" class="title-page fix-px">{{ groupName }}</span>
               <span v-else class="title-page fix-px">Выберите группу</span>
             </q-card-section>
           </q-card-section>
           <q-card-section class="q-pa-none q-py-sm q-px-sm">
-            <q-btn size="16px" flat round icon="search" @click="groupSelectDialog = true"/>
+            <q-btn flat icon="search" round size="16px" @click="groupSelectDialog = true" />
           </q-card-section>
         </q-card>
-        <q-separator class="fix-mx"/>
+        <q-separator class="fix-mx" />
         <q-card-section class="row justify-between fix-pa">
-          <q-card class="q-py-sm" square flat>
-            <span style="font-size: 12px">{{
-                selectedDate.getDate() + ' ' + getMonthStringByDate(selectedDate) + ', ' + currentWeekType
-              }}</span>
+          <q-card class="q-py-sm" flat square>
+            <q-card-section class="q-pa-none" style="font-size: 12px">
+              Неделя: {{currentWeek}}, {{currentWeekType}}
+            </q-card-section>
+            <q-card-section class="q-pa-none" style="font-size: 12px">
+              День: {{selectedDate.getDate() + ' ' + getMonthStringByDate(selectedDate) }}
+            </q-card-section>
           </q-card>
-          <q-card square flat>
-            <q-btn style="margin-top: 3px" class="q-py-sm" size="11px" flat round icon="help_outline"
-                   @click="helpDialog = true"/>
-            <q-btn style="margin-top: 3px" class="q-py-sm" size="11px" flat round icon="settings"
-                   @click="settingsDialog = true"/>
-            <q-btn style="margin-top: 3px" class="q-py-sm" size="11px" color="black" round flat no-caps icon="today">
-              <q-popup-proxy transition-show="scale" transition-hide="scale">
+          <q-card flat square class="q-py-sm">
+            <q-btn class="q-py-sm" flat icon="help_outline" round size="12px"
+                   @click="helpDialog = true" />
+            <q-btn class="q-py-sm" flat icon="settings" round size="12px"
+                   @click="settingsDialog = true" />
+            <q-btn class="q-py-sm" color="black" flat icon="today" no-caps round size="12px">
+              <q-popup-proxy transition-hide="scale" transition-show="scale">
                 <q-date v-model="datePickerDate"
                         :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
                   <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn label="Перейти" color="primary" flat @click="selectedDate = new Date(datePickerDate)"
-                           v-close-popup/>
-                    <q-btn label="Отмена" color="primary" flat v-close-popup/>
+                    <q-btn v-close-popup color="primary" flat label="Перейти"
+                           @click="selectedDate = new Date(datePickerDate)" />
+                    <q-btn v-close-popup color="primary" flat label="Отмена" />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -44,16 +49,16 @@
         </q-card-section>
 
         <q-card class="q-px-none">
-          <q-card square flat>
+          <q-card flat square>
 
             <q-card-section class="q-pa-none fix-pb">
 
-              <q-tab-panels v-model="daysButtonsPanel" animated swipeable infinite>
+              <q-tab-panels v-model="daysButtonsPanel" animated infinite swipeable>
                 <q-tab-panel class="q-pa-none" name="weekButtonTab1">
-                  <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+                  <ScheduleWeekButtons :buttons-data="buttonsData" @changeDateByIndex="changeSelectedDateByButtonIndex" @decrementWeek="decrementWeek" @incrementWeek="incrementWeek" />
                 </q-tab-panel>
                 <q-tab-panel class="q-pa-none" name="weekButtonTab2">
-                  <ScheduleWeekButtons :buttons-data="buttonsData" @incrementWeek="incrementWeek" @decrementWeek="decrementWeek" @changeDateByIndex="changeSelectedDateByButtonIndex"/>
+                  <ScheduleWeekButtons :buttons-data="buttonsData" @changeDateByIndex="changeSelectedDateByButtonIndex" @decrementWeek="decrementWeek" @incrementWeek="incrementWeek" />
                 </q-tab-panel>
 
               </q-tab-panels>
@@ -67,40 +72,41 @@
         <q-tab-panels
           v-model="schedulePanel"
           animated
-          swipeable
           infinite
+          swipeable
 
         >
-          <q-tab-panel name="scheduleTab1" class="q-pa-none">
+          <q-tab-panel class="q-pa-none" name="scheduleTab1">
             <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate"
-                             @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
+                             @swipeLeftSchedule="swipeLeftSchedule" @swipeRightSchedule="swipeRightSchedule" />
           </q-tab-panel>
-          <q-tab-panel name="scheduleTab2" class="q-pa-none">
+          <q-tab-panel class="q-pa-none" name="scheduleTab2">
             <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate"
-                             @swipeRightSchedule="swipeRightSchedule" @swipeLeftSchedule="swipeLeftSchedule"/>
+                             @swipeLeftSchedule="swipeLeftSchedule" @swipeRightSchedule="swipeRightSchedule" />
           </q-tab-panel>
         </q-tab-panels>
         <div style="height: 40px;"></div>
       </q-card>
     </q-card>
 
-    <q-dialog maximized square v-model="groupSelectDialog" transition-show="slide-left"
-              transition-hide="slide-right">
-      <q-card flat>
+    <q-dialog v-model="groupSelectDialog" maximized square transition-hide="slide-right"
+              transition-show="slide-left">
+      <q-card flat square>
         <q-card-section class="row q-pa-none q-ma-none">
-          <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
-          <span class="title-page">Выбор группы</span>
+          <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
+          <span class="title-page-dialog">Выбор группы</span>
         </q-card-section>
-        <q-separator/>
+        <q-separator />
         <q-card-section>
-          <q-select square borderless outlined dense v-model="univSelectValue" use-input hide-selected fill-input
-                    :options="univFilteredOptions" option-label="univName"
-                    @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots
-                    behavior="menu">
+          <span style="font-size: 12px">ВЫБОР УНИВЕРСИТЕТА:</span>
+          <q-select v-model="univSelectValue" :options="univFilteredOptions" behavior="menu" borderless bottom-slots dense fill-input hide-selected
+                    option-label="univName" outlined
+                    square transition-hide="jump-up" transition-show="jump-up" use-input
+                    @filter="filterUniversitiesFn">
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
-                  <q-item-label v-html="scope.opt.univName"/>
+                  <q-item-label v-html="scope.opt.univName" />
                   <q-item-label caption>{{ scope.opt.city }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -111,20 +117,21 @@
               </q-item>
             </template>
             <template v-slot:append>
-              <q-icon name="search"/>
+              <q-icon name="search" />
             </template>
           </q-select>
-          <q-select style="margin-top: -15px; max-height: 100px" square borderless outlined
-                    v-model="groupSelectValue"
-                    use-input
-                    hide-selected fill-input dense :options="groupsFilteredOptions"
-                    option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up"
+          <span style="font-size: 12px">ВЫБОР ГРУППЫ:</span>
+          <q-select v-model="groupSelectValue" :options="groupsFilteredOptions" behavior="menu" borderless
+                    bottom-slots
+                    dense
+                    fill-input hide-selected option-label="groupName" outlined
+                    square style="max-height: 100px" tabindex="5"
                     transition-hide="jump-up"
-                    bottom-slots tabindex="5" behavior="menu">
+                    transition-show="jump-up" use-input @filter="filterGroupsFn">
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
-                  <q-item-label v-html="scope.opt.groupName"/>
+                  <q-item-label v-html="scope.opt.groupName" />
                   <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -135,41 +142,63 @@
               </q-item>
             </template>
             <template v-slot:append>
-              <q-icon name="search"/>
+              <q-icon name="search" />
             </template>
           </q-select>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <q-dialog maximized square v-model="settingsDialog" transition-show="slide-left" transition-hide="slide-right">
+    <q-dialog v-model="settingsDialog" maximized square transition-hide="slide-right" transition-show="slide-left">
       <q-card flat>
         <q-card-section class="row q-pa-none q-ma-none">
-          <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
-          <span class="title-page">Выбор группы</span>
+          <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
+          <span class="title-page-dialog">Настройки</span>
         </q-card-section>
-        <q-separator/>
+        <q-separator />
         <q-card-section>
-          <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label/>
+          <q-toggle v-model="rawLessonStringMode" label="Режим без обработки: " left-label />
         </q-card-section>
-        <q-card-section>
-          <template v-if="rawLessonStringMode">
-            2п (л/р ) Электротех. и электроника асс.Белых М.А. ауд.307/3 числитель
-          </template>
-          <template v-else>
-            2п Электротех. и электроника асс.Белых М.А. ауд.307/3
-          </template>
+        <q-card-section class="q-pa-none ">
+          <q-item class="q-pa-none q-ma-none" clickable style="text-align: center">
+            <q-item-section class="q-pb-md" style="text-align: left">
+              <div style="text-align: center">Пример:</div>
+              <div> <!-- Див для одной строчки -->
+                <q-item-label class="row justify-between">
+                  <div class="row justify-start items-center">
+                    <q-chip class="q-ma-none q-px-md q-py-sm chip-number" size="12px" square style="background-color: rgba(248,201,201,0.9)">
+                      1
+                    </q-chip>
+                    <q-item-label class="q-px-sm q-py-none">
+                      <span>8.30</span>
+                      <span style="color: gray"> - 9.45</span>
+                    </q-item-label>
+                  </div>
+                </q-item-label>
+              </div>
+              <q-item class="q-pa-none fix-px q-ma-none q-py-sm items-center" clickable style="background-color: #e6edf5">
+                <span>
+                  <template v-if="rawLessonStringMode">
+                    2п (пр) Электротех. и электроника асс.Белых М.А. ауд.307/3 числитель
+                  </template>
+                  <template v-else>
+                    2п Электротех. и электроника асс.Белых М.А. ауд.307/3
+                  </template>
+                </span>
+              </q-item>
+            </q-item-section>
+          </q-item>
         </q-card-section>
       </q-card>
     </q-dialog>
 
-    <q-dialog maximized square v-model="helpDialog">
+    <q-dialog v-model="helpDialog" maximized square>
       <q-card flat>
         <q-card-section class="row q-pa-none q-ma-none">
-          <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
-          <span class="title-page">0 помощи</span>
+          <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
+          <span class="title-page-dialog">Справка</span>
         </q-card-section>
-        <q-separator/>
+        <q-separator />
       </q-card>
     </q-dialog>
 
@@ -227,10 +256,13 @@ export default {
     const settingsDialog = ref(false);
     const helpDialog = ref(false);
     const currentWeekType = ref('');
+    const currentWeek = ref(getNumberOfWeek(new Date()));
 
     const daysButtonsPanel = ref('weekButtonTab1');
     const schedulePanel = ref('scheduleTab1');
     const buttonsData = ref([]);
+
+
 
     for (let i = 0; i < 7; i++) {
       let buttonDataObject = {}
@@ -403,6 +435,7 @@ export default {
         updateButtonsDataString();
         loadGroupSchedule(groupSelectValue.value)
         currentWeekType.value = getTypeOfWeek(getNumberOfWeek(val)) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+        currentWeek.value = getNumberOfWeek(getDateOfMonday(val));
       }
     })
 
@@ -447,6 +480,7 @@ export default {
       daysButtonsPanel,
       schedulePanel,
       currentWeekType,
+      currentWeek,
       groupName,
       groupSelectDialog,
       settingsDialog,
@@ -491,6 +525,12 @@ export default {
   line-height: 13px;
 }
 
+.title-page-dialog {
+  font-size: 18px;
+  padding: 14px 15px;
+  line-height: 20px;
+}
+
 .fix-pa {
   padding: 15px;
 }
@@ -504,6 +544,7 @@ export default {
   padding-right: 15px;
   padding-left: 15px;
 }
+
 .fix-mx {
   margin-right: 15px;
   margin-left: 15px;
@@ -523,5 +564,9 @@ export default {
 
 .fix-pl {
   padding-left: 15px;
+}
+
+.chip-number {
+  border-radius: 0 5px 5px 0;
 }
 </style>

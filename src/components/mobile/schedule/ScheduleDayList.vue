@@ -95,7 +95,7 @@
     <q-card flat>
       <q-card-section class="row q-pa-none q-ma-none">
         <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
-        <span class="title-page">Информация о занятии</span>
+        <span class="title-page-dialog">Информация о занятии</span>
       </q-card-section>
       <q-separator />
       <template v-if="lessonInfoType">
@@ -205,5 +205,10 @@ export default {
 .fix-mx {
   margin-right: 15px;
   margin-left: 15px;
+}
+.title-page-dialog {
+  font-size: 18px;
+  padding: 14px 15px;
+  line-height: 20px;
 }
 </style>
