@@ -871,9 +871,6 @@ export default {
   border: 1px solid black;
 }
 
-#top-adw {
-  margin-bottom: 10px;
-}
 
 .main-row {
   padding-right: 24px;

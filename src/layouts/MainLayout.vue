@@ -2,7 +2,7 @@
   <q-layout>
     <Header class="mobile-hide" />
     <mobileHeader class="desktop-hide" />
-    <q-page-container class="q-pa-none" style="padding-top: 0">
+    <q-page-container class="q-pa-none" :style="customStyle('padding-top: 0', '')">
       <router-view />
     </q-page-container>
 
@@ -32,6 +32,7 @@
 import {defineComponent, onMounted, ref, watch} from 'vue'
 import Header from '../components/Header.vue'
 import mobileHeader from '../components/mobile/mobileHeader.vue'
+import {customStyle} from "src/services/other/tools";
 
 export default defineComponent({
   name: 'MainLayout',
@@ -53,7 +54,8 @@ export default defineComponent({
 
     return {
       confirm,
-      dialog
+      dialog,
+      customStyle
     };
   }
 })
