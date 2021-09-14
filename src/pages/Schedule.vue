@@ -486,7 +486,7 @@ const lessonTypesColumnsMobile = [
 
 const lessonTypesRows = [
   {
-    color: 'background-color: rgba(204,220,236,0.9);',
+    color: 'background-color: rgba(175,220,236,0.9);',
     type: 'Лабораторная работа'
   },
   {
