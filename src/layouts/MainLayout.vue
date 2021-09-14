@@ -19,6 +19,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn class="bg-primary no-border-radius" color="white" v-close-popup flat href="https://t.me/gistud_info" label="Перейти в telegram" target="_blank" type="a" @click="confirm = 'false'" />
+          <q-btn class="bg-primary no-border-radius" color="white" v-close-popup flat label="Ок" @click="confirm = 'false'" />
         </q-card-actions>
       </q-card>
     </q-dialog>
