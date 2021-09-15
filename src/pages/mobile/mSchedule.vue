@@ -199,6 +199,9 @@
           <span class="title-page-dialog">Справка</span>
         </q-card-section>
         <q-separator />
+        <q-card-section>
+          0 помощи
+        </q-card-section>
       </q-card>
     </q-dialog>
 
@@ -256,7 +259,7 @@ export default {
     const settingsDialog = ref(false);
     const helpDialog = ref(false);
     const currentWeekType = ref('');
-    const currentWeek = ref(getNumberOfWeek(new Date()));
+    const currentWeek = ref(getNumberOfWeek(getDateOfMonday(new Date())));
 
     const daysButtonsPanel = ref('weekButtonTab1');
     const schedulePanel = ref('scheduleTab1');
@@ -434,7 +437,7 @@ export default {
         localStorage.setItem('selectedDate', val.toString())
         updateButtonsDataString();
         loadGroupSchedule(groupSelectValue.value)
-        currentWeekType.value = getTypeOfWeek(getNumberOfWeek(val)) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+        currentWeekType.value = getTypeOfWeek(getNumberOfWeek(getDateOfMonday(val))) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
         currentWeek.value = getNumberOfWeek(getDateOfMonday(val));
       }
     })
