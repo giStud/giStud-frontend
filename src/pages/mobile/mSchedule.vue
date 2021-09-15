@@ -74,7 +74,7 @@
           animated
           infinite
           swipeable
-          class="q-mt-sm"
+          class="q-pt-sm"
         >
           <q-tab-panel class="q-pa-none" name="scheduleTab1">
             <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate"
@@ -200,7 +200,8 @@
         </q-card-section>
         <q-separator />
         <q-card-section>
-          0 помощи
+          <span>Функционал расписания:</span>
+          <q-img style="border: 1px solid black" src="https://cdn.discordapp.com/attachments/887281514809802806/887790479477969026/gif.gif"/>
         </q-card-section>
       </q-card>
     </q-dialog>
