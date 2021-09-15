@@ -443,6 +443,8 @@ export default {
     })
 
     onMounted(async () => {
+      store.commit('globalState/changeCurrentPage','schedule');
+
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
 
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');

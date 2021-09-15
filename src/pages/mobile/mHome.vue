@@ -91,6 +91,7 @@ import {goUrl, theme} from "src/services/other/tools";
 import {Dark, useQuasar} from "quasar";
 import texts from 'src/info/texts.js'
 import UserMessageDialog from "components/UserMessageDialog";
+import {useStore} from "vuex";
 
 export default {
   name: "Home",
@@ -98,9 +99,12 @@ export default {
     UserMessageDialog
   },
   setup() {
-    const tab = ref('newsProject');
+    const store = useStore();
     const $q = useQuasar();
+    const tab = ref('newsProject');
+
     onMounted(async () => {
+      store.commit('globalState/changeCurrentPage','home');
       tab.value = (localStorage.getItem("mHomeCurrentTab") === null) ? 'newsProject' : localStorage.getItem("mHomeCurrentTab");
     });
 

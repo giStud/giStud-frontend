@@ -244,6 +244,7 @@ export default {
     const darkTheme = ref(false);
 
     onMounted(() => {
+      store.commit('globalState/changeCurrentPage','profile');
       let user = store.getters["auth/getCurrentUser"];
       if (user !== null) {
         let roles = user.roles;

@@ -4,6 +4,7 @@ import { createStore } from 'vuex'
 import schedule from './schedule'
 import auth from './auth'
 import news from './news'
+import globalState from './globalState'
 
 /*
  * If not building with SSR mode, you can
@@ -19,7 +20,8 @@ export default store(function (/* { ssrContext } */) {
     modules: {
       auth,
       schedule,
-      news
+      news,
+      globalState
     },
 
     // enable strict mode (adds overhead!)

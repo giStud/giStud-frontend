@@ -148,6 +148,7 @@ export default {
     })
 
     onMounted(async () => {
+      store.commit('globalState/changeCurrentPage','news');
       store.commit('news/clearNews')
       await store.dispatch('news/getNewsPage', {existingNews: []})
       await store.dispatch('news/getNewsTypes')
