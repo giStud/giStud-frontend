@@ -93,7 +93,7 @@ export default {
 
     return {
       loggedIn,
-      currentUser: computed(() => store.state.auth.user),
+      currentUser: computed(() => store.getters['auth/getCurrentUser']),
       dialogModel,
       logout,
       isAdmin,
