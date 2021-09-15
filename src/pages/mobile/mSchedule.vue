@@ -74,7 +74,7 @@
           animated
           infinite
           swipeable
-
+          class="q-mt-sm"
         >
           <q-tab-panel class="q-pa-none" name="scheduleTab1">
             <ScheduleDayList :lessons="currentDayLessons" :rls-mode="rawLessonStringMode" :selected-date="selectedDate"
@@ -252,7 +252,7 @@ export default {
     const groupsSelectOptions = ref([]);
     const groupsFilteredOptions = ref(groupsSelectOptions.value);
     const currentDayLessons = ref([]);
-    const selectedDate = ref(new Date(2021, 8, 10));
+    const selectedDate = ref(new Date());
     const datePickerDate = ref(formatDate(new Date()));
     const rawLessonStringMode = ref(false);
     const groupSelectDialog = ref(false)
@@ -452,7 +452,7 @@ export default {
 
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
       if (dateFromStorage !== null) {
-        let currentDate = getDateOfMonday(new Date());
+        let currentDate = new Date();
         if (dateFromStorage < currentDate) {
           selectedDate.value = currentDate;
         } else {
@@ -468,7 +468,7 @@ export default {
       if ((typeof lastLoadedGroup !== 'undefined') && lastLoadedGroup !== null) {
         groupSelectValue.value = JSON.parse(lastLoadedGroup);
       }
-
+      //selectedDate.value = new Date(2021, 8, 12);
       updateButtonsDataString();
     })
 
