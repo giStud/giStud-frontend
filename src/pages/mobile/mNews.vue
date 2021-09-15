@@ -1,50 +1,54 @@
 <template>
-  <q-page class="body-color">
+  <q-page :class="theme('bg-none-l', 'bg-none-d')">
     <q-card flat>
-      <q-card flat style="max-height: 81px;" square>
-        <q-card-section :class="theme('color-l', 'color-d')" id="title-page" class="q-ma-none">Студенческие новости</q-card-section>
-        <q-card-section class="q-pa-none" id="top-nav-div">
-          <q-tabs id="asdasdasd" v-model="newsTabPanel" dense class="text-grey" :active-color="theme('primary', '#d0d0d0')"
-                  :indicator-color="theme('primary', '#d0d0d0')"
-                  align="justify"
-                  narrow-indicator inline-label>
+      <q-card flat square style="max-height: 81px;">
+        <q-card-section id="title-page" :class="theme('color-l', 'color-d')" class="q-ma-none">Студенческие новости
+        </q-card-section>
+        <q-card-section id="top-nav-div" class="q-pa-none">
+          <q-tabs id="asdasdasd" v-model="newsTabPanel" :active-color="theme('primary', '#d0d0d0')" :indicator-color="theme('primary', '#d0d0d0')" align="justify"
+                  class="text-grey"
+                  dense
+                  inline-label narrow-indicator>
             <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
-              <q-tab :class="theme('color-l', 'color-d')" swipable class="q-px-sm top-nav tab-btn" no-caps flat :name="type.type" @click="newsTypeValue = type">
+              <q-tab :class="theme('color-l', 'color-d')" :name="type.type" class="q-px-sm top-nav tab-btn" flat no-caps swipable @click="newsTypeValue = type">
                 {{ type.type }}
               </q-tab>
             </template>
           </q-tabs>
         </q-card-section>
-        <q-separator />
-        <q-card square flat :class="theme('bg-none-l', 'bg-none-d')" class="q-mt-sm">
-            <template v-for="itemNews in news" :key="itemNews">
-              <q-card square flat class="q-mb-sm">
-                <q-separator />
-                <q-card-section>
-                  <p :class="theme('text-black', 'text-white')" style="font-size: 15px; margin: 0 0 10px 0; font-weight: bold" class="text-justify">{{ itemNews.title }}</p>
-                  <div class="text-justify alodaun" v-html="itemNews.shortText" :style="theme('', 'color: white')" style="margin: 0;"/>
-                  <a :class="theme('text-primary', 'text-grey')" style="transform: none" type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">
-                    Открыть полностью...
-                  </a>
-                </q-card-section>
-                <q-card-section class="q-pt-none q-px-none">
-                  <q-img :src="itemNews.imgSrc" />
-                </q-card-section>
-                <q-separator />
-              </q-card>
-            </template>
+        <q-separator v-if="!Dark.isActive"/>
+        <q-card :class="theme('bg-none-l', 'bg-none-d')" class="q-mt-sm" flat square>
+          <template v-for="itemNews in news" :key="itemNews">
+            <q-card class="q-mb-sm" flat square>
+              <q-separator v-if="!Dark.isActive"/>
+              <q-card-section>
+                <p :class="theme('text-black', 'text-white')" class="text-justify" style="font-size: 15px; margin: 0 0 10px 0; font-weight: bold">
+                  {{ itemNews.title }}</p>
+                <div :style="theme('', 'color: white')" class="text-justify alodaun" style="margin: 0;" v-html="itemNews.shortText" />
+                <a :class="theme('text-primary', 'text-grey')" style="transform: none" type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">
+                  Открыть полностью...
+                </a>
+              </q-card-section>
+              <q-card-section class="q-pt-none q-px-none">
+                <q-img :src="itemNews.imgSrc" />
+              </q-card-section>
+              <q-separator v-if="!Dark.isActive"/>
+            </q-card>
+          </template>
         </q-card>
-        <div class="q-px-lg q-py-sm">
-          <q-btn v-if="(news.length % 5 === 0) && (news.length !== 0)" flat @click="loadNextPage">Загрузить ещё</q-btn>
+        <div style="text-align: center; margin-bottom: 30px; margin-top: 15px;">
+          <q-chip square clickable v-if="visibleLoadBtn && (news.length % 5 === 0) && (news.length !== 0)" @click="loadNextPage" outline :color="theme('primary', 'white')" text-color="white" icon-right="arrow_drop_down">
+            Загрузить ещё
+          </q-chip>
         </div>
 
         <div style="height: 40px;"></div>
 
-        <q-dialog maximized square v-model="newsDialog" transition-show="slide-left" transition-hide="slide-right">
+        <q-dialog v-model="newsDialog" maximized square transition-hide="slide-right" transition-show="slide-left">
           <q-card flat>
             <q-card-section class="row q-pa-none q-ma-none justify-between">
-              <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup />
-              <q-btn size="10px" class="q-ma-sm " icon="fas fa-external-link-alt" @click="goUrl(newsSrc)" flat round dense />
+              <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
+              <q-btn class="q-ma-sm " dense flat icon="fas fa-external-link-alt" round size="10px" @click="goUrl(newsSrc)" />
             </q-card-section>
             <q-separator />
             <q-card-section class="q-pb-none text-justify" style="font-weight: bold; font-size: 14px">
@@ -62,12 +66,11 @@
 </template>
 
 <script>
-import {customClass, goUrl, theme, debug} from "src/services/other/tools";
+import {debug, goUrl, theme} from "src/services/other/tools";
 import {onMounted, ref, watch} from "vue";
-import {useQuasar} from "quasar";
+import {Dark, useQuasar} from "quasar";
 import texts from "src/info/texts";
 import {useStore} from "vuex";
-import NewsService from "src/services/news/newsService";
 
 export default {
   name: "mNews",
@@ -86,6 +89,7 @@ export default {
     const newsTypesOptions = ref([]);
     const dialogModel = ref(false);
     const currentNewsTypeIndex = ref(0);
+    const visibleLoadBtn = ref(true);
 
     const getNews = (title, text, sources) => {
       newsDialog.value = true;
@@ -96,20 +100,25 @@ export default {
 
     const loadNextPage = async () => {
       let idsOfExistingsNews = [];
+      let data;
       for (let item of news.value) {
         idsOfExistingsNews.push(item.newsId);
       }
       if (newsTypeValue.value.type === 'Все') {
-        await store.dispatch('news/getNewsPage', {existingNews: idsOfExistingsNews});
+        data = await store.dispatch('news/getNewsPage', {
+          existingNews: idsOfExistingsNews
+        });
       } else {
-        await store.dispatch('news/getNewsPageByType', {
+        data = await store.dispatch('news/getNewsPageByType', {
           existingNews: idsOfExistingsNews,
           typeId: newsTypeValue.value.newsTypeId
         })
       }
+        visibleLoadBtn.value = !(data && data.length <= 0);
     }
 
     const filterByNewsType = async (type) => {
+      visibleLoadBtn.value = true;
       if (type) {
         store.commit('news/clearNews')
         if (type.type === 'Все') {
@@ -162,13 +171,15 @@ export default {
       newsTypesOptions,
       dialogModel,
       currentNewsTypeIndex,
+      visibleLoadBtn,
       scaleNewsTypeIndex,
       filterByNewsType,
       loadNextPage,
       getNews,
       goUrl,
       theme,
-      debug
+      debug,
+      Dark,
     }
   }
 }
@@ -177,6 +188,7 @@ export default {
 .alodaun span {
   color: white;
 }
+
 .bg-none-l {
   background-color: rgb(238, 238, 238);
 }
@@ -224,6 +236,15 @@ export default {
 .color-l {
   color: gray;
 }
+
+.btn-load-last-l:hover {
+  color: #1976D2;
+}
+
+.btn-load-last-b:hover {
+  color: white;
+}
+
 .tab-btn:hover {
 }
 </style>

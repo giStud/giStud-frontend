@@ -187,20 +187,20 @@
           <q-card-section class="q-pa-none fix-pt">
             <span class="fix-px">УКАЖИТЕ ВАШ EMAIL</span>
             <q-input square style="margin-bottom: 5px" filled type="text" v-model="requestDialogEmail"
-                     label="Email адрес *" lazy-rules
+                     label="Email адрес *" lazy-rules :color="theme('', 'white')"
                      :rules="[(val) => !!val || 'Поле не может быть пустым', isValidEmail]" autofocus/>
           </q-card-section>
           <q-card-section class="q-pa-none fix-pt">
             <span class="fix-px">УКАЖИТЕ ВАШЕ СООБЩЕНИЕ</span>
             <q-input square input-style="resize: none;" style="height: auto" counter filled rows="10" type="textarea"
-                     v-model="requestDialogText" label="Текст *" lazy-rules
+                     v-model="requestDialogText" label="Текст *" lazy-rules :color="theme('', 'white')"
                      :rules="[(val) => (!!val && val.length >= 1 && val.length <= 500) || 'Текст сообщения не может быть меньше 1 символов или больше 500']"
                      autofocus/>
           </q-card-section>
-          <q-card-section>
-            <q-btn v-close-popup flat color="primary" no-caps label="Отправить" :disable="sendButtonModel"
+          <q-card-section style="text-align: center">
+            <q-btn v-close-popup flat :color="theme('primary', 'white')" no-caps label="Отправить" :disable="sendButtonModel"
                    @click="sendUserMessage(requestDialogEmail, requestDialogText, '/userMessages/bug')"/>
-            <q-btn v-close-popup flat color="primary" no-caps label="Отмена"/>
+            <q-btn v-close-popup flat :color="theme('primary', 'white')" no-caps label="Отмена"/>
           </q-card-section>
         </q-card>
       </q-dialog>

@@ -17,13 +17,13 @@
             </q-tab>
           </q-tabs>
         </q-card-section>
-        <q-separator/>
+        <q-separator v-if="!Dark.isActive"/>
         <q-tab-panels swipeable v-model="tab" animated>
           <q-tab-panel :class="theme('bg-none-l', 'bg-none-d')" class=" q-px-none q-pt-sm" name="newsProject">
             <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
               <template v-for="news in texts.newsProject" :key="news">
                 <q-card square flat class="q-mb-sm">
-                  <q-separator/>
+                  <q-separator v-if="!Dark.isActive"/>
                   <q-card-section>
                     <p :class="theme('color-l', 'color-d')" style="font-size: 15px; margin: 0">{{ news.title }}</p>
                     <p :class="theme('color-l', 'color-d')" style="font-size: 9px; margin: 0;">{{ news.desc }}</p>
@@ -31,7 +31,7 @@
                   <q-card-section class="q-pt-none q-px-none">
                     <q-img :src="news.img"/>
                   </q-card-section>
-                  <q-separator/>
+                  <q-separator v-if="!Dark.isActive"/>
                 </q-card>
               </template>
             </q-card>
@@ -41,7 +41,7 @@
             <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
               <template v-for="news in texts.connectedUniversities" :key="news">
                 <q-card square flat class="q-mb-sm">
-                  <q-separator/>
+                  <q-separator v-if="!Dark.isActive"/>
                   <q-card-section>
                     <p :class="theme('color-l', 'color-d')" style="font-size: 15px; margin: 0; font-weight: bold">
                       {{ news.title }}</p>
@@ -50,21 +50,21 @@
                   <q-card-section class="q-pt-none q-px-none">
                     <q-img :src="news.img"/>
                     <template v-if="news.btn_url === ''">
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat :class="theme('bg-primary', 'bg-white')"
                              @click="dialogModel = true">
-                        <span :class="theme('color-l', 'color-d')"
+                        <span :class="theme('color-l', 'text-black')"
                               style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                     <template v-else>
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat class="bg-primary"
+                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat :class="theme('bg-primary', 'bg-white')"
                              @click="goUrl(news.btn_url)">
-                        <span :class="theme('color-l', 'color-d')"
+                        <span :class="theme('color-l', 'text-black')"
                               style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                   </q-card-section>
-                  <q-separator/>
+                  <q-separator v-if="!Dark.isActive"/>
                 </q-card>
               </template>
             </q-card>
@@ -88,7 +88,7 @@
 <script>
 import {onMounted, ref, watch} from "vue";
 import {goUrl, theme} from "src/services/other/tools";
-import {useQuasar} from "quasar";
+import {Dark, useQuasar} from "quasar";
 import texts from 'src/info/texts.js'
 import UserMessageDialog from "components/UserMessageDialog";
 
@@ -119,6 +119,7 @@ export default {
       goUrl,
       dialogModel,
       url,
+      Dark,
     }
   }
 }
