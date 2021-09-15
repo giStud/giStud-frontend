@@ -170,8 +170,8 @@
                       1
                     </q-chip>
                     <q-item-label class="q-px-sm q-py-none">
-                      <span>8.30</span>
-                      <span style="color: gray"> - 9.45</span>
+                      <span>08:30</span>
+                      <span style="color: gray"> - 09.45</span>
                     </q-item-label>
                   </div>
                 </q-item-label>
