@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import mHeader from '../pages/mobile/components/mHeader.vue'
+import mHeader from 'components/mobile/mHeader.vue'
 import {defineComponent, computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {Dark} from 'quasar'
 

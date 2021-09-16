@@ -9,130 +9,6 @@
       </q-card>
 
     </div>
-    <!--MOBILE-->
-    <div class="desktop-hide">
-      <div class="q-pa-sm q-mt-none">
-
-        <q-select square borderless outlined v-model="univSelectValue" use-input hide-selected fill-input
-                  label="Выберите университет" :options="univFilteredOptions" option-label="univName"
-                  @filter="filterUniversitiesFn" transition-show="jump-up" transition-hide="jump-up" bottom-slots>
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps">
-              <q-item-section>
-                <q-item-label v-html="scope.opt.univName"/>
-                <q-item-label caption>{{ scope.opt.city }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">Не найдено</q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:append>
-            <q-icon name="search"/>
-          </template>
-        </q-select>
-        <q-select style="margin-top: -15px" square borderless outlined v-model="groupSelectValue" use-input
-                  hide-selected fill-input label="Выберите группу" :options="groupsFilteredOptions"
-                  option-label="groupName" @filter="filterGroupsFn" transition-show="jump-up" transition-hide="jump-up"
-                  bottom-slots>
-          <template v-slot:option="scope">
-            <q-item v-bind="scope.itemProps">
-              <q-item-section>
-                <q-item-label v-html="scope.opt.groupName"/>
-                <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:no-option>
-            <q-item>
-              <q-item-section class="text-grey">Не найдено</q-item-section>
-            </q-item>
-          </template>
-          <template v-slot:append>
-            <q-icon name="search"/>
-          </template>
-        </q-select>
-      </div>
-      <div id="main-schedule-mobile">
-        <div class="row justify-center" id="mobile-buttons-week" style="text-align: center">
-          <q-btn icon="west" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm"
-                 color="black"
-                 @click="loadPreviousWeekLessons"/>
-
-          <div style="padding-top: 20px" class="q-mx-lg">
-            <span>{{ selectedWeek }} неделя, {{ currentWeekType }}</span>
-          </div>
-
-          <q-btn icon="east" style="width: 10%; font-size: 25px" flat no-caps class=" border-radius-inherit q-mx-sm"
-                 color="black"
-                 @click="loadNextWeekLessons"/>
-        </div>
-        <div class="q-my-lg" style="text-align: center">
-        </div>
-        <div class="q-my-lg" style="text-align: center">
-
-        </div>
-
-        <div id="schedule-table-mobile" class="q-pa-sm">
-
-          <div class="row q-px-sm" style="width: 100%; margin-bottom: -20px">
-            <div style="width: 50%; text-align: left;">
-              <q-btn class="" color="black" round flat no-caps icon="today">
-                <q-popup-proxy transition-show="scale" transition-hide="scale">
-                  <q-date v-model="datePickerDate"
-                          :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
-                    <div class="row items-center justify-end q-gutter-sm">
-                      <q-btn label="Перейти" color="primary" flat @click="changeDateFromDatePicker" v-close-popup/>
-                      <q-btn label="Отмена" color="primary" flat v-close-popup/>
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-btn>
-            </div>
-
-            <div style="width: 50%; text-align: right;">
-              <q-toggle style="font-size: 12px; margin-bottom: -20px;" v-model="rawLessonStringMode"
-                        label="Режим без обработки: " left-label/>
-            </div>
-          </div>
-
-
-          <ScheduleDayTable class="q-my-lg" :day="'Понедельник'" :date="mondayDate" :rows="mobileMondayTableRows"
-                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Вторник'" :date="tuesdayDate" :rows="mobileTuesdayTableRows"
-                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Среда'" :date="wednesdayDate" :rows="mobileWednesdayTableRows"
-                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Четверг'" :date="thursdayDate" :rows="mobileThursdayTableRows"
-                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Пятница'" :date="fridayDate" :rows="mobileFridayTableRows"
-                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
-          <ScheduleDayTable class="q-my-lg" :day="'Суббота'" :date="saturdayDate" :rows="mobileSaturdayTableRows"
-                            :rls-mode="rawLessonStringMode" :week="selectedWeek"/>
-        </div>
-
-        <q-page-sticky position="bottom-right" :offset="[8, 8]">
-          <q-btn @click="legendDialog = true" style="height: 8px; width: 8px;" round icon="menu_book" color="primary"/>
-        </q-page-sticky>
-        <q-dialog full-width v-model="legendDialog" square>
-          <q-card>
-            <q-table
-              :rows="lessonTypesRows"
-              :columns="lessonTypesColumnsMobile"
-              row-key="type"
-              separator="cell"
-              hide-pagination
-              flat
-              :rows-per-page-options="[15,20]"
-            />
-          </q-card>
-        </q-dialog>
-      </div>
-    </div>
-
-    <!--DESKTOP-->
     <div class="flex column mobile-hide">
       <div class="column q-pa-lg q-col-gutter-y-md">
         <div class="col-12 content-end" style="padding: 0">
@@ -380,7 +256,6 @@ import {
   isCurrentLessonGoes
 } from "../composables/schedule/ScheduleTable"
 import ModalWindow from "components/ModalWindow";
-import ScheduleDayTable from "components/mobile/ScheduleDayTable";
 import {useMeta} from 'quasar'
 import {customClass, customStyle} from "src/services/other/tools";
 
@@ -467,22 +342,6 @@ const lessonTypesColumns = [
     field: 'type'
   }
 ]
-const lessonTypesColumnsMobile = [
-  {
-    name: 'color',
-    label: 'Цвет',
-    align: 'center',
-    field: 'example',
-    headerStyle: 'width: 40px',
-    style: row => row.color + 'width: 40px'
-  },
-  {
-    name: 'type',
-    label: 'Тип занятия',
-    align: 'left',
-    field: 'type'
-  }
-]
 
 const lessonTypesRows = [
   {
@@ -545,7 +404,6 @@ export default {
   name: 'GroupSelectingLayout',
   components: {
     // ModalWindow,
-    ScheduleDayTable
   },
   props: {
     univName: {
@@ -564,14 +422,6 @@ export default {
     const univFilteredOptions = ref(univSelectOptions.value);
     const groupsSelectOptions = ref([]);
     const groupsFilteredOptions = ref(groupsSelectOptions.value);
-
-    const mobileMondayTableRows = ref([]);
-    const mobileTuesdayTableRows = ref([]);
-    const mobileWednesdayTableRows = ref([]);
-    const mobileThursdayTableRows = ref([]);
-    const mobileFridayTableRows = ref([]);
-    const mobileSaturdayTableRows = ref([]);
-    const legendDialog = ref(false);
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -611,12 +461,6 @@ export default {
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
           localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
           scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, selectedWeek.value);
-          mobileMondayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'MONDAY');
-          mobileTuesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'TUESDAY');
-          mobileWednesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'WEDNESDAY');
-          mobileThursdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'THURSDAY');
-          mobileFridayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'FRIDAY');
-          mobileSaturdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, selectedWeek.value, 'SATURDAY');
         } else {
           title.value = '';
           console.log('Find deleted group');
@@ -723,12 +567,6 @@ export default {
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleRows.value = getTableRowsFromLessons(selectedGroup.lessons, newValue)
-          mobileMondayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'MONDAY');
-          mobileTuesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'TUESDAY');
-          mobileWednesdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'WEDNESDAY');
-          mobileThursdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'THURSDAY');
-          mobileFridayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'FRIDAY');
-          mobileSaturdayTableRows.value = getTableRowsFromLessonsMobile(selectedGroup.lessons, newValue, 'SATURDAY');
         }
       }
     })
@@ -828,14 +666,7 @@ export default {
       splitterRatio: ref(50),
       numeratorButtonsToggle,
       lessonTypesColumns,
-      lessonTypesColumnsMobile,
       lessonTypesRows,
-      mobileMondayTableRows,
-      mobileTuesdayTableRows,
-      mobileWednesdayTableRows,
-      mobileThursdayTableRows,
-      mobileFridayTableRows,
-      mobileSaturdayTableRows,
       filterUniversitiesFn,
       filterGroupsFn,
       loadGroupSchedule,
@@ -846,7 +677,6 @@ export default {
       getScheduleCellColor,
       scrollToElement,
       isCurrentLessonGoes,
-      legendDialog,
       customStyle,
       customClass,
       debug(val) {

@@ -1,7 +1,6 @@
 <template>
   <q-layout>
-    <Header class="mobile-hide"/>
-    <mobileHeader class="desktop-hide"/>
+    <Header/>
     <q-page-container class="q-pa-none">
       <router-view />
     </q-page-container>
@@ -12,7 +11,6 @@
 
 import { defineComponent, ref } from 'vue'
 import Header from '../components/Header.vue'
-import mobileHeader from '../components/mobile/mobileHeader.vue'
 import Footer from '../components/Footer.vue'
 
 export default defineComponent({
@@ -20,20 +18,6 @@ export default defineComponent({
 
   components: {
     Header,
-    mobileHeader,
-    // Footer
   },
-
-  /*setup () {
-    const leftDrawerOpen = ref(false)
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  }*/
 })
 </script>
