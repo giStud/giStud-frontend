@@ -313,14 +313,14 @@ export default {
             grId: selectedGroupId,
           });
           groupName.value = 'Группа: ' + selectedGroup.name /*+ " (" + selectedGroup.universityEntity.name + ")"*/;
-          localStorage.setItem('lastLoadedGroup', JSON.stringify(val));
+          localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
 
           currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
         } else {
           groupName.value = '';
         }
       } catch (e) {
-        localStorage.removeItem("lastLoadedGroup");
+        localStorage.removeItem("lastLoadedGroupNew");
         groupSelectValue.value = null;
       }
 
@@ -449,7 +449,7 @@ export default {
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
 
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
-      let lastLoadedGroup = localStorage.getItem('lastLoadedGroup');
+      let lastLoadedGroup = localStorage.getItem('lastLoadedGroupNew');
 
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
       if (dateFromStorage !== null) {
