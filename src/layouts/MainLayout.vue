@@ -1,7 +1,7 @@
 <template>
   <q-layout>
     <Header/>
-    <q-page-container class="q-pa-none">
+    <q-page-container class="q-pa-none" style="padding-top: 0">
       <router-view />
     </q-page-container>
   </q-layout>

@@ -1,26 +1,26 @@
 const newsProject = [
   {
-    title: "Mails",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    img: 'https://minobrnauki.gov.ru/upload/iblock/a97/to2ulixac167mrju57rxbp9kk2epjkw8.jpg'
+    title: "Первый Шаг",
+    desc: "Мы подключились к первому университету. Воронежский государственный технический университет.",
+    img: 'https://cdn.discordapp.com/attachments/887281514809802806/888820292200316948/2.jpg'
   }, {
-    title: "Mails",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    img: 'https://minobrnauki.gov.ru/upload/iblock/a97/to2ulixac167mrju57rxbp9kk2epjkw8.jpg'
+    title: "StartUp GISTUD",
+    desc: "GISTUD - Студенческий информационный сервис. Мы подключаемся к вашему университету и предоставляем информацию в удобном виде.",
+    img: 'https://cdn.discordapp.com/attachments/887281514809802806/888820289792778290/1.jpg'
   }
 ]
 
 const connectedUniversities = [
   {
     title: "Ваш университет",
-    desc: "Вы можете оставить заявку на добавление вашего вуза.",
-    img: 'https://minobrnauki.gov.ru/upload/iblock/a97/to2ulixac167mrju57rxbp9kk2epjkw8.jpg',
+    desc: "Вы можете оставить заявку на добавление вашего учебного заведения, отдельного факультета или группы.",
+    img: 'https://cdn.discordapp.com/attachments/887281514809802806/888820323343007854/unknown.jpg',
     btn: 'Оставить заявку',
     btn_url: ''
   }, {
     title: "Воронежский государственный технический университет",
     desc: "Воронежский государственный архитектурно-строительный университет — существовавшее самостоятельно до лета 2016 года высшее учебное заведение города Воронежа. В настоящее время объединён с Воронежским государственным техническим университетом.",
-    img: 'https://minobrnauki.gov.ru/upload/iblock/a97/to2ulixac167mrju57rxbp9kk2epjkw8.jpg',
+    img: 'https://cdn.discordapp.com/attachments/887281514809802806/888820350543081582/VGTU.jpg',
     btn: 'Перейти на сайт',
     btn_url: 'https://cchgeu.ru/'
   }

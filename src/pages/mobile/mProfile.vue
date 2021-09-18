@@ -82,6 +82,12 @@
                     </q-item-section>
                     <q-item-section :class="theme('text-grey-8', 'text-white')">Поддержать проект</q-item-section>
                   </q-item>
+                  <q-item @click="goUrl('https://t.me/gistud_info')" class="q-pa-none q-ma-none" clickable v-ripple>
+                    <q-item-section class="q-pa-none fix-px" avatar>
+                      <q-icon :color="theme('grey-8', 'white')" name="telegram"/>
+                    </q-item-section>
+                    <q-item-section :class="theme('text-grey-8', 'text-white')">Наш телеграм</q-item-section>
+                  </q-item>
                   <q-item disable class="q-pa-none q-ma-none" clickable v-ripple>
                     <q-item-section class="q-pa-none fix-px" avatar>
                       <q-icon :color="theme('grey-8', 'white')" name="emoji_events"/>
