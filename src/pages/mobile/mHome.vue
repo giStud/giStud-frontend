@@ -25,8 +25,9 @@
                 <q-card square flat class="q-mb-sm">
                   <q-separator v-if="!Dark.isActive"/>
                   <q-card-section>
-                    <p :class="theme('color-l', 'color-d')" style="font-size: 15px; margin: 0">{{ news.title }}</p>
-                    <p :class="theme('color-l', 'color-d')" style="font-size: 9px; margin: 0;">{{ news.desc }}</p>
+                    <p class="text-justify" :class="theme('color-l', 'color-d')" style="font-size: 16px; margin: 0; font-weight: bold">
+                      {{ news.title }}</p>
+                    <p class="text-justify q-pt-sm" :class="theme('color-l', 'color-d')" style="font-size: 14px; margin: 0;">{{ news.desc }}</p>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
                     <q-img :src="news.img"/>
@@ -43,9 +44,9 @@
                 <q-card square flat class="q-mb-sm">
                   <q-separator v-if="!Dark.isActive"/>
                   <q-card-section>
-                    <p :class="theme('color-l', 'color-d')" style="font-size: 15px; margin: 0; font-weight: bold">
+                    <p class="text-justify" :class="theme('color-l', 'color-d')" style="font-size: 16px; margin: 0; font-weight: bold">
                       {{ news.title }}</p>
-                    <p :class="theme('color-l', 'color-d')" style="font-size: 12px; margin: 0;">{{ news.desc }}</p>
+                    <p class="text-justify q-pt-sm" :class="theme('color-l', 'color-d')" style="font-size: 14px; margin: 0;">{{ news.desc }}</p>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
                     <q-img :src="news.img"/>
@@ -175,6 +176,6 @@ export default {
 }
 
 .color-l {
-  color: gray;
+  color: #000000;
 }
 </style>
