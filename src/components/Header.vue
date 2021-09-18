@@ -11,6 +11,7 @@
 
       <q-btn class="nav-btn" :to="'/'" stretch flat label="Главная"/>
       <q-btn class="nav-btn" :to="'/schedule'" stretch flat label="Расписание"/>
+      <q-btn class="nav-btn" :to="'/news'" stretch flat label="Новости"/>
       <template v-if="isAdmin">
         <q-btn class="nav-btn" :to="'/news'" stretch flat label="Новости"/>
         <q-btn class="nav-btn" :to="'/admin'" stretch flat label="Админка"/>

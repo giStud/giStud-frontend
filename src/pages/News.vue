@@ -114,6 +114,11 @@
 <!--    <div class="q-px-lg q-py-sm">-->
 <!--      <q-btn flat @click="loadNextPage">Загрузить ещё</q-btn>-->
 <!--    </div>-->
+    <div class="q-px-lg" style="text-align: left; margin-bottom: 30px; margin-top: 15px;">
+      <q-chip square clickable v-if="visibleLoadBtn && (news.length % 5 === 0) && (news.length !== 0)" @click="loadNextPage" outline color="primary" text-color="white" icon-right="arrow_drop_down">
+        Загрузить ещё
+      </q-chip>
+    </div>
 
   </q-page>
 </template>
@@ -170,6 +175,9 @@ export default {
     const newsTypeValue = ref(allTypeObj);
     const newsTypesOptions = ref([]);
 
+    const visibleLoadBtn = ref(true);
+
+
     const getNews = (title, text, sources) => {
       newsDialog.value = true;
       newsTitle.value = title;
@@ -179,20 +187,25 @@ export default {
 
     const loadNextPage = async () => {
       let idsOfExistingsNews = [];
+      let data;
       for (let item of news.value) {
         idsOfExistingsNews.push(item.newsId);
       }
       if (newsTypeValue.value.type === 'Все') {
-        await store.dispatch('news/getNewsPage', {existingNews: idsOfExistingsNews});
+        data = await store.dispatch('news/getNewsPage', {
+          existingNews: idsOfExistingsNews
+        });
       } else {
-        await store.dispatch('news/getNewsPageByType', {
+        data = await store.dispatch('news/getNewsPageByType', {
           existingNews: idsOfExistingsNews,
           typeId: newsTypeValue.value.newsTypeId
         })
       }
+      visibleLoadBtn.value = !(data && data.length <= 0);
     }
 
     const filterByNewsType = async (type) => {
+      visibleLoadBtn.value = true;
       if (type) {
         store.commit('news/clearNews')
         if (type.type === 'Все') {
@@ -228,6 +241,7 @@ export default {
       src,
       newsTypeValue,
       newsTypesOptions,
+      visibleLoadBtn,
       getNews,
       customStyle,
       customClass,
