@@ -381,14 +381,12 @@ export default {
     }
 
     const swipeRightSchedule = async () => {
-      await UtilsService.sleep(150);
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() + 1)
       selectedDate.value = tempDate;
     }
 
     const swipeLeftSchedule = async () => {
-      await UtilsService.sleep(150);
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() - 1)
       selectedDate.value = tempDate;
