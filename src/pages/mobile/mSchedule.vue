@@ -436,10 +436,18 @@ export default {
     watch(selectedDate, (val) => {
       if (val) {
         localStorage.setItem('selectedDate', val.toString())
-        updateButtonsDataString();
-        loadGroupSchedule(groupSelectValue.value)
-        currentWeekType.value = getTypeOfWeek(getNumberOfWeek(getDateOfMonday(val))) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+
+        const oldWeek = getNumberOfWeek(getDateOfMonday(currentWeek.value));
         currentWeek.value = getNumberOfWeek(getDateOfMonday(val));
+        if (currentWeek.value !== oldWeek) {
+          updateButtonsDataString();
+          currentWeekType.value = getTypeOfWeek(getNumberOfWeek(getDateOfMonday(val))) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+        }
+
+        const selectedGroup = store.getters['schedule/getSelectedGroup'];
+        if (selectedGroup.lessons) {
+          currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
+        }
       }
     })
 
