@@ -19,6 +19,20 @@
         <q-separator v-if="!Dark.isActive" />
         <q-tab-panels v-model="tab" animated swipeable>
           <q-tab-panel :class="theme('bg-none-l', 'bg-none-d')" class=" q-px-none q-pt-sm" name="newsProject">
+
+            <q-card :class="theme('bg-none-l', 'bg-none-d')" flat square>
+                <q-card class="q-mb-sm" flat square>
+                  <q-separator v-if="!Dark.isActive" />
+                  <q-card-section>
+                    <p :style="theme('color: gray', 'color: #d0d0d0')" class="text-justify" style="font-size: 16px; margin: 0; font-weight: 400">Реклама</p>
+                  </q-card-section>
+                  <q-card-section class="q-pt-none q-px-none">
+                    <div id="yandex_rtb_R-A-1296363-1"></div>
+                  </q-card-section>
+                  <q-separator v-if="!Dark.isActive" />
+                </q-card>
+            </q-card>
+
             <q-card :class="theme('bg-none-l', 'bg-none-d')" flat square>
               <template v-for="news in texts.newsProject" :key="news">
                 <q-card class="q-mb-sm" flat square>
@@ -98,6 +112,10 @@ import {useStore} from "vuex";
 const meta = {
   title: 'Главная - GISTUD',
   script: {
+    yandex: {
+      type: 'application/javascript',
+      innerHTML: `window.yaContextCb.push(()=>{ Ya.Context.AdvManager.render({ renderTo: 'yandex_rtb_R-A-1296363-1', blockId: 'R-A-1296363-1' }) })`
+    }
   },
   meta: {
     description: {
@@ -143,13 +161,17 @@ export default {
       dialogModel,
       url,
       Dark,
-      useMeta,
     }
   }
 }
 </script>
 
 <style scoped>
+
+.bg-none {
+  background: none;
+}
+
 .bg-none-l {
   background-color: rgb(238, 238, 238);
 }

@@ -17,7 +17,8 @@
           </q-card-section>
         </q-card>
         <q-separator class="fix-mx" />
-        <q-card-section :class="theme('', 'bg-dark')" class="row justify-between fix-pa">
+        <div class="fix-px" :class="theme('', 'bg-dark')" style="margin-top: 7px;" id="yandex_rtb_R-A-1296363-2"></div>
+        <q-card-section :class="theme('', 'bg-dark')" class="row justify-between fix-px fix-pb" style="padding-top: 8px">
           <q-card class="q-py-sm" flat square>
             <q-card-section class="q-pa-none" style="font-size: 12px">
               Неделя: {{currentWeek}}, {{currentWeekType}}
@@ -220,7 +221,7 @@ import {
   getScheduleCellColor,
   getTypeOfWeek
 } from "src/composables/schedule/ScheduleTable";
-import {useQuasar} from "quasar";
+import {useMeta, useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
 import ScheduleDayList from "components/mobile/schedule/ScheduleDayList";
 import UtilsService from "src/services/other/utilsService";
@@ -235,6 +236,26 @@ function formatDate(date) {
   return yy + '/' + mm + '/' + dd;
 }
 
+const meta = {
+  title: 'Расписание - GISTUD',
+  script: {
+    yandex: {
+      type: 'application/javascript',
+      innerHTML: `window.yaContextCb.push(()=>{ Ya.Context.AdvManager.render({ renderTo: 'yandex_rtb_R-A-1296363-2', blockId: 'R-A-1296363-2' }) })`
+    }
+  },
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Расписание - GISTUD | Удобная информация вашего университета: студенческие новости, расписание и многое другое'
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud'
+    },
+  }
+}
+
 export default {
   name: "mSchedule.vue",
   components: {
@@ -242,6 +263,7 @@ export default {
     ScheduleDayList
   },
   setup() {
+    useMeta(() => meta);
     const store = useStore();
     const $q = useQuasar();
 
