@@ -37,7 +37,7 @@ const desktop = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {path: '', component: () => import('pages/Index.vue'), meta: {isAuth: false, isAdmin: false}},
+      {path: '', component: () => import('pages/desktop/dHome'), meta: {isAuth: false, isAdmin: false}},
       {
         path: '/schedule',
         name: 'schedule',

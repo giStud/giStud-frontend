@@ -1,0 +1,178 @@
+<template>
+  <q-page>
+    <q-card id="MAIN-PAGE" class="bg-none" flat square>
+
+      <q-card id="REKLAMA" class="center-all container-base fix-my" flat>
+        Реклама
+      </q-card>
+
+      <q-card id="NEWS-CONTAINER" class="center-all container-base bg-none row justify-evenly" flat>
+
+        <q-card id="NEWS-PROJECT" class="q-ma-none q-pa-none fix-mr fix-pa">
+          <q-carousel v-model="slide" :autoplay="50000" animated arrows class="q-pa-none" height="270px" infinite>
+            <q-carousel-slide :name="1" class="q-pa-none" img-src="../../assets/media/news/1.jpg" />
+            <q-carousel-slide :name="2" class="q-pa-none" img-src="../../assets/media/news/2.jpg" />
+          </q-carousel>
+        </q-card>
+
+        <q-card id="NEWS-STUDENTS" class="q-ma-none q-pa-none fix-pa">
+          <MainPageNews />
+        </q-card>
+
+      </q-card>
+
+      <q-card id="MIXED-CONTAINER" class="fix-my center-all container-base bg-none row justify-start" flat>
+        <q-card id="UNIVERSITIES" class="q-ma-none q-pa-none fix-mr fix-px fix-pt">
+          <template v-for="news in texts.connectedUniversities" :key="news">
+            <q-card class="row justify-start" flat square style="border: 1px solid rgba(189,189,189,0.47); margin-bottom: 15px">
+              <q-card>
+                <q-img :src="news.img" style="height: 200px; width: 345px" />
+              </q-card>
+              <q-card style="height: 200px; width: 450px">
+                <q-card-section class="q-pa-sm q-pl-md">{{ news.title }}</q-card-section>
+                <q-card-section class="q-pa-sm q-pl-md" style="font-size: 12px">{{ news.desc }}</q-card-section>
+                <q-card-section class="q-pa-sm q-pl-md">
+                  <template v-if="news.btn_url === ''">
+                    <q-btn :class="theme('bg-primary', 'bg-white')" flat no-caps size="sm" @click="dialogModel = true">
+                      <span :class="theme('text-white', 'text-black')">{{ news.btn }}</span>
+                    </q-btn>
+                  </template>
+                  <template v-else>
+                    <q-btn :class="theme('bg-primary', 'bg-white')" flat no-caps size="sm" @click="goUrl(news.btn_url)">
+                      <span :class="theme('text-white', 'text-black')">{{ news.btn }}</span>
+                    </q-btn>
+                  </template>
+                </q-card-section>
+              </q-card>
+            </q-card>
+          </template>
+        </q-card>
+        <q-card id="ANNOUNCES" class="q-ma-none q-pa-none fix-pa hidden">
+          <MainPageNews />
+        </q-card>
+      </q-card>
+
+      <q-card flat class="bg-none fix-my" style="min-height: 1px"> </q-card>
+
+    </q-card>
+
+    <UserMessageDialog v-model="dialogModel" :url="'/userMessages/univRequest'">
+      <template v-slot:title>
+        <div class="text-h6">Введите текст вашей заявки</div>
+      </template>
+    </UserMessageDialog>
+
+  </q-page>
+</template>
+
+<script>
+import MainPageNews from "components/static/MainPageNews";
+import UserMessageDialog from "components/UserMessageDialog";
+import {ref} from "vue";
+import {goUrl, theme} from "src/services/other/tools";
+import texts from "src/info/texts";
+
+export default {
+  name: "dHome",
+  components: {
+    MainPageNews,
+    UserMessageDialog,
+  },
+  setup() {
+    return {
+      slide: ref(1),
+      dialogModel: ref(false),
+      texts,
+      theme,
+      goUrl,
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+#REKLAMA {
+  height: 120px;
+  border-radius: 4px;
+  background-color: #00e0e3;
+}
+
+#NEWS-PROJECT {
+  height: 302px;
+  width: 848px;
+  border-radius: 4px;
+}
+
+#NEWS-STUDENTS {
+  height: 302px;
+  width: 277px;
+  border-radius: 4px;
+}
+
+#UNIVERSITIES {
+  min-height: 302px;
+  width: 848px;
+  border-radius: 4px;
+}
+
+#ANNOUNCES {
+  height: 302px;
+  width: 277px;
+  border-radius: 4px;
+}
+
+.container-base {
+  max-width: 1140px;
+
+}
+
+.center-all {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.bg-none {
+  background: none;
+}
+
+.h-t {
+  min-height: 500px;
+
+  border: 5px solid red;
+}
+
+.fix-pa {
+  padding: 15px 15px;
+}
+
+.fix-py {
+  padding: 15px 0;
+}
+
+.fix-px {
+  padding: 0 15px;
+}
+
+.fix-pt {
+  padding-top: 15px;
+}
+
+.fix-my {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.fix-mx {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.fix-mr {
+  margin-right: 15px;
+}
+
+.fix-mb {
+  margin-bottom: 15px;
+}
+</style>
