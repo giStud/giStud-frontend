@@ -1,71 +1,72 @@
 <template>
-
   <q-page class="body-color">
     <q-card flat>
-      <q-card flat style="max-height: 81px;" square>
-        <q-card-section :class="theme('color-l', 'color-d')" id="title-page" class="q-ma-none">Главная</q-card-section>
-        <q-card-section class="q-pa-none" id="top-nav-div">
-          <q-tabs id="asdasdasd" v-model="tab" dense class="text-grey" :active-color="theme('primary', '#d0d0d0')"
-                  :indicator-color="theme('primary', '#d0d0d0')"
-                  align="justify"
-                  narrow-indicator inline-label>
-            <q-tab :class="theme('color-l', 'color-d')" class="q-px-sm top-nav tab-btn" no-caps flat name="newsProject">
+      <q-card flat square style="max-height: 81px;">
+        <q-card-section id="title-page" :class="theme('color-l', 'color-d')" class="q-ma-none">Главная</q-card-section>
+        <q-card-section id="top-nav-div" class="q-pa-none">
+          <q-tabs id="asdasdasd" v-model="tab" :active-color="theme('primary', '#d0d0d0')" :indicator-color="theme('primary', '#d0d0d0')" align="justify"
+                  class="text-grey"
+                  dense
+                  inline-label narrow-indicator>
+            <q-tab :class="theme('color-l', 'color-d')" class="q-px-sm top-nav tab-btn" flat name="newsProject" no-caps>
               Новости проекта
             </q-tab>
-            <q-tab :class="theme('color-l', 'color-d')" class="q-px-sm top-nav tab-btn" no-caps flat name="univs">
+            <q-tab :class="theme('color-l', 'color-d')" class="q-px-sm top-nav tab-btn" flat name="univs" no-caps>
               Подключенные университеты
             </q-tab>
           </q-tabs>
         </q-card-section>
-        <q-separator v-if="!Dark.isActive"/>
-        <q-tab-panels swipeable v-model="tab" animated>
+        <q-separator v-if="!Dark.isActive" />
+        <q-tab-panels v-model="tab" animated swipeable>
           <q-tab-panel :class="theme('bg-none-l', 'bg-none-d')" class=" q-px-none q-pt-sm" name="newsProject">
-            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
+            <q-card :class="theme('bg-none-l', 'bg-none-d')" flat square>
               <template v-for="news in texts.newsProject" :key="news">
-                <q-card square flat class="q-mb-sm">
-                  <q-separator v-if="!Dark.isActive"/>
+                <q-card class="q-mb-sm" flat square>
+                  <q-separator v-if="!Dark.isActive" />
                   <q-card-section>
-                    <p class="text-justify" :class="theme('color-l', 'color-d')" style="font-size: 16px; margin: 0; font-weight: bold">
+                    <p :class="theme('color-l', 'color-d')" class="text-justify" style="font-size: 16px; margin: 0; font-weight: bold">
                       {{ news.title }}</p>
-                    <p class="text-justify q-pt-sm" :class="theme('color-l', 'color-d')" style="font-size: 14px; margin: 0;">{{ news.desc }}</p>
+                    <p :class="theme('color-l', 'color-d')" class="text-justify q-pt-sm" style="font-size: 14px; margin: 0;">
+                      {{ news.desc }}</p>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
-                    <q-img :src="news.img"/>
+                    <q-img :src="news.img" />
                   </q-card-section>
-                  <q-separator v-if="!Dark.isActive"/>
+                  <q-separator v-if="!Dark.isActive" />
                 </q-card>
               </template>
             </q-card>
             <div style="height: 50px;"></div>
           </q-tab-panel>
           <q-tab-panel :class="theme('bg-none-l', 'bg-none-d')" class="q-px-none q-pt-sm" name="univs">
-            <q-card square flat :class="theme('bg-none-l', 'bg-none-d')">
+            <q-card :class="theme('bg-none-l', 'bg-none-d')" flat square>
               <template v-for="news in texts.connectedUniversities" :key="news">
-                <q-card square flat class="q-mb-sm">
-                  <q-separator v-if="!Dark.isActive"/>
+                <q-card class="q-mb-sm" flat square>
+                  <q-separator v-if="!Dark.isActive" />
                   <q-card-section>
-                    <p class="text-justify" :class="theme('color-l', 'color-d')" style="font-size: 16px; margin: 0; font-weight: bold">
+                    <p :class="theme('color-l', 'color-d')" class="text-justify" style="font-size: 16px; margin: 0; font-weight: bold">
                       {{ news.title }}</p>
-                    <p class="text-justify q-pt-sm" :class="theme('color-l', 'color-d')" style="font-size: 14px; margin: 0;">{{ news.desc }}</p>
+                    <p :class="theme('color-l', 'color-d')" class="text-justify q-pt-sm" style="font-size: 14px; margin: 0;">
+                      {{ news.desc }}</p>
                   </q-card-section>
                   <q-card-section class="q-pt-none q-px-none">
-                    <q-img :src="news.img"/>
+                    <q-img :src="news.img" />
                     <template v-if="news.btn_url === ''">
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat :class="theme('bg-primary', 'bg-white')"
+                      <q-btn :class="theme('bg-primary', 'bg-white')" flat no-caps style="margin: 15px 0 0 15px; height: 12px"
                              @click="dialogModel = true">
                         <span :class="theme('color-l', 'text-black')"
                               style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                     <template v-else>
-                      <q-btn style="margin: 15px 0 0 15px; height: 12px" no-caps flat :class="theme('bg-primary', 'bg-white')"
+                      <q-btn :class="theme('bg-primary', 'bg-white')" flat no-caps style="margin: 15px 0 0 15px; height: 12px"
                              @click="goUrl(news.btn_url)">
                         <span :class="theme('color-l', 'text-black')"
                               style="color: white; font-size: 12px">{{ news.btn }}</span>
                       </q-btn>
                     </template>
                   </q-card-section>
-                  <q-separator v-if="!Dark.isActive"/>
+                  <q-separator v-if="!Dark.isActive" />
                 </q-card>
               </template>
             </q-card>
@@ -89,10 +90,34 @@
 <script>
 import {onMounted, ref, watch} from "vue";
 import {goUrl, theme} from "src/services/other/tools";
-import {Dark, useQuasar} from "quasar";
+import {Dark, useMeta, useQuasar} from "quasar";
 import texts from 'src/info/texts.js'
 import UserMessageDialog from "components/UserMessageDialog";
 import {useStore} from "vuex";
+
+const meta = {
+  title: 'Главная - GISTUD',
+  script: {
+    yandexMetrika: {
+      type: 'application/javascript',
+      innerHTML:
+        `
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(85382857, "init", {clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true});
+
+        `
+    }
+  },
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Главная - GISTUD | Удобная информация вашего университета: студенческие новости, расписание и многое другое'
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud'
+    },
+  }
+}
 
 export default {
   name: "Home",
@@ -100,12 +125,13 @@ export default {
     UserMessageDialog
   },
   setup() {
+    useMeta(() => meta);
     const store = useStore();
     const $q = useQuasar();
     const tab = ref('newsProject');
 
     onMounted(async () => {
-      store.commit('globalState/changeCurrentPage','home');
+      store.commit('globalState/changeCurrentPage', 'home');
       tab.value = (localStorage.getItem("mHomeCurrentTab") === null) ? 'newsProject' : localStorage.getItem("mHomeCurrentTab");
     });
 
@@ -125,6 +151,7 @@ export default {
       dialogModel,
       url,
       Dark,
+      useMeta,
     }
   }
 }
