@@ -15,15 +15,7 @@ export function getTableRowsFromLessons(lessons, week) {
   }
 
   for (let lesson of lessonsOfSelectedWeek) {
-    if (lesson.day === 'MONDAY') {
-      timeArray.push(lesson.time);
-    }
-    if (lesson.day === 'TUESDAY') {
-      timeArray.push(lesson.time);
-    }
-    if (lesson.day === 'WEDNESDAY') {
-      timeArray.push(lesson.time);
-    }
+    timeArray.push(lesson.time);
   }
   timeArray.sort();
   timeArray = Array.from(new Set(timeArray));
@@ -101,15 +93,7 @@ export function getLessonFromSelectedDate(lessons, date) {
   if (lessonsOfSelectedWeek.length !== 0) {
     let timeArray = [];
     for (let lesson of lessonsOfSelectedWeek) {
-      if (lesson.day === 'MONDAY') {
-        timeArray.push(lesson.time);
-      }
-      if (lesson.day === 'TUESDAY') {
-        timeArray.push(lesson.time);
-      }
-      if (lesson.day === 'WEDNESDAY') {
-        timeArray.push(lesson.time);
-      }
+      timeArray.push(lesson.time);
     }
     timeArray.sort();
     timeArray = Array.from(new Set(timeArray));
