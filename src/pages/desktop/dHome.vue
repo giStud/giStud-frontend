@@ -90,8 +90,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="css">
+@import 'src/css/main.css';
 #REKLAMA {
   height: 120px;
   border-radius: 4px;
@@ -124,55 +124,5 @@ export default {
 
 .container-base {
   max-width: 1140px;
-
-}
-
-.center-all {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.bg-none {
-  background: none;
-}
-
-.h-t {
-  min-height: 500px;
-
-  border: 5px solid red;
-}
-
-.fix-pa {
-  padding: 15px 15px;
-}
-
-.fix-py {
-  padding: 15px 0;
-}
-
-.fix-px {
-  padding: 0 15px;
-}
-
-.fix-pt {
-  padding-top: 15px;
-}
-
-.fix-my {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-.fix-mx {
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
-.fix-mr {
-  margin-right: 15px;
-}
-
-.fix-mb {
-  margin-bottom: 15px;
 }
 </style>

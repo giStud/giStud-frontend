@@ -41,7 +41,7 @@ const desktop = [
       {
         path: '/schedule',
         name: 'schedule',
-        component: () => import('pages/Schedule'),
+        component: () => import('pages/desktop/dSchedule'),
         props: (route) => ({univName: route.query.univName}),
         meta: {isAuth: false, isAdmin: false}
       },

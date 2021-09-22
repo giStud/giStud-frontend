@@ -1,0 +1,72 @@
+.fix-pa {
+  padding: 15px 15px;
+}
+
+.fix-px {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.fix-py {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.fix-pt {
+  padding-top: 15px;
+}
+
+.fix-pb {
+  padding-bottom: 15px;
+}
+
+.fix-pl {
+  padding-left: 15px;
+}
+
+.fix-pr {
+  padding-right: 15px;
+}
+
+.fix-ma {
+  margin: 15px 15px;
+}
+
+.fix-my {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.fix-mx {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.fix-mt {
+  margin-top: 15px;
+}
+
+.fix-mb {
+  margin-bottom: 15px;
+}
+
+.fix-ml {
+  margin-left: 15px;
+}
+
+.fix-mr {
+  margin-right: 15px;
+}
+
+.center-all {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.t-center {
+  text-align: center;
+}
+
+.bg-none {
+  background: none;
+}
