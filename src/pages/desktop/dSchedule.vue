@@ -56,7 +56,7 @@
         </q-card>
       </q-card>
 
-      <q-card  style="position: sticky ; z-index: 9999" id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa" flat>
+      <q-card id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa" flat style="position: sticky ; z-index: 9999">
         <q-card class="t-center">НАВИГАЦИЯ</q-card>
 
         <q-card id="schedule-nav-btn" class="row center-all justify-between items-center fix-pa">
@@ -93,20 +93,34 @@
         <q-card class="t-center bg-none fix-pb" flat square>ТАБЛИЦА</q-card>
         <q-card class="center-all t-center justify-center items-center row fix-py" flat square>
 
-          <q-list class="row-wc">
-            <q-item>Время</q-item>
-            <q-item>08:00 - 09:35</q-item>
-            <q-item>09:45 - 11:20</q-item>
-            <q-item>11:30 - 13:05</q-item>
-            <q-item>11:30 - 13:05</q-item>
-            <q-item>15:15 - 16:50</q-item>
-            <q-item>17:00 - 18:35</q-item>
-          </q-list>
 
           <template v-for="tableVal in table" :key="tableVal">
-            <q-list style="margin: 2px; border-collapse: collapse" class="row-wc">
+            <q-list class="row-wc" style="margin: 2px; border-collapse: collapse">
               <span style="font-weight: bold; font-size: 16px">{{ tableVal.day }}</span>
-              <q-item style="background-color: rgba(27,99,212,0.47); margin-bottom: 4px;" v-for="lesson in 6" :key="lesson" clickable>Здесь идет пара у нее длинное название очень длинное название которые никуда не влезет </q-item>
+              <q-item class="t-center q-pa-none" v-for="lesson in 6" :key="lesson" clickable style="padding: 8px;height: 190px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;">
+
+                <template v-if="Math.random() * 10 >= 5">
+                  <div>
+                    <q-item-label class="q-mb-sm bg-white text-black" style="line-height: 10px" >10:00 - 10:00</q-item-label>
+                    <q-item-label lines="4" style="font-size: 12px">Здесь идет пара у нее длинное название очень длинное название которые никуда не
+                      влезет
+                    </q-item-label>
+                    <q-separator style="margin: 8px 2%;" />
+                    <q-item-label  lines="4" style="font-size: 12px">Здесь идет пара у нее длинное название очень длинное название которые никуда не
+                      влезет
+                    </q-item-label>
+                  </div>
+                </template>
+
+                <template v-else>
+                  <div>
+                    <q-item-label class="q-mb-sm text-black" style="background-color: rgba(166,76,219,0.49);line-height: 10px" >10:00 - 10:00</q-item-label>
+                    <q-item-label style="margin-top: 25%; font-size: 12px">лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</q-item-label>
+                  </div>
+                </template>
+
+
+              </q-item>
             </q-list>
           </template>
 
@@ -154,8 +168,7 @@ export default {
     const selectedWeekBtn = ref(false)
 
     const datePickerDate = ref(formatDate(new Date()));
-
-
+    const random = ref()
 
     const getNumerator = (name, notActive, active) => {
       let classActive = ''
@@ -177,6 +190,7 @@ export default {
       selectedWeek, selectedWeekBtn, getNumerator, toggleWeekBtn,
       datePickerDate, changeDateFromDatePicker,
       table,
+      random
     }
   }
 }
@@ -209,7 +223,7 @@ export default {
 }
 
 .row-wc {
-  width: 160px;
+  width: 190px;
 }
 
 
