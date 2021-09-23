@@ -33,3 +33,4 @@ yarn-error.log*
 *.njsproj
 *.sln
 src-cordova/cordova-flag.d.ts
+package-lock.json

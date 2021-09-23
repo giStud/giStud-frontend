@@ -2,8 +2,8 @@
   <div class="q-pa-md" style="min-width: 1248px; padding-left: 24px; padding-right: 24px">
     <q-toolbar class="bg-primary text-white">
 
-      <q-btn class=" q-pa-none bg-none" :to="'/'" flat color="primary">
-        <q-avatar style="width: 150px" class="q-pa-none" square>
+      <q-btn class="q-pa-none" :to="'/'" flat color="primary">
+        <q-avatar style="width: 150px; height: 75%;" class="q-pa-none q-mr-sm" square>
           <q-img
             src="../assets/logo.svg"
           />
