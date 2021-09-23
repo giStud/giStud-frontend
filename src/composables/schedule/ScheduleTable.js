@@ -2,6 +2,33 @@ import UtilsService from '../../services/other/utilsService'
 import {Dark} from "quasar";
 import Login from "components/Login";
 
+const debugTimeArray = [
+  {
+    lessonBeginTime: '08:00',
+    lessonFinishTime: '09:35'
+  },
+  {
+    lessonBeginTime: '09:45',
+    lessonFinishTime: '11:20'
+  },
+  {
+    lessonBeginTime: '11:30',
+    lessonFinishTime: '13:05'
+  },
+  {
+    lessonBeginTime: '13:30',
+    lessonFinishTime: '15:05'
+  },
+  {
+    lessonBeginTime: '15:15',
+    lessonFinishTime: '16:50'
+  },
+  {
+    lessonBeginTime: '17:00',
+    lessonFinishTime: '18:35'
+  },
+]
+
 export function getLessonsFromSelectedWeekDesktop(lessons, week) {
   let timeArray = [];
   const daysArray = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
@@ -14,74 +41,90 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
     }
   }
 
-  for (let lesson of lessonsOfSelectedWeek) {
-    timeArray.push(lesson.time);
-  }
-  timeArray.sort();
-  timeArray = Array.from(new Set(timeArray));
-
-  for (let time in timeArray) {
-    let timeValue = timeArray[time];
-    const timeSplittedArray = timeValue.split(":");
-    let tempDate = new Date();
-    tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
-    let lessonBeginTime = UtilsService.getTimeString(tempDate);
-
-    tempDate.setHours(tempDate.getHours() + 1);
-    tempDate.setMinutes(tempDate.getMinutes() + 35)
-
-    let lessonFinishTime = UtilsService.getTimeString(tempDate);
-
-    timeArray[time] = {
-      lessonBeginTime,
-      lessonFinishTime
-    }
-  }
-
-
   let rowsArray = []
-  for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
-    let dayObject = {}
-    let lessonsArray = [];
-    for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
-      let timeObject = timeArray[indexOfTimeArray];
-      let valueArray = [];
-      let lessonObject = {}
-      lessonObject['time'] = timeObject;
-      lessonObject['value'] = valueArray;
-      lessonsArray[indexOfTimeArray] = lessonObject;
+  if (lessonsOfSelectedWeek.length !== 0) {
+    for (let lesson of lessonsOfSelectedWeek) {
+      timeArray.push(lesson.time);
     }
-    dayObject['day'] = daysArray[indexOfDaysArray];
-    dayObject['lessons'] = lessonsArray;
-    rowsArray[indexOfDaysArray] = dayObject;
-  }
+    timeArray.sort();
+    timeArray = Array.from(new Set(timeArray));
 
-  for (let lesson of lessonsOfSelectedWeek) {
-    let time = lesson.time.substr(0, 5);
-    const lessonNumerator = lesson.numerator;
+    for (let time in timeArray) {
+      let timeValue = timeArray[time];
+      const timeSplittedArray = timeValue.split(":");
+      let tempDate = new Date();
+      tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
+      let lessonBeginTime = UtilsService.getTimeString(tempDate);
+
+      tempDate.setHours(tempDate.getHours() + 1);
+      tempDate.setMinutes(tempDate.getMinutes() + 35)
+
+      let lessonFinishTime = UtilsService.getTimeString(tempDate);
+
+      timeArray[time] = {
+        lessonBeginTime,
+        lessonFinishTime
+      }
+    }
+
+    for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
+      let dayObject = {}
+      let lessonsArray = [];
+      for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
+        let timeObject = timeArray[indexOfTimeArray];
+        let valueArray = [];
+        let lessonObject = {}
+        lessonObject['time'] = timeObject;
+        lessonObject['value'] = valueArray;
+        lessonsArray[indexOfTimeArray] = lessonObject;
+      }
+      dayObject['day'] = daysArray[indexOfDaysArray];
+      dayObject['lessons'] = lessonsArray;
+      rowsArray[indexOfDaysArray] = dayObject;
+    }
+
+    for (let lesson of lessonsOfSelectedWeek) {
+      let time = lesson.time.substr(0, 5);
+      const lessonNumerator = lesson.numerator;
 
 
-    for (let rowObject of rowsArray) {
-      if(lesson.day === rowObject.day) {
-        for (let lessonVal of rowObject.lessons) {
-          if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
-            if (lesson.name !== '') {
+      for (let rowObject of rowsArray) {
+        if(lesson.day === rowObject.day) {
+          for (let lessonVal of rowObject.lessons) {
+            if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+              if (lesson.name !== '') {
 
-              if (lessonVal.value.length !== 0) {
-                if (lessonVal.value[0].name === '') {
-                  lessonVal.value[0] = lesson;
+                if (lessonVal.value.length !== 0) {
+                  if (lessonVal.value[0].name === '') {
+                    lessonVal.value[0] = lesson;
+                  } else {
+                    lessonVal.value.push(lesson);
+                  }
                 } else {
                   lessonVal.value.push(lesson);
                 }
-              } else {
+              } else if (lessonVal.value.length === 0) {
                 lessonVal.value.push(lesson);
               }
-            } else if (lessonVal.value.length === 0) {
-              lessonVal.value.push(lesson);
             }
           }
         }
       }
+    }
+  } else {
+    for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
+      let dayObject = {}
+      let lessonsArray = [];
+      for (let indexOfTimeArray = 0; indexOfTimeArray < debugTimeArray.length; indexOfTimeArray++) {
+        let timeObject = debugTimeArray[indexOfTimeArray];
+        let lessonObject = {}
+        lessonObject['time'] = timeObject;
+        lessonObject['value'] = [];
+        lessonsArray[indexOfTimeArray] = lessonObject;
+      }
+      dayObject['day'] = daysArray[indexOfDaysArray];
+      dayObject['lessons'] = lessonsArray;
+      rowsArray[indexOfDaysArray] = dayObject;
     }
   }
   return rowsArray;
@@ -167,37 +210,10 @@ export function getLessonFromSelectedDateMobile(lessons, date) {
       }
     }
   } else {
-    const timeArray = [
-      {
-        lessonBeginTime: '08:00',
-        lessonFinishTime: '09:35'
-      },
-      {
-        lessonBeginTime: '09:45',
-        lessonFinishTime: '11:20'
-      },
-      {
-        lessonBeginTime: '11:30',
-        lessonFinishTime: '13:05'
-      },
-      {
-        lessonBeginTime: '13:30',
-        lessonFinishTime: '15:05'
-      },
-      {
-        lessonBeginTime: '15:15',
-        lessonFinishTime: '16:50'
-      },
-      {
-        lessonBeginTime: '17:00',
-        lessonFinishTime: '18:35'
-      },
-    ]
-
-    for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
+    for (let indexOfTimeArray = 0; indexOfTimeArray < debugTimeArray.length; indexOfTimeArray++) {
       let rowObject = {}
       rowObject['lessonNumber'] = indexOfTimeArray + 1;
-      rowObject['time'] = timeArray[indexOfTimeArray]
+      rowObject['time'] = debugTimeArray[indexOfTimeArray]
       rowObject['lessons'] = [];
       rowsArray[indexOfTimeArray] = rowObject
     }
