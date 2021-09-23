@@ -214,7 +214,7 @@ import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {
   getDateOfMonday,
-  getLessonFromSelectedDate,
+  getLessonFromSelectedDateMobile,
   getMonthStringByDate,
   getNumberOfWeek,
   getScheduleCellColor,
@@ -315,7 +315,8 @@ export default {
           groupName.value = 'Группа: ' + selectedGroup.name /*+ " (" + selectedGroup.universityEntity.name + ")"*/;
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
 
-          currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
+          currentDayLessons.value = getLessonFromSelectedDateMobile(selectedGroup.lessons, selectedDate.value);
+          console.log(currentDayLessons.value)
         } else {
           groupName.value = '';
         }
@@ -444,7 +445,7 @@ export default {
 
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
-          currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
+          currentDayLessons.value = getLessonFromSelectedDateMobile(selectedGroup.lessons, selectedDate.value);
         }
       }
     })
