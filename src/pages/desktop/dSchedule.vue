@@ -282,7 +282,6 @@
                     label="Тип занятия"
                     emit-value
                     option-label="typeName"
-                    option-value="typeName"
                   />
                 </q-card-section>
               </q-card>
@@ -420,6 +419,7 @@ export default {
           editLessonDay.value = lessonExample.day;
           editLessonNumerator.value = lessonExample.numerator;
           editLessonAudience.value = lessonExample.audienceEntity.audience;
+          editLessonType.value = lessonExample.typeEntity;
         }
       } catch (e) {
         console.log(e)
