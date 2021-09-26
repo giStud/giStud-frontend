@@ -1,3 +1,4 @@
+import LessonsService from '../../services/schedule/lessonService';
 import GroupService from '../../services/schedule/groupsService';
 import UniversityService from '../../services/schedule/universityService';
 
@@ -36,4 +37,10 @@ export async function getGroupNamesByUnivAction({commit}, {univId}) {
   } catch (e) {
     throw e;
   }
+}
+
+export async function getLessonTypes({commit}) {
+  const data = await LessonsService.getLessonTypes();
+  commit('setLessonTypes', data);
+  return data;
 }

@@ -44,28 +44,10 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
   let rowsArray = []
   if (lessonsOfSelectedWeek.length !== 0) {
     for (let lesson of lessonsOfSelectedWeek) {
-      timeArray.push(lesson.time);
+      timeArray.push({lessonBeginTime : lesson.startTime.substr(0,5), lessonFinishTime : lesson.finishTime.substr(0,5)});
     }
-    timeArray.sort();
-    timeArray = Array.from(new Set(timeArray));
-
-    for (let time in timeArray) {
-      let timeValue = timeArray[time];
-      const timeSplittedArray = timeValue.split(":");
-      let tempDate = new Date();
-      tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
-      let lessonBeginTime = UtilsService.getTimeString(tempDate);
-
-      tempDate.setHours(tempDate.getHours() + 1);
-      tempDate.setMinutes(tempDate.getMinutes() + 35)
-
-      let lessonFinishTime = UtilsService.getTimeString(tempDate);
-
-      timeArray[time] = {
-        lessonBeginTime,
-        lessonFinishTime
-      }
-    }
+    timeArray.sort((a,b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
+    timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
 
     for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
       let dayObject = {}
@@ -84,7 +66,7 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
     }
 
     for (let lesson of lessonsOfSelectedWeek) {
-      let time = lesson.time.substr(0, 5);
+      let time = lesson.startTime.substr(0, 5);
       const lessonNumerator = lesson.numerator;
 
 
@@ -145,28 +127,10 @@ export function getLessonFromSelectedDateMobile(lessons, date) {
   if (lessonsOfSelectedWeek.length !== 0) {
     let timeArray = [];
     for (let lesson of lessonsOfSelectedWeek) {
-      timeArray.push(lesson.time);
+      timeArray.push({lessonBeginTime : lesson.startTime.substr(0,5), lessonFinishTime : lesson.finishTime.substr(0,5)});
     }
-    timeArray.sort();
-    timeArray = Array.from(new Set(timeArray));
-
-    for (let time in timeArray) {
-      let timeValue = timeArray[time];
-      const timeSplittedArray = timeValue.split(":");
-      let tempDate = new Date();
-      tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
-      let lessonBeginTime = UtilsService.getTimeString(tempDate);
-
-      tempDate.setHours(tempDate.getHours() + 1);
-      tempDate.setMinutes(tempDate.getMinutes() + 35)
-
-      let lessonFinishTime = UtilsService.getTimeString(tempDate);
-
-      timeArray[time] = {
-        lessonBeginTime,
-        lessonFinishTime,
-      }
-    }
+    timeArray.sort((a,b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
+    timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
 
     let filteredLessonsByDay = []
     for (let lesson of lessonsOfSelectedWeek) {
@@ -186,7 +150,7 @@ export function getLessonFromSelectedDateMobile(lessons, date) {
     const numerator = getTypeOfWeek(selectedWeek);
 
     for (let lesson of filteredLessonsByDay) {
-      let time = lesson.time.substr(0, 5);
+      let time = lesson.startTime.substr(0, 5);
       const lessonNumerator = lesson.numerator;
 
 

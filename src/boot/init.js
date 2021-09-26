@@ -15,4 +15,9 @@ export default boot(async ( { store, router } ) => {
     router.push("/");
   });
   Dark.set(localStorage.getItem("darkTheme") === "1");
+
+  let user = store.getters['auth/getCurrentUser'];
+  if (user !== null) {
+    await store.dispatch('auth/getUserRolesAction', {userId : user.id});
+  }
 })

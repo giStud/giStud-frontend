@@ -18,11 +18,7 @@ export default boot(async ({store, router} ) => {
       next('/auth/login');
     }
 
-    let user = store.getters['auth/getCurrentUser'];
-    if (user !== null && !user.roles) {
-      await store.dispatch('auth/getUserRolesAction', {userId : user.id});
-      user = store.getters['auth/getCurrentUser'];
-    }
+    const user = store.getters['auth/getCurrentUser'];
 
     if (auth && loggedIn && admin && user !== null) {
       const userRoles = user.roles;

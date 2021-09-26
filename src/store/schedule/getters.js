@@ -9,3 +9,7 @@ export function getGroupNames(state) {
 export function getUnivNames(state) {
   return state.univNames;
 }
+
+export function getLessonTypes(state) {
+  return state.lessonTypes;
+}

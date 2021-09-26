@@ -106,7 +106,7 @@
               <span style="font-weight: bold; font-size: 16px">{{ getFullDayWeekString(dayColumn.day) }} </span>
               <br>
               <span style="font-size: 14px">{{ datesArray[index] }} </span>
-              <template  v-for="lesson in dayColumn.lessons" :key="lesson" >
+              <template v-for="lesson in dayColumn.lessons" :key="lesson">
 
                 <template v-if="lesson.value.length === 1">
                   <q-item class="t-center q-pa-none" clickable
@@ -168,7 +168,7 @@
                 <template v-else-if="lesson.value.length === 0">
                   <q-item class="t-center q-pa-none" clickable
                           style="padding: 8px;height: 190px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;"
-                         >
+                  >
                     <div style="width: 100%">
                       <q-item-label class="q-mb-sm text-black"
                                     style="background-color: gray;line-height: 10px">
@@ -187,26 +187,106 @@
             </q-list>
           </template>
 
-          <q-dialog v-model="lessonInfoDialog" square>
-            <q-card flat>
-              <q-card-section class="row q-pa-none q-ma-none">
-                <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;"/>
-                <span class="title-page-dialog">Информация о занятии</span>
-              </q-card-section>
-              <q-separator/>
-              <template v-if="lessonInfoObject.type">
-                <q-card-section :style="getTypeColorByValue(lessonInfoObject.type)">
-                  {{ getTypeNameByValue(lessonInfoObject.type) }}
+          <q-dialog v-model="lessonInfoDialog" square @hide="editMode = false">
+            <template v-if="!editMode">
+              <q-card flat>
+                <q-card-section class="row q-pa-none q-ma-none">
+                  <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;"/>
+                  <span class="title-page-dialog">Информация о занятии</span>
                 </q-card-section>
                 <q-separator/>
-              </template>
-              <q-card-section>
-                {{ lessonInfoObject.timeString }}
-              </q-card-section>
-              <q-card-section>
-                {{ lessonInfoObject.lessonText }}
-              </q-card-section>
-            </q-card>
+                <template v-if="lessonInfoObject.type">
+                  <q-card-section :style="getTypeColorByValue(lessonInfoObject.type)">
+                    {{ getTypeNameByValue(lessonInfoObject.type) }}
+                  </q-card-section>
+                  <q-separator/>
+                </template>
+                <q-card-section>
+                  {{ lessonInfoObject.timeString }}
+                </q-card-section>
+                <q-card-section>
+                  {{ lessonInfoObject.lessonText }}
+                </q-card-section>
+                <template v-if="isAdmin">
+                  <q-btn flat icon="edit" @click="openEditModeDialog(lessonInfoObject)"/>
+                  <q-btn flat icon="delete"/>
+                </template>
+              </q-card>
+            </template>
+            <template v-else>
+              <q-card flat class="full-width">
+                <q-card-section>
+                  <q-input v-model="editLessonName" label="Обработанное занятие"></q-input>
+                </q-card-section>
+                <q-card-section>
+                  <q-input v-model="editRawLessonString" label="Необработанное занятие"></q-input>
+                </q-card-section>
+                <q-card-section>
+                  <q-input v-model="editLessonAudience" label="Аудитория"/>
+                </q-card-section>
+                <q-card-section>
+                  <q-input filled v-model="editLessonStartTime" mask="time" :rules="['time']" label="Время начала пары">
+                    <template v-slot:append>
+                      <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy transition-show="scale" transition-hide="scale">
+                          <q-time v-model="editLessonStartTime">
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-time>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </q-card-section>
+                <q-card-section>
+                  <q-input filled v-model="editLessonFinishTime" mask="time" :rules="['time']" label="Время конца пары">
+                    <template v-slot:append>
+                      <q-icon name="access_time" class="cursor-pointer">
+                        <q-popup-proxy transition-show="scale" transition-hide="scale">
+                          <q-time v-model="editLessonFinishTime">
+                            <div class="row items-center justify-end">
+                              <q-btn v-close-popup label="Close" color="primary" flat />
+                            </div>
+                          </q-time>
+                        </q-popup-proxy>
+                      </q-icon>
+                    </template>
+                  </q-input>
+                </q-card-section>
+                <q-card-section>
+                  <q-select
+                    filled
+                    v-model="editLessonDay"
+                    :options="dayMap"
+                    label="День"
+                    emit-value
+                    map-options
+                  />
+                </q-card-section>
+                <q-card-section>
+                  <q-select
+                    filled
+                    v-model="editLessonNumerator"
+                    :options="numeratorMap"
+                    label="Числитель"
+                    emit-value
+                    map-options
+                  />
+                </q-card-section>
+                <q-card-section>
+                  <q-select
+                    filled
+                    v-model="editLessonType"
+                    :options="lessonTypes"
+                    label="Тип занятия"
+                    emit-value
+                    option-label="typeName"
+                    option-value="typeName"
+                  />
+                </q-card-section>
+              </q-card>
+            </template>
           </q-dialog>
         </q-card>
       </q-card>
@@ -216,14 +296,14 @@
 </template>
 
 <script>
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {
   getDateOfMonday,
   getDateString, getNumberOfWeek, getScheduleCellColor,
   getLessonsFromSelectedWeekDesktop,
   getTypeOfWeek, isCurrentLessonGoes, getFullDayWeekString, getTypeColorByValue, getTypeNameByValue
 } from "src/composables/schedule/ScheduleTable";
-
+import LessonService from 'src/services/schedule/lessonService'
 import {useStore} from "vuex";
 import {theme} from "src/services/other/tools";
 
@@ -236,6 +316,48 @@ function formatDate(date) {
   return yy + '/' + mm + '/' + dd;
 }
 
+const dayMap = [
+  {
+    label: 'Понедельник',
+    value: 'MONDAY'
+  },
+  {
+    label: 'Вторник',
+    value: 'TUESDAY'
+  },
+  {
+    label: 'Среда',
+    value: 'WEDNESDAY'
+  },
+  {
+    label: 'Четверг',
+    value: 'THURSDAY'
+  },
+  {
+    label: 'Пятница',
+    value: 'FRIDAY',
+  },
+  {
+    label: 'Суббота',
+    value: 'SATURDAY',
+  },
+  {
+    label: 'Воскресенье',
+    value: 'SUNDAY',
+  }
+]
+
+const numeratorMap = [
+  {
+    label: 'Числитель',
+    value: 'NUMERATOR',
+  },
+  {
+    label: 'Знаменатель',
+    value: 'DENOMINATOR',
+  }
+]
+
 export default {
   name: "dSchedule",
   props: {
@@ -246,6 +368,64 @@ export default {
   },
   setup(props) {
     const store = useStore();
+
+    const isAdmin = ref(computed(() => store.getters['auth/isAdmin']));
+    const editMode = ref(false);
+    const editLessonName = ref('');
+    const editRawLessonString = ref('');
+    const editLessonStartTime = ref('');
+    const editLessonFinishTime = ref('');
+    const editLessonType = ref(null);
+    const editLessonAudience = ref('');
+    const editLessonWeeks = ref([]);
+    const editLessonNumerator = ref('');
+    const editLessonDay = ref('');
+    const lessonInfoObject = ref({});
+    const lessonInfoDialog = ref(false);
+    const lessonTypes = ref([]);
+    const lessonsToEditArray = ref([]);
+
+    const openLessonInfo = (lesson, time) => {
+      if (lesson.name && lesson.name !== '' && time) {
+        lessonInfoDialog.value = true;
+        const audienceValue = lesson.audienceEntity.audience;
+        const typeValue = lesson.typeEntity.typeName;
+
+        const audience = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
+        const type = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
+        const lessonText = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
+        const timeString = time.lessonBeginTime + '-' + time.lessonFinishTime;
+        lessonInfoObject.value = {
+          audience,
+          type,
+          lessonText,
+          timeString,
+          lessonId : lesson.lessonId
+        }
+      }
+    }
+
+
+    const openEditModeDialog = async (lessonInfoObject)=> {
+      editMode.value = true;
+      try {
+        lessonsToEditArray.value = await LessonService.getLessonEditInfoById(lessonInfoObject.lessonId)
+        if (lessonsToEditArray.value.length !== 0) {
+          const lessonExample = lessonsToEditArray.value[0];
+          console.log(lessonExample)
+          editLessonName.value = lessonExample.name;
+          editRawLessonString.value = lessonExample.rawLessonString;
+          editLessonStartTime.value = lessonExample.startTime.substr(0,5);
+          editLessonFinishTime.value = lessonExample.finishTime.substr(0,5);
+          editLessonDay.value = lessonExample.day;
+          editLessonNumerator.value = lessonExample.numerator;
+          editLessonAudience.value = lessonExample.audienceEntity.audience;
+        }
+      } catch (e) {
+        console.log(e)
+      }
+
+    }
 
     const groupSelectValue = ref(null);
     const univSelectValue = ref(null);
@@ -283,7 +463,6 @@ export default {
     }
 
     const loadGroupSchedule = async (val) => {
-      console.log(val)
       try {
         if (val !== null && val.groupName !== '') {
           const selectedGroupId = val.groupId;
@@ -293,12 +472,12 @@ export default {
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
           scheduleColumns.value = getLessonsFromSelectedWeekDesktop(selectedGroup.lessons, selectedWeek.value);
-          console.log(scheduleColumns.value)
         } else {
           title.value = '';
           console.log('Find deleted group');
         }
       } catch (e) {
+        console.log(e)
         localStorage.removeItem("lastLoadedGroupNew");
         groupSelectValue.value = null;
       }
@@ -313,27 +492,6 @@ export default {
     const datesArray = ref([]);
     const currentWeekType = ref('');
     const datePickerDate = ref(formatDate(new Date()));
-    const lessonInfoObject = ref({});
-    const lessonInfoDialog = ref(false);
-
-    const openLessonInfo = (lesson, time) => {
-      if (lesson.name && lesson.name !== '' && time) {
-        lessonInfoDialog.value = true;
-        const audienceValue = lesson.audienceEntity.audience;
-        const typeValue = lesson.typeEntity.typeName;
-
-        const audience = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
-        const type = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
-        const lessonText = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
-        const timeString = time.lessonBeginTime + '-' + time.lessonFinishTime;
-        lessonInfoObject.value = {
-          audience,
-          type,
-          lessonText,
-          timeString
-        }
-      }
-    }
 
     const updateHeadersDates = (date) => {
       if (date !== null) {
@@ -408,7 +566,6 @@ export default {
         updateHeadersDates(date);
 
         currentWeekType.value = getTypeOfWeek(newValue);
-        console.log(currentWeekType.value)
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleColumns.value = getLessonsFromSelectedWeekDesktop(selectedGroup.lessons, newValue)
@@ -445,6 +602,9 @@ export default {
 
     onMounted(async () => {
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
+      if (isAdmin.value) {
+        lessonTypes.value = await store.dispatch('schedule/getLessonTypes');
+      }
 
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
@@ -487,6 +647,20 @@ export default {
     });
 
     return {
+      isAdmin,
+      editMode,
+      editLessonName,
+      editRawLessonString,
+      editLessonStartTime,
+      editLessonFinishTime,
+      editLessonType,
+      editLessonAudience,
+      editLessonWeeks,
+      editLessonNumerator,
+      editLessonDay,
+      lessonTypes,
+      dayMap,
+      numeratorMap,
       scheduleColumns,
       rawLessonStringMode,
       currentWeekType,
@@ -499,6 +673,7 @@ export default {
       groupsFilteredOptions,
       selectedWeek,
       datePickerDate,
+      openEditModeDialog,
       filterGroupsFn,
       filterUniversitiesFn,
       loadGroupSchedule,
