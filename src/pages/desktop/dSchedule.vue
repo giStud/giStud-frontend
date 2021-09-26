@@ -106,41 +106,52 @@
               <span style="font-weight: bold; font-size: 16px">{{ getFullDayWeekString(dayColumn.day) }} </span>
               <br>
               <span style="font-size: 14px">{{ datesArray[index] }} </span>
-              <q-item class="t-center q-pa-none" v-for="lesson in dayColumn.lessons" :key="lesson" clickable
-                      style="padding: 8px;height: 190px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;">
+              <template  v-for="lesson in dayColumn.lessons" :key="lesson" >
 
                 <template v-if="lesson.value.length === 1">
-                  <div style="width: 100%">
-                    <q-item-label class="q-mb-sm text-black"
-                                  :style="getScheduleCellColor(lesson.value[0])"
-                                  style="line-height: 10px">
-                      {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
-                    </q-item-label>
-                    <q-item-label style="margin-top: 25%; font-size: 12px">
+                  <q-item class="t-center q-pa-none" clickable
+                          style="padding: 8px;height: 190px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;"
+                          @click="openLessonInfo(lesson.value[0], lesson.time)">
+                    <div style="width: 100%">
+
+                      <q-item-label class="q-mb-sm text-black"
+                                    :style="getScheduleCellColor(lesson.value[0])"
+                                    style="line-height: 10px">
+                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
+                      </q-item-label>
+                      <q-item-label style="margin-top: 25%; font-size: 12px">
                       <span v-if="lesson.value[0].rawLessonString === '' || lesson.value[0].name === ''"
                             class="text-grey">Нет занятий</span>
-                      <span v-else>{{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
+                        <span v-else>{{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
                          <q-chip
                            v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                            class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square
                            style="border: none; font-size: 10px" text-color="white">
                             </q-chip>
                       </span>
-                    </q-item-label>
-                  </div>
+                      </q-item-label>
 
+                    </div>
+                  </q-item>
                 </template>
 
                 <template v-else-if="lesson.value.length === 2">
-                  <div>
-                    <q-item-label class="q-mb-sm text-black" style="line-height: 10px"
-                                  :style="getScheduleCellColor(lesson.value[0])">{{ lesson.time.lessonBeginTime }} -
-                      {{ lesson.time.lessonFinishTime }}
-                    </q-item-label>
-                    <q-item-label lines="4" style="font-size: 12px">
-                      {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
-                    </q-item-label>
-                    <q-separator style="margin: 8px 2%;"/>
+                  <q-item class="t-center q-pa-none" clickable
+                          style="padding: 8px;height: 95px;background-color: rgba(27,99,212,0.47);"
+                          @click="openLessonInfo(lesson.value[0], lesson.time)">
+                    <div>
+                      <q-item-label class="q-mb-sm text-black" style="line-height: 10px"
+                                    :style="getScheduleCellColor(lesson.value[0])">{{ lesson.time.lessonBeginTime }} -
+                        {{ lesson.time.lessonFinishTime }}
+                      </q-item-label>
+                      <q-item-label lines="4" style="font-size: 12px">
+                        {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
+                      </q-item-label>
+                    </div>
+                  </q-item>
+                  <q-item class="t-center q-pa-none" clickable
+                          style="padding: 8px;height: 95px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;"
+                          @click="openLessonInfo(lesson.value[1], lesson.time)">
                     <q-item-label lines="4" style="font-size: 12px">
                       {{ rawLessonStringMode ? lesson.value[1].rawLessonString : lesson.value[1].name }}
                     </q-item-label>
@@ -151,26 +162,52 @@
                         style="border: none; font-size: 10px" text-color="white">
                       </q-chip>
                     </q-item-label>
-                  </div>
+                  </q-item>
                 </template>
 
                 <template v-else-if="lesson.value.length === 0">
-                  <div style="width: 100%">
-                    <q-item-label class="q-mb-sm text-black"
-                                  style="background-color: gray;line-height: 10px">
-                      {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
-                    </q-item-label>
-                    <q-item-label style="margin-top: 25%; font-size: 12px"  class="text-grey">
-                      Нет занятий
-                    </q-item-label>
-                  </div>
+                  <q-item class="t-center q-pa-none" clickable
+                          style="padding: 8px;height: 190px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;"
+                         >
+                    <div style="width: 100%">
+                      <q-item-label class="q-mb-sm text-black"
+                                    style="background-color: gray;line-height: 10px">
+                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
+                      </q-item-label>
+                      <q-item-label style="margin-top: 25%; font-size: 12px" class="text-grey">
+                        Нет занятий
+                      </q-item-label>
+                    </div>
+                  </q-item>
+
                 </template>
 
 
-              </q-item>
+              </template>
             </q-list>
           </template>
 
+          <q-dialog v-model="lessonInfoDialog" square>
+            <q-card flat>
+              <q-card-section class="row q-pa-none q-ma-none">
+                <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;"/>
+                <span class="title-page-dialog">Информация о занятии</span>
+              </q-card-section>
+              <q-separator/>
+              <template v-if="lessonInfoObject.type">
+                <q-card-section :style="getTypeColorByValue(lessonInfoObject.type)">
+                  {{ getTypeNameByValue(lessonInfoObject.type) }}
+                </q-card-section>
+                <q-separator/>
+              </template>
+              <q-card-section>
+                {{ lessonInfoObject.timeString }}
+              </q-card-section>
+              <q-card-section>
+                {{ lessonInfoObject.lessonText }}
+              </q-card-section>
+            </q-card>
+          </q-dialog>
         </q-card>
       </q-card>
 
@@ -184,7 +221,7 @@ import {
   getDateOfMonday,
   getDateString, getNumberOfWeek, getScheduleCellColor,
   getLessonsFromSelectedWeekDesktop,
-  getTypeOfWeek, isCurrentLessonGoes, getFullDayWeekString
+  getTypeOfWeek, isCurrentLessonGoes, getFullDayWeekString, getTypeColorByValue, getTypeNameByValue
 } from "src/composables/schedule/ScheduleTable";
 
 import {useStore} from "vuex";
@@ -276,6 +313,27 @@ export default {
     const datesArray = ref([]);
     const currentWeekType = ref('');
     const datePickerDate = ref(formatDate(new Date()));
+    const lessonInfoObject = ref({});
+    const lessonInfoDialog = ref(false);
+
+    const openLessonInfo = (lesson, time) => {
+      if (lesson.name && lesson.name !== '' && time) {
+        lessonInfoDialog.value = true;
+        const audienceValue = lesson.audienceEntity.audience;
+        const typeValue = lesson.typeEntity.typeName;
+
+        const audience = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
+        const type = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
+        const lessonText = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
+        const timeString = time.lessonBeginTime + '-' + time.lessonFinishTime;
+        lessonInfoObject.value = {
+          audience,
+          type,
+          lessonText,
+          timeString
+        }
+      }
+    }
 
     const updateHeadersDates = (date) => {
       if (date !== null) {
@@ -283,7 +341,7 @@ export default {
         datesArray.value[0] = getDateString(tempDate);
         tempDate.setDate(tempDate.getDate() + 1);
 
-        datesArray.value[1]= getDateString(tempDate);
+        datesArray.value[1] = getDateString(tempDate);
         tempDate.setDate(tempDate.getDate() + 1);
 
         datesArray.value[2] = getDateString(tempDate);
@@ -429,12 +487,33 @@ export default {
     });
 
     return {
-      scheduleColumns, rawLessonStringMode, currentWeekType, datesArray,
-      univSelectValue, univFilteredOptions, filterUniversitiesFn,
-      groupSelectValue, groupsFilteredOptions, filterGroupsFn, loadGroupSchedule,
-      selectedWeek, toggleWeekBtn, loadNextWeekLessons, loadPreviousWeekLessons,
-      datePickerDate, changeDateFromDatePicker,
-      getScheduleCellColor, isCurrentLessonGoes, getFullDayWeekString, theme, getNumberOfWeek,
+      scheduleColumns,
+      rawLessonStringMode,
+      currentWeekType,
+      datesArray,
+      lessonInfoDialog,
+      lessonInfoObject,
+      univSelectValue,
+      univFilteredOptions,
+      groupSelectValue,
+      groupsFilteredOptions,
+      selectedWeek,
+      datePickerDate,
+      filterGroupsFn,
+      filterUniversitiesFn,
+      loadGroupSchedule,
+      openLessonInfo,
+      toggleWeekBtn,
+      loadNextWeekLessons,
+      loadPreviousWeekLessons,
+      changeDateFromDatePicker,
+      getScheduleCellColor,
+      isCurrentLessonGoes,
+      getFullDayWeekString,
+      theme,
+      getNumberOfWeek,
+      getTypeColorByValue,
+      getTypeNameByValue
     }
   }
 }
