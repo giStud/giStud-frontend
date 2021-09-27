@@ -24,7 +24,6 @@ class LessonService {
 
   async changeLessonsByNewValues(lessonsToChange, newValuesObj) {
     if (lessonsToChange.length !== 0) {
-      console.log(newValuesObj)
       const lessonToExample = lessonsToChange[0];
       const newLessonName = newValuesObj.editLessonName !== lessonToExample.name ? newValuesObj.editLessonName : null;
       const newRawLessonString = newValuesObj.editRawLessonString !== lessonToExample.rawLessonString ? newValuesObj.editRawLessonString : null;
@@ -66,6 +65,20 @@ class LessonService {
       }
     } else {
       return null;
+    }
+  }
+
+  async deleteLesson(lessonsToDelete) {
+    let result = [];
+    for (let lesson of lessonsToDelete) {
+      result.push(lesson.lessonId);
+    }
+    if (lessonsToDelete.length !== 0) {
+      try {
+        await api.delete("/lessons?lessonToDelete=" + result,{headers: authHeader()});
+      } catch (e) {
+        throw e;
+      }
     }
   }
 }

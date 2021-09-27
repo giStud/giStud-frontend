@@ -209,7 +209,6 @@
                 </q-card-section>
                 <template v-if="isAdmin">
                   <q-btn flat icon="edit" @click="openEditModeDialog(lessonInfoObject)"/>
-                  <q-btn flat icon="delete"/>
                 </template>
               </q-card>
             </template>
@@ -307,6 +306,7 @@
                     Сохранить
                   </q-btn>
                   <q-btn no-caps flat @click="editMode = false">Отмена</q-btn>
+                  <q-btn flat icon="delete" @click="handleLessonDeleting"/>
                 </q-card-actions>
               </q-card>
             </template>
@@ -439,7 +439,7 @@ export default {
 
 
     const openLessonInfo = (lesson, time) => {
-      if (lesson.name && lesson.name !== '' && time) {
+      if ((lesson.name && lesson.name !== '' && time) || isAdmin) {
         lessonInfoDialog.value = true;
         const audienceValue = lesson.audienceEntity.audience;
         const typeValue = lesson.typeEntity.typeName;
@@ -465,7 +465,6 @@ export default {
         lessonsToEditArray.value = await LessonService.getLessonEditInfoById(lessonInfoObject.lessonId)
         if (lessonsToEditArray.value.length !== 0) {
           const lessonExample = lessonsToEditArray.value[0];
-          console.log(lessonExample)
           editLessonName.value = lessonExample.name;
           editRawLessonString.value = lessonExample.rawLessonString;
           editLessonStartTime.value = lessonExample.startTime.substr(0, 5);
@@ -501,6 +500,11 @@ export default {
     const handleLessonChanging = async (newValuesObj) => {
       const data = await LessonService.changeLessonsByNewValues(lessonsToEditArray.value, newValuesObj);
       console.log(data)
+      await loadGroupSchedule(groupSelectValue.value);
+    }
+
+    const handleLessonDeleting = async () => {
+      await LessonService.deleteLesson(lessonsToEditArray.value);
       await loadGroupSchedule(groupSelectValue.value);
     }
 
@@ -755,6 +759,7 @@ export default {
       datePickerDate,
       openEditModeDialog,
       handleLessonChanging,
+      handleLessonDeleting,
       filterGroupsFn,
       filterUniversitiesFn,
       loadGroupSchedule,
