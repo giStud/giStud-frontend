@@ -3,6 +3,9 @@ import {Dark} from "quasar";
 import Login from "components/Login";
 import {arraysEqual} from '../../services/other/tools'
 
+const autumnLimit = 23;
+const springLimit = 45;
+
 const debugTimeArray = [
   {
     lessonBeginTime: '08:00',
@@ -314,13 +317,10 @@ export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lesso
   }
 }
 
-export function getLessonNumeratorByWeeks(lessons) {
+export function getLessonNumeratorByWeeks(lessons, semester) {
   if (lessons.length !== 0) {
-    const autumnLimit = 23;
-    const springLimit = 45;
     const weeksArray = getWeeksArrayByLessons(lessons);
-    const maxWeek = weeksArray[weeksArray.length - 1];
-    return getNumeratorByWeeksArray(weeksArray, maxWeek > 0 && maxWeek < 23  ? autumnLimit : springLimit);
+    return getNumeratorByWeeksArray(weeksArray, semester === 'AUTUMN'  ? autumnLimit : springLimit);
   }
 }
 
@@ -334,21 +334,21 @@ export function getWeeksArrayByLessons(lessons) {
 
 function getNumeratorByWeeksArray(weeks, limit) {
   let weeksToCompare = [];
-  for (let i = limit === 23 ? 1 : 23; i < limit; i += 2) {
+  for (let i = limit === autumnLimit ? 1 : autumnLimit; i < limit; i += 2) {
     weeksToCompare.push(i);
   }
   if (arraysEqual(weeksToCompare, weeks)) {
     return 'NUMERATOR';
   }
   weeksToCompare = [];
-  for (let i = limit === 23 ? 2 : 24; i < limit; i += 2) {
+  for (let i = limit === autumnLimit ? 2 : (autumnLimit + 1); i < limit; i += 2) {
     weeksToCompare.push(i);
   }
   if (arraysEqual(weeksToCompare, weeks)) {
     return 'DENOMINATOR';
   }
   weeksToCompare = [];
-  for (let i = limit === 23 ? 1 : 23; i < limit; i++) {
+  for (let i = limit === autumnLimit ? 1 : autumnLimit; i < limit; i++) {
     weeksToCompare.push(i);
   }
   if (arraysEqual(weeksToCompare, weeks)) {

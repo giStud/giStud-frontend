@@ -216,6 +216,14 @@
             <template v-else>
               <q-card flat class="full-width">
                 <q-card-section>
+                  <q-option-group
+                    v-model="editLessonSemesterType"
+                    :options="semestersMap"
+                    color="primary"
+                    inline
+                  />
+                </q-card-section>
+                <q-card-section>
                   <q-input v-model="editLessonName" label="Обработанное занятие"></q-input>
                 </q-card-section>
                 <q-card-section>
@@ -231,7 +239,7 @@
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-time v-model="editLessonStartTime">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <q-btn v-close-popup label="Close" color="primary" flat/>
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -246,7 +254,7 @@
                         <q-popup-proxy transition-show="scale" transition-hide="scale">
                           <q-time v-model="editLessonFinishTime">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat />
+                              <q-btn v-close-popup label="Close" color="primary" flat/>
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -293,6 +301,13 @@
                     label="Недели"
                   />
                 </q-card-section>
+                <q-card-actions>
+                  <q-btn no-caps flat
+                         @click="handleLessonChanging({editLessonSemesterType,editLessonName, editRawLessonString, editLessonStartTime, editLessonFinishTime, editLessonDay, editLessonAudience, editLessonType, editLessonNumerator, editLessonSelectedWeeks})">
+                    Сохранить
+                  </q-btn>
+                  <q-btn no-caps flat @click="editMode = false">Отмена</q-btn>
+                </q-card-actions>
               </q-card>
             </template>
           </q-dialog>
@@ -382,6 +397,17 @@ const numeratorMap = [
   }
 ]
 
+const semestersMap = [
+  {
+    label: 'Осенний семестр',
+    value: 'AUTUMN'
+  },
+  {
+    label: 'Весенний семестр',
+    value: 'SPRING'
+  }
+]
+
 export default {
   name: "dSchedule",
   props: {
@@ -396,6 +422,7 @@ export default {
     const isAdmin = ref(computed(() => store.getters['auth/isAdmin']));
     const lessonTypes = ref([]);
     const lessonsToEditArray = ref([]);
+    const editLessonSemesterType = ref('AUTUMN');
     const editMode = ref(false);
     const editLessonName = ref('');
     const editRawLessonString = ref('');
@@ -426,13 +453,13 @@ export default {
           type,
           lessonText,
           timeString,
-          lessonId : lesson.lessonId
+          lessonId: lesson.lessonId
         }
       }
     }
 
 
-    const openEditModeDialog = async (lessonInfoObject)=> {
+    const openEditModeDialog = async (lessonInfoObject) => {
       editMode.value = true;
       try {
         lessonsToEditArray.value = await LessonService.getLessonEditInfoById(lessonInfoObject.lessonId)
@@ -441,14 +468,14 @@ export default {
           console.log(lessonExample)
           editLessonName.value = lessonExample.name;
           editRawLessonString.value = lessonExample.rawLessonString;
-          editLessonStartTime.value = lessonExample.startTime.substr(0,5);
-          editLessonFinishTime.value = lessonExample.finishTime.substr(0,5);
+          editLessonStartTime.value = lessonExample.startTime.substr(0, 5);
+          editLessonFinishTime.value = lessonExample.finishTime.substr(0, 5);
           editLessonDay.value = lessonExample.day;
           editLessonAudience.value = lessonExample.audienceEntity.audience;
           editLessonType.value = lessonExample.typeEntity;
-          editLessonNumerator.value = getLessonNumeratorByWeeks(lessonsToEditArray.value);
+          editLessonNumerator.value = getLessonNumeratorByWeeks(lessonsToEditArray.value, editLessonSemesterType.value);
           editLessonSelectedWeeks.value = getWeeksArrayByLessons(lessonsToEditArray.value);
-          fillEditLessonWeeksOptByLessons(lessonsToEditArray.value);
+          fillEditLessonWeeksOptByLessons(editLessonSemesterType.value);
         }
       } catch (e) {
         console.log(e)
@@ -457,22 +484,25 @@ export default {
 
     }
 
-    const fillEditLessonWeeksOptByLessons = (lessons) => {
-      if (lessons.length !== 0) {
-        const weeksArray = getWeeksArrayByLessons(lessons);
-        const maxWeek = weeksArray[weeksArray.length - 1];
-        let result = [];
-        const limit = maxWeek > 0 && maxWeek < 23  ? 23 : 45
-        for (let i = limit === 23 ? 1 : 23; i < limit; i++) {
-          result.push(i);
-        }
-        editLessonWeeksOptions.value = result;
+    watch(editLessonSemesterType, (newVal) => {
+      fillEditLessonWeeksOptByLessons(newVal);
+      editLessonSelectedWeeks.value = [];
+    })
+
+    const fillEditLessonWeeksOptByLessons = (semester) => {
+      let result = [];
+      const limit = semester === 'AUTUMN' ? 23 : 45
+      for (let i = limit === 23 ? 1 : 23; i < limit; i++) {
+        result.push(i);
       }
+      editLessonWeeksOptions.value = result;
     }
 
-
-    watch(editLessonSelectedWeeks, (val)=> {
-      console.log(val)})
+    const handleLessonChanging = async (newValuesObj) => {
+      const data = await LessonService.changeLessonsByNewValues(lessonsToEditArray.value, newValuesObj);
+      console.log(data)
+      await loadGroupSchedule(groupSelectValue.value);
+    }
 
     const groupSelectValue = ref(null);
     const univSelectValue = ref(null);
@@ -696,6 +726,7 @@ export default {
     return {
       isAdmin,
       editMode,
+      editLessonSemesterType,
       editLessonName,
       editRawLessonString,
       editLessonStartTime,
@@ -709,6 +740,7 @@ export default {
       lessonTypes,
       dayMap,
       numeratorMap,
+      semestersMap,
       scheduleColumns,
       rawLessonStringMode,
       currentWeekType,
@@ -722,6 +754,7 @@ export default {
       selectedWeek,
       datePickerDate,
       openEditModeDialog,
+      handleLessonChanging,
       filterGroupsFn,
       filterUniversitiesFn,
       loadGroupSchedule,
