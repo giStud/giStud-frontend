@@ -13,3 +13,7 @@ export function getUnivNames(state) {
 export function getLessonTypes(state) {
   return state.lessonTypes;
 }
+
+export function getFacNames(state) {
+  return state.facNames;
+}

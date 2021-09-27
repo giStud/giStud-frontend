@@ -10,6 +10,10 @@ export function setUnivNames (state, names) {
   state.univNames = names;
 }
 
+export function setFacNames (state, names) {
+  state.facNames = names;
+}
+
 export function setLessonTypes (state, types) {
   state.lessonTypes = types;
 }

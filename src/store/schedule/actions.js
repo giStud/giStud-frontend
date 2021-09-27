@@ -39,6 +39,16 @@ export async function getGroupNamesByUnivAction({commit}, {univId}) {
   }
 }
 
+export async function getFacNamesByUnivAction({commit}, {univId}) {
+  try {
+    const data = await UniversityService.getFacNames(univId)
+    commit('setFacNames', data)
+    return data;
+  } catch (e) {
+    throw e;
+  }
+}
+
 export async function getLessonTypes({commit}) {
   const data = await LessonsService.getLessonTypes();
   commit('setLessonTypes', data);

@@ -13,6 +13,8 @@
           <q-tab name="news" icon="format_size" label="Новости"/>
           <q-separator/>
           <q-tab name="schedule" icon="schedule" label="Загрузка расписания"/>
+          <q-separator/>
+          <q-tab name="groupCreating" icon="group" label="Создание группы"/>
 
         </q-tabs>
       </template>
@@ -57,7 +59,8 @@
                   <div class="q-pa-md">
                     <q-btn class="btr-square" color="primary" no-caps label="Удалить выбранные новости"
                            @click="deleteSelectedNewsRows"/>
-                    <q-btn class="btr-square q-mx-lg" color="primary" no-caps label="Изменить выбранную новость" :disable="selectedNewsRows.length !== 1"
+                    <q-btn class="btr-square q-mx-lg" color="primary" no-caps label="Изменить выбранную новость"
+                           :disable="selectedNewsRows.length !== 1"
                            @click="changeSelectedNewsItem(selectedNewsRows[0])"/>
                   </div>
                 </q-tab-panel>
@@ -144,6 +147,49 @@
               </div>
             </div>
           </q-tab-panel>
+          <q-tab-panel class="bg-none" name="groupCreating">
+            <q-card flat>
+              <q-card-section class="text-h4 q-mb-md">Создать группу</q-card-section>
+              <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
+                        class="select-ug"
+                        fill-input hide-selected
+                        label="Выберите университет"
+                        option-label="univName"
+                        outlined transition-hide="jump-up" transition-show="jump-up"
+                        use-input @filter="filterUniversitiesFn">
+                <template v-slot:option="scope">
+                  <q-item v-bind="scope.itemProps">
+                    <q-item-section>
+                      <q-item-label v-html="scope.opt.univName"/>
+                      <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+                    </q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">Не найдено</q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:append>
+                  <q-icon name="search"/>
+                </template>
+              </q-select>
+              <q-select v-model="facultySelectValue" :options="facultyFilteredOptions" borderless bottom-slots
+                        class="select-ug" fill-input hide-selected
+                        label="Выберите факультет"
+                        outlined transition-hide="jump-up" transition-show="jump-up"
+                        use-input @filter="filterFacultiesFn">
+                <template v-slot:no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">Не найдено</q-item-section>
+                  </q-item>
+                </template>
+                <template v-slot:append>
+                  <q-icon name="search"/>
+                </template>
+              </q-select>
+            </q-card>
+          </q-tab-panel>
 
         </q-tab-panels>
       </template>
@@ -176,42 +222,44 @@ const newsEditorFonts = {
   verdana: 'Verdana'
 }
 
-const newsColumns = [{
-  name: 'id',
-  required: true,
-  label: 'Id',
-  align: 'center',
-  field: 'newsId',
-  headerStyle: 'width: 200px',
-  sortable: true
-}, {
-  name: 'title',
-  required: true,
-  label: 'Заголовок',
-  align: 'center',
-  field: 'title',
-  headerStyle: 'width: 500px',
-  sortable: true
-}
+const newsColumns = [
+  {
+    name: 'id',
+    required: true,
+    label: 'Id',
+    align: 'center',
+    field: 'newsId',
+    headerStyle: 'width: 200px',
+    sortable: true
+  }, {
+    name: 'title',
+    required: true,
+    label: 'Заголовок',
+    align: 'center',
+    field: 'title',
+    headerStyle: 'width: 500px',
+    sortable: true
+  }
 ]
 
-const newsTypesColumns = [{
-  name: 'id',
-  required: true,
-  label: 'Id',
-  align: 'center',
-  field: 'newsTypeId',
-  headerStyle: 'width: 200px',
-  sortable: true
-}, {
-  name: 'name',
-  required: true,
-  label: 'Имя',
-  align: 'center',
-  headerStyle: 'width: 500px',
-  field: 'type',
-  sortable: true
-},
+const newsTypesColumns = [
+  {
+    name: 'id',
+    required: true,
+    label: 'Id',
+    align: 'center',
+    field: 'newsTypeId',
+    headerStyle: 'width: 200px',
+    sortable: true
+  }, {
+    name: 'name',
+    required: true,
+    label: 'Имя',
+    align: 'center',
+    headerStyle: 'width: 500px',
+    field: 'type',
+    sortable: true
+  },
   {
     name: 'icon',
     required: true,
@@ -222,50 +270,51 @@ const newsTypesColumns = [{
   }
 ]
 
-const univRequestsColumns = [{
-  name: 'id',
-  required: true,
-  label: 'Id',
-  align: 'center',
-  field: 'requestId',
-  sortable: true
-}, {
-  name: 'text',
-  required: true,
-  label: 'Текст',
-  align: 'center',
-  headerStyle: 'width: 500px',
-  field: 'text',
-  sortable: true
-}, {
-  name: 'email',
-  required: true,
-  label: 'Email',
-  align: 'center',
-  field: 'email',
-  sortable: true
-}, {
-  name: 'type',
-  required: true,
-  label: 'Тип сообщения',
-  align: 'center',
-  field: 'type',
-  sortable: true
-}, {
-  name: 'createdTime',
-  required: true,
-  label: 'Время создания',
-  align: 'center',
-  field:
-    (row) => {
-      let result = '';
-      const date = new Date(row.createdTime);
-      result += getDateString(date) + '\t';
-      result += UtilsService.getTimeString(date);
-      return result;
-    },
-  sortable: true
-}
+const univRequestsColumns = [
+  {
+    name: 'id',
+    required: true,
+    label: 'Id',
+    align: 'center',
+    field: 'requestId',
+    sortable: true
+  }, {
+    name: 'text',
+    required: true,
+    label: 'Текст',
+    align: 'center',
+    headerStyle: 'width: 500px',
+    field: 'text',
+    sortable: true
+  }, {
+    name: 'email',
+    required: true,
+    label: 'Email',
+    align: 'center',
+    field: 'email',
+    sortable: true
+  }, {
+    name: 'type',
+    required: true,
+    label: 'Тип сообщения',
+    align: 'center',
+    field: 'type',
+    sortable: true
+  }, {
+    name: 'createdTime',
+    required: true,
+    label: 'Время создания',
+    align: 'center',
+    field:
+      (row) => {
+        let result = '';
+        const date = new Date(row.createdTime);
+        result += getDateString(date) + '\t';
+        result += UtilsService.getTimeString(date);
+        return result;
+      },
+    sortable: true
+  }
 ]
 
 export default {
@@ -296,6 +345,57 @@ export default {
         univRequestsRows.value = await UserMessagesService.getUserMessages();
       }
     }
+
+    const univSelectValue = ref(null);
+    const facultySelectValue = ref('');
+    const univSelectOptions = ref([]);
+    const univFilteredOptions = ref(univSelectOptions.value);
+    const facultySelectOptions = ref([]);
+    const facultyFilteredOptions = ref(facultySelectOptions.value);
+
+    const filterUniversitiesFn = (val, update, abort) => {
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        if (needle === '') {
+          univFilteredOptions.value = univSelectOptions.value;
+        } else {
+          univFilteredOptions.value = univSelectOptions.value.filter((v) => {
+              return v.univName.toLowerCase().includes(needle)
+            }
+          );
+        }
+      });
+    }
+
+    const filterFacultiesFn = (val, update, abort) => {
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        if (needle === '') {
+          facultyFilteredOptions.value = facultySelectOptions.value;
+        } else {
+          facultyFilteredOptions.value = facultySelectOptions.value.filter((v) => {
+            return v.toLowerCase().includes(needle)
+            }
+          );
+        }
+      });
+    }
+
+    watch(univSelectValue, async (newValue) => {
+      console.log(1)
+      try {
+        let selectedUnivId;
+        if (newValue !== null && (selectedUnivId = newValue.univId)) {
+          console.log(2)
+          facultySelectOptions.value = await store.dispatch('schedule/getFacNamesByUnivAction', {
+            univId: selectedUnivId
+          })
+          console.log(facultySelectOptions.value)
+        }
+      } catch (e) {
+        univSelectValue.value = null;
+      }
+    })
 
     const tab = ref('');
     const newsRows = ref([]);
@@ -393,11 +493,15 @@ export default {
 
     onMounted(async () => {
       tab.value = localStorage.getItem("adminCurrentTab");
+
       newsProperty.value = localStorage.getItem("adminNewsCurrentTab");
       univRequestsRows.value = await UserMessagesService.getUserMessages();
+
       await store.dispatch('news/downloadAllNews');
       newsRows.value = store.getters['news/getNews'];
       newsTypesOptions.value = await NewsTypeService.getNewsTypes();
+
+      univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
     })
 
     const newsToolbar = [
@@ -485,6 +589,10 @@ export default {
 
     return {
       tab,
+      univSelectValue,
+      univFilteredOptions,
+      facultySelectValue,
+      facultyFilteredOptions,
       newsProperty,
       selectedUserMessagesRows,
       univRequestsRows,
@@ -510,6 +618,8 @@ export default {
       onFailed,
       splitterModel: ref(10),
       apiPath: computed(() => process.env.API),
+      filterUniversitiesFn,
+      filterFacultiesFn,
       deleteSelectedUserMessagesRows,
       deleteSelectedNewsTypesRows,
       handleNewsCreating,
