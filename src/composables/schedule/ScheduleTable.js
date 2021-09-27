@@ -1,6 +1,7 @@
 import UtilsService from '../../services/other/utilsService'
 import {Dark} from "quasar";
 import Login from "components/Login";
+import {arraysEqual} from '../../services/other/tools'
 
 const debugTimeArray = [
   {
@@ -44,9 +45,12 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
   let rowsArray = []
   if (lessonsOfSelectedWeek.length !== 0) {
     for (let lesson of lessonsOfSelectedWeek) {
-      timeArray.push({lessonBeginTime : lesson.startTime.substr(0,5), lessonFinishTime : lesson.finishTime.substr(0,5)});
+      timeArray.push({
+        lessonBeginTime: lesson.startTime.substr(0, 5),
+        lessonFinishTime: lesson.finishTime.substr(0, 5)
+      });
     }
-    timeArray.sort((a,b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
+    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
     timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
 
     for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
@@ -71,7 +75,7 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
 
 
       for (let rowObject of rowsArray) {
-        if(lesson.day === rowObject.day) {
+        if (lesson.day === rowObject.day) {
           for (let lessonVal of rowObject.lessons) {
             if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
               if (lesson.name !== '') {
@@ -127,9 +131,12 @@ export function getLessonFromSelectedDateMobile(lessons, date) {
   if (lessonsOfSelectedWeek.length !== 0) {
     let timeArray = [];
     for (let lesson of lessonsOfSelectedWeek) {
-      timeArray.push({lessonBeginTime : lesson.startTime.substr(0,5), lessonFinishTime : lesson.finishTime.substr(0,5)});
+      timeArray.push({
+        lessonBeginTime: lesson.startTime.substr(0, 5),
+        lessonFinishTime: lesson.finishTime.substr(0, 5)
+      });
     }
-    timeArray.sort((a,b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
+    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
     timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
 
     let filteredLessonsByDay = []
@@ -305,6 +312,49 @@ export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lesso
   } else {
     return false;
   }
+}
+
+export function getLessonNumeratorByWeeks(lessons) {
+  if (lessons.length !== 0) {
+    const autumnLimit = 23;
+    const springLimit = 45;
+    const weeksArray = getWeeksArrayByLessons(lessons);
+    const maxWeek = weeksArray[weeksArray.length - 1];
+    return getNumeratorByWeeksArray(weeksArray, maxWeek > 0 && maxWeek < 23  ? autumnLimit : springLimit);
+  }
+}
+
+export function getWeeksArrayByLessons(lessons) {
+  let weeksArray = [];
+  for (let lesson of lessons) {
+    weeksArray.push(lesson.week);
+  }
+  return weeksArray.sort((a, b) => a - b);
+}
+
+function getNumeratorByWeeksArray(weeks, limit) {
+  let weeksToCompare = [];
+  for (let i = limit === 23 ? 1 : 23; i < limit; i += 2) {
+    weeksToCompare.push(i);
+  }
+  if (arraysEqual(weeksToCompare, weeks)) {
+    return 'NUMERATOR';
+  }
+  weeksToCompare = [];
+  for (let i = limit === 23 ? 2 : 24; i < limit; i += 2) {
+    weeksToCompare.push(i);
+  }
+  if (arraysEqual(weeksToCompare, weeks)) {
+    return 'DENOMINATOR';
+  }
+  weeksToCompare = [];
+  for (let i = limit === 23 ? 1 : 23; i < limit; i++) {
+    weeksToCompare.push(i);
+  }
+  if (arraysEqual(weeksToCompare, weeks)) {
+    return 'FULL';
+  }
+  return 'CUSTOM';
 }
 
 export function getWeekDayStringFromDate(date) {

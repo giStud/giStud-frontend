@@ -284,6 +284,15 @@
                     option-label="typeName"
                   />
                 </q-card-section>
+                <q-card-section v-if="editLessonNumerator === 'CUSTOM'">
+                  <q-select
+                    filled
+                    v-model="editLessonSelectedWeeks"
+                    multiple
+                    :options="editLessonWeeksOptions"
+                    label="Недели"
+                  />
+                </q-card-section>
               </q-card>
             </template>
           </q-dialog>
@@ -298,9 +307,17 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {
   getDateOfMonday,
-  getDateString, getNumberOfWeek, getScheduleCellColor,
+  getDateString,
+  getNumberOfWeek,
+  getScheduleCellColor,
   getLessonsFromSelectedWeekDesktop,
-  getTypeOfWeek, isCurrentLessonGoes, getFullDayWeekString, getTypeColorByValue, getTypeNameByValue
+  getTypeOfWeek,
+  isCurrentLessonGoes,
+  getFullDayWeekString,
+  getTypeColorByValue,
+  getTypeNameByValue,
+  getLessonNumeratorByWeeks,
+  getWeeksArrayByLessons
 } from "src/composables/schedule/ScheduleTable";
 import LessonService from 'src/services/schedule/lessonService'
 import {useStore} from "vuex";
@@ -354,6 +371,14 @@ const numeratorMap = [
   {
     label: 'Знаменатель',
     value: 'DENOMINATOR',
+  },
+  {
+    label: 'Каждую неделю',
+    value: 'FULL',
+  },
+  {
+    label: 'По неделям',
+    value: 'CUSTOM',
   }
 ]
 
@@ -369,6 +394,8 @@ export default {
     const store = useStore();
 
     const isAdmin = ref(computed(() => store.getters['auth/isAdmin']));
+    const lessonTypes = ref([]);
+    const lessonsToEditArray = ref([]);
     const editMode = ref(false);
     const editLessonName = ref('');
     const editRawLessonString = ref('');
@@ -376,13 +403,13 @@ export default {
     const editLessonFinishTime = ref('');
     const editLessonType = ref(null);
     const editLessonAudience = ref('');
-    const editLessonWeeks = ref([]);
     const editLessonNumerator = ref('');
     const editLessonDay = ref('');
+    const editLessonSelectedWeeks = ref([]);
+    const editLessonWeeksOptions = ref([]);
     const lessonInfoObject = ref({});
     const lessonInfoDialog = ref(false);
-    const lessonTypes = ref([]);
-    const lessonsToEditArray = ref([]);
+
 
     const openLessonInfo = (lesson, time) => {
       if (lesson.name && lesson.name !== '' && time) {
@@ -417,15 +444,35 @@ export default {
           editLessonStartTime.value = lessonExample.startTime.substr(0,5);
           editLessonFinishTime.value = lessonExample.finishTime.substr(0,5);
           editLessonDay.value = lessonExample.day;
-          editLessonNumerator.value = lessonExample.numerator;
           editLessonAudience.value = lessonExample.audienceEntity.audience;
           editLessonType.value = lessonExample.typeEntity;
+          editLessonNumerator.value = getLessonNumeratorByWeeks(lessonsToEditArray.value);
+          editLessonSelectedWeeks.value = getWeeksArrayByLessons(lessonsToEditArray.value);
+          fillEditLessonWeeksOptByLessons(lessonsToEditArray.value);
         }
       } catch (e) {
         console.log(e)
+        editMode.value = false;
       }
 
     }
+
+    const fillEditLessonWeeksOptByLessons = (lessons) => {
+      if (lessons.length !== 0) {
+        const weeksArray = getWeeksArrayByLessons(lessons);
+        const maxWeek = weeksArray[weeksArray.length - 1];
+        let result = [];
+        const limit = maxWeek > 0 && maxWeek < 23  ? 23 : 45
+        for (let i = limit === 23 ? 1 : 23; i < limit; i++) {
+          result.push(i);
+        }
+        editLessonWeeksOptions.value = result;
+      }
+    }
+
+
+    watch(editLessonSelectedWeeks, (val)=> {
+      console.log(val)})
 
     const groupSelectValue = ref(null);
     const univSelectValue = ref(null);
@@ -655,9 +702,10 @@ export default {
       editLessonFinishTime,
       editLessonType,
       editLessonAudience,
-      editLessonWeeks,
       editLessonNumerator,
       editLessonDay,
+      editLessonWeeksOptions,
+      editLessonSelectedWeeks,
       lessonTypes,
       dayMap,
       numeratorMap,
