@@ -150,44 +150,66 @@
           <q-tab-panel class="bg-none" name="groupCreating">
             <q-card flat>
               <q-card-section class="text-h4 q-mb-md">Создать группу</q-card-section>
-              <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
-                        class="select-ug"
-                        fill-input hide-selected
-                        label="Выберите университет"
-                        option-label="univName"
-                        outlined transition-hide="jump-up" transition-show="jump-up"
-                        use-input @filter="filterUniversitiesFn">
-                <template v-slot:option="scope">
-                  <q-item v-bind="scope.itemProps">
-                    <q-item-section>
-                      <q-item-label v-html="scope.opt.univName"/>
-                      <q-item-label caption>{{ scope.opt.city }}</q-item-label>
-                    </q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">Не найдено</q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:append>
-                  <q-icon name="search"/>
-                </template>
-              </q-select>
-              <q-select v-model="facultySelectValue" :options="facultyFilteredOptions" borderless bottom-slots
-                        class="select-ug" fill-input hide-selected
-                        label="Выберите факультет"
-                        outlined transition-hide="jump-up" transition-show="jump-up"
-                        use-input @filter="filterFacultiesFn">
-                <template v-slot:no-option>
-                  <q-item>
-                    <q-item-section class="text-grey">Не найдено</q-item-section>
-                  </q-item>
-                </template>
-                <template v-slot:append>
-                  <q-icon name="search"/>
-                </template>
-              </q-select>
+              <q-card-section>
+                <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
+                          class="select-ug"
+                          fill-input hide-selected
+                          label="Выберите университет"
+                          option-label="univName"
+                          outlined transition-hide="jump-up" transition-show="jump-up"
+                          use-input @filter="filterUniversitiesFn">
+                  <template v-slot:option="scope">
+                    <q-item v-bind="scope.itemProps">
+                      <q-item-section>
+                        <q-item-label v-html="scope.opt.univName"/>
+                        <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">Не найдено</q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="search"/>
+                  </template>
+                </q-select>
+              </q-card-section>
+              <q-card-section>
+                <q-select v-model="facultySelectValue" :options="facultyFilteredOptions" borderless bottom-slots
+                          class="select-ug" fill-input hide-selected
+                          label="Выберите факультет"
+                          outlined transition-hide="jump-up" transition-show="jump-up"
+                          use-input @filter="filterFacultiesFn">
+                  <template v-slot:no-option>
+                    <q-item>
+                      <q-item-section class="text-grey">Не найдено</q-item-section>
+                    </q-item>
+                  </template>
+                  <template v-slot:append>
+                    <q-icon name="search"/>
+                  </template>
+                </q-select>
+              </q-card-section>
+              <q-card-section>
+                <q-input v-model="creatingGroupName" label="Имя группы"/>
+              </q-card-section>
+              <q-card-section>
+                <q-input filled v-model="editLessonFinishTime" mask="time" :rules="['time']" label="Время конца пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="editLessonFinishTime">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section>
             </q-card>
           </q-tab-panel>
 
@@ -352,6 +374,7 @@ export default {
     const univFilteredOptions = ref(univSelectOptions.value);
     const facultySelectOptions = ref([]);
     const facultyFilteredOptions = ref(facultySelectOptions.value);
+    const creatingGroupName = ref('');
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -593,6 +616,7 @@ export default {
       univFilteredOptions,
       facultySelectValue,
       facultyFilteredOptions,
+      creatingGroupName,
       newsProperty,
       selectedUserMessagesRows,
       univRequestsRows,
