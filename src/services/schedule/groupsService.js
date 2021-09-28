@@ -25,6 +25,22 @@ class GroupService {
       throw e;
     }
   }
+
+  async createGroup(group, semester) {
+    console.log(group)
+    console.log(semester)
+    try {
+      const {data} = await api.post("/groups/createEmptySchedule", {
+        university : group.univ,
+        facName : group.facName,
+        groupName : group.name,
+        timeArray : group.timeArray,
+        semester
+      }, {headers: authHeader()})
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 export default new GroupService();

@@ -151,6 +151,14 @@
             <q-card flat>
               <q-card-section class="text-h4 q-mb-md">Создать группу</q-card-section>
               <q-card-section>
+                <q-option-group
+                  v-model="groupCreatingSemester"
+                  :options="semestersMap"
+                  color="primary"
+                  inline
+                />
+              </q-card-section>
+              <q-card-section>
                 <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
                           class="select-ug"
                           fill-input hide-selected
@@ -314,6 +322,9 @@
                   </template>
                 </q-input>
               </q-card-section>
+              <q-card-actions>
+                <q-btn flat icon="create" @click="handleGroupCreating({univ : univSelectValue, facName : facultySelectValue, name : creatingGroupName, timeArray : groupTimeArray}, groupCreatingSemester)"/>
+              </q-card-actions>
             </q-card>
           </q-tab-panel>
 
@@ -335,6 +346,7 @@ import NewsTypeService from "../services/news/newsTypesService"
 import {useQuasar} from "quasar";
 import {useStore} from "vuex";
 import TokenService from "src/services/auth/tokenService";
+import GroupService from "src/services/schedule/groupsService"
 import authHeader from "src/services/auth/authHeader";
 
 const newsEditorFonts = {
@@ -443,6 +455,17 @@ const univRequestsColumns = [
   }
 ]
 
+const semestersMap = [
+  {
+    label: 'Осенний семестр',
+    value: 'AUTUMN'
+  },
+  {
+    label: 'Весенний семестр',
+    value: 'SPRING'
+  }
+]
+
 export default {
   name: "Admin",
   setup() {
@@ -479,7 +502,12 @@ export default {
     const facultySelectOptions = ref([]);
     const facultyFilteredOptions = ref(facultySelectOptions.value);
     const creatingGroupName = ref('');
-    const groupTimeArray = ref(['','','','','','','','']);
+    const groupCreatingSemester = ref('AUTUMN');
+    const groupTimeArray = ref(['08:00','09:45','11:30','13:30','15:15','17:00','','']);
+
+    const handleGroupCreating = async (group, semester) => {
+      await GroupService.createGroup(group, semester);
+    }
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -717,6 +745,8 @@ export default {
 
     return {
       tab,
+      semestersMap,
+      groupCreatingSemester,
       groupTimeArray,
       univSelectValue,
       univFilteredOptions,
@@ -748,6 +778,7 @@ export default {
       onFailed,
       splitterModel: ref(10),
       apiPath: computed(() => process.env.API),
+      handleGroupCreating,
       filterUniversitiesFn,
       filterFacultiesFn,
       deleteSelectedUserMessagesRows,
