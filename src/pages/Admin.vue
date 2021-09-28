@@ -196,11 +196,115 @@
                 <q-input v-model="creatingGroupName" label="Имя группы"/>
               </q-card-section>
               <q-card-section>
-                <q-input filled v-model="editLessonFinishTime" mask="time" :rules="['time']" label="Время конца пары" style="width: 250px">
+                <q-input filled v-model="groupTimeArray[0]" mask="time" :rules="['time']" label="Время начала 1 пары" style="width: 250px">
                   <template v-slot:append>
                     <q-icon name="access_time" class="cursor-pointer">
                       <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="editLessonFinishTime">
+                        <q-time v-model="groupTimeArray[0]">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section><q-card-section>
+                <q-input filled v-model="groupTimeArray[1]" mask="time" :rules="['time']" label="Время начала 2 пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="groupTimeArray[1]">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section>
+              <q-card-section>
+                <q-input filled v-model="groupTimeArray[2]" mask="time" :rules="['time']" label="Время начала 3 пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="groupTimeArray[2]">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section>
+              <q-card-section>
+                <q-input filled v-model="groupTimeArray[3]" mask="time" :rules="['time']" label="Время начала 4 пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="groupTimeArray[3]">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section>
+              <q-card-section>
+                <q-input filled v-model="groupTimeArray[4]" mask="time" :rules="['time']" label="Время начала 5 пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="groupTimeArray[4]">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section>
+              <q-card-section>
+                <q-input filled v-model="groupTimeArray[5]" mask="time" :rules="['time']" label="Время начала 6 пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="groupTimeArray[5]">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section>
+              <q-card-section>
+                <q-input filled v-model="groupTimeArray[6]" mask="time" :rules="['time']" label="Время начала 7 пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="groupTimeArray[6]">
+                          <div class="row items-center justify-end">
+                            <q-btn v-close-popup label="Close" color="primary" flat/>
+                          </div>
+                        </q-time>
+                      </q-popup-proxy>
+                    </q-icon>
+                  </template>
+                </q-input>
+              </q-card-section>
+              <q-card-section>
+                <q-input filled v-model="groupTimeArray[7]" mask="time" :rules="['time']" label="Время начала 8 пары" style="width: 250px">
+                  <template v-slot:append>
+                    <q-icon name="access_time" class="cursor-pointer">
+                      <q-popup-proxy transition-show="scale" transition-hide="scale">
+                        <q-time v-model="groupTimeArray[7]">
                           <div class="row items-center justify-end">
                             <q-btn v-close-popup label="Close" color="primary" flat/>
                           </div>
@@ -375,6 +479,7 @@ export default {
     const facultySelectOptions = ref([]);
     const facultyFilteredOptions = ref(facultySelectOptions.value);
     const creatingGroupName = ref('');
+    const groupTimeArray = ref(['','','','','','','','']);
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -612,6 +717,7 @@ export default {
 
     return {
       tab,
+      groupTimeArray,
       univSelectValue,
       univFilteredOptions,
       facultySelectValue,
