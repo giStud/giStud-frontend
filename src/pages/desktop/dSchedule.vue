@@ -16,7 +16,7 @@
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
-                  <q-item-label v-html="scope.opt.univName"/>
+                  <q-item-label v-html="scope.opt.univName" />
                   <q-item-label caption>{{ scope.opt.city }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -27,7 +27,7 @@
               </q-item>
             </template>
             <template v-slot:append>
-              <q-icon name="search"/>
+              <q-icon name="search" />
             </template>
           </q-select>
         </q-card>
@@ -41,7 +41,7 @@
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
-                  <q-item-label v-html="scope.opt.groupName"/>
+                  <q-item-label v-html="scope.opt.groupName" />
                   <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -52,7 +52,7 @@
               </q-item>
             </template>
             <template v-slot:append>
-              <q-icon name="search"/>
+              <q-icon name="search" />
             </template>
           </q-select>
         </q-card>
@@ -60,37 +60,37 @@
       <q-card id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa" flat>
         <q-card class="t-center">НАВИГАЦИЯ</q-card>
 
-        <q-toggle :color="theme('primary','white')" v-model="rawLessonStringMode" label="Режим без обработки: "
-                  left-label/>
+        <q-toggle v-model="rawLessonStringMode" :color="theme('primary','white')" label="Режим без обработки: "
+                  left-label />
 
         {{ selectedWeek }} неделя, {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}
 
         <q-card id="schedule-nav-btn" class="row center-all justify-between items-center fix-pa">
           <div>
             <q-btn class="buttons-week" flat label="❮ Предыдущая неделя" no-caps rounded
-                   @click="loadPreviousWeekLessons"/>
+                   @click="loadPreviousWeekLessons" />
           </div>
           <div>
             <q-btn :class="currentWeekType === 'NUMERATOR' ? 'text-primary' : ''" flat label="Числитель" no-caps
-                   outline @click="toggleWeekBtn('NUMERATOR')"/>
+                   outline @click="toggleWeekBtn('NUMERATOR')" />
 
             <q-btn :class="currentWeekType === 'DENOMINATOR' ? 'text-primary' :''" flat label="Знаменатель" no-caps
-                   outline @click="toggleWeekBtn('DENOMINATOR')"/>
+                   outline @click="toggleWeekBtn('DENOMINATOR')" />
 
             <q-btn id="calendar" class="buttons-date" flat icon="today" no-caps>
               <q-popup-proxy transition-hide="scale" transition-show="scale">
                 <q-date v-model="datePickerDate"
                         :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
                   <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn v-close-popup color="primary" flat label="Перейти" @click="changeDateFromDatePicker"/>
-                    <q-btn v-close-popup color="primary" flat label="Отмена"/>
+                    <q-btn v-close-popup color="primary" flat label="Перейти" @click="changeDateFromDatePicker" />
+                    <q-btn v-close-popup color="primary" flat label="Отмена" />
                   </div>
                 </q-date>
               </q-popup-proxy>
             </q-btn>
           </div>
           <div>
-            <q-btn class="buttons-week" flat label="Следующая неделя ❯" no-caps rounded @click="loadNextWeekLessons"/>
+            <q-btn class="buttons-week" flat label="Следующая неделя ❯" no-caps rounded @click="loadNextWeekLessons" />
           </div>
         </q-card>
 
@@ -98,7 +98,7 @@
 
       <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width fix-pa" flat>
         <q-card class="t-center bg-none fix-pb" flat square>ТАБЛИЦА</q-card>
-        <q-card class="center-all t-center justify-center items-center row fix-py" flat square>
+        <q-card class="center-all t-center justify-center items-start row fix-py" flat square>
 
 
           <template v-for="(dayColumn, index) in scheduleColumns" :key="dayColumn">
@@ -109,73 +109,88 @@
               <template v-for="lesson in dayColumn.lessons" :key="lesson">
 
                 <template v-if="lesson.value.length === 1">
-                  <q-item class="t-center q-pa-none" clickable
-                          style="padding: 8px;height: 190px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;"
+                  <!--       aaaaaa           -->
+                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell" clickable
+                          style="background-color: rgba(27,99,212,0.47)"
                           @click="openLessonInfo(lesson.value[0], lesson.time)">
-                    <div style="width: 100%">
+                    <div style="width: 100%" class="items-center">
 
-                      <q-item-label class="q-mb-sm text-black"
-                                    :style="getScheduleCellColor(lesson.value[0])"
-                                    style="line-height: 10px">
+                      <q-item-label :style="getScheduleCellColor(lesson.value[0])"
+                                    class="text-black font-size-cell time-cell-inside-border"
+                                    style="line-height: 10px;">
                         {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
                       </q-item-label>
-                      <q-item-label style="margin-top: 25%; font-size: 12px">
-                      <span v-if="lesson.value[0].rawLessonString === '' || lesson.value[0].name === ''"
-                            class="text-grey">Нет занятий</span>
-                        <span v-else>{{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
-                         <q-chip
-                           v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                           class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square
-                           style="border: none; font-size: 10px" text-color="white">
-                            </q-chip>
-                      </span>
-                      </q-item-label>
+
+                      <div v-if="lesson.value[0].rawLessonString === '' || lesson.value[0].name === ''" class="text-grey lesson-text font-size-cell">
+                        Нет занятий
+                      </div>
+                      <div v-else class="lesson-text font-size-cell">
+                        {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
+                        <q-chip v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
+                                class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас"
+                                outline square style="border: none; font-size: 10px" text-color="white">
+                        </q-chip>
+                      </div>
 
                     </div>
                   </q-item>
+
                 </template>
 
                 <template v-else-if="lesson.value.length === 2">
-                  <q-item class="t-center q-pa-none" clickable
-                          style="padding: 8px;height: 95px;background-color: rgba(27,99,212,0.47);"
+                  <!--       aaaaaa           -->
+                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell-part" clickable
+                          style="background-color: rgba(27,99,212,0.47);"
                           @click="openLessonInfo(lesson.value[0], lesson.time)">
                     <div>
-                      <q-item-label class="q-mb-sm text-black" style="line-height: 10px"
-                                    :style="getScheduleCellColor(lesson.value[0])">{{ lesson.time.lessonBeginTime }} -
+                      <q-item-label :style="getScheduleCellColor(lesson.value[0])" class="q-mb-sm text-black font-size-cell time-cell-inside-border"
+                                    style="">{{ lesson.time.lessonBeginTime }} -
                         {{ lesson.time.lessonFinishTime }}
                       </q-item-label>
-                      <q-item-label lines="4" style="font-size: 12px">
-                        {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
+                      <q-item-label class="font-size-cell" lines="4">
+                        <div class="lesson-text">
+                          {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
+                        </div>
                       </q-item-label>
                     </div>
                   </q-item>
-                  <q-item class="t-center q-pa-none" clickable
-                          style="padding: 8px;height: 95px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;"
+                  <!--       aaaaaa           -->
+                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell-part" clickable
+                          style="background-color: rgba(27,99,212,0.47);"
                           @click="openLessonInfo(lesson.value[1], lesson.time)">
-                    <q-item-label lines="4" style="font-size: 12px">
-                      {{ rawLessonStringMode ? lesson.value[1].rawLessonString : lesson.value[1].name }}
-                    </q-item-label>
-                    <q-item-label>
-                      <q-chip
-                        v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                        class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square
-                        style="border: none; font-size: 10px" text-color="white">
-                      </q-chip>
-                    </q-item-label>
+                    <div>
+                      <q-item-label :style="getScheduleCellColor(lesson.value[0])" class="q-mb-sm text-black font-size-cell time-cell-inside-border"
+                                    style="line-height: 10px">{{ lesson.time.lessonBeginTime }} -
+                        {{ lesson.time.lessonFinishTime }}
+                      </q-item-label>
+                      <q-item-label class="font-size-cell" lines="4">
+                        <div class="lesson-text">
+                          {{ rawLessonStringMode ? lesson.value[1].rawLessonString : lesson.value[1].name }}
+                        </div>
+                      </q-item-label>
+                      <q-item-label>
+                        <q-chip
+                          v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
+                          class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square
+                          style="border: none; font-size: 10px" text-color="white">
+                        </q-chip>
+                      </q-item-label>
+                    </div>
                   </q-item>
                 </template>
 
                 <template v-else-if="lesson.value.length === 0">
-                  <q-item class="t-center q-pa-none" clickable
-                          style="padding: 8px;height: 190px;background-color: rgba(27,99,212,0.47); margin-bottom: 4px;"
+                  <!--       aaaaaa           -->
+                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell" clickable
+                          style="background-color: rgba(27,99,212,0.47)"
                   >
                     <div style="width: 100%">
-                      <q-item-label class="q-mb-sm text-black"
+                      <q-item-label class="q-mb-sm text-black font-size-cell time-cell-inside-border"
                                     style="background-color: gray;line-height: 10px">
                         {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
                       </q-item-label>
-                      <q-item-label style="margin-top: 25%; font-size: 12px" class="text-grey">
-                        Нет занятий
+                      <q-item-label class="text-grey font-size-cell">
+                        <div class="lesson-text">Нет занятий</div>
                       </q-item-label>
                     </div>
                   </q-item>
@@ -191,15 +206,15 @@
             <template v-if="!editMode">
               <q-card flat>
                 <q-card-section class="row q-pa-none q-ma-none">
-                  <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;"/>
+                  <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
                   <span class="title-page-dialog">Информация о занятии</span>
                 </q-card-section>
-                <q-separator/>
+                <q-separator />
                 <template v-if="lessonInfoObject.type">
                   <q-card-section :style="getTypeColorByValue(lessonInfoObject.type)">
                     {{ getTypeNameByValue(lessonInfoObject.type) }}
                   </q-card-section>
-                  <q-separator/>
+                  <q-separator />
                 </template>
                 <q-card-section>
                   {{ lessonInfoObject.timeString }}
@@ -208,12 +223,12 @@
                   {{ lessonInfoObject.lessonText }}
                 </q-card-section>
                 <template v-if="isAdmin">
-                  <q-btn flat icon="edit" @click="openEditModeDialog(lessonInfoObject)"/>
+                  <q-btn flat icon="edit" @click="openEditModeDialog(lessonInfoObject)" />
                 </template>
               </q-card>
             </template>
             <template v-else>
-              <q-card flat class="full-width">
+              <q-card class="full-width" flat>
                 <q-card-section>
                   <q-option-group
                     v-model="editLessonSemesterType"
@@ -229,16 +244,16 @@
                   <q-input v-model="editRawLessonString" label="Необработанное занятие"></q-input>
                 </q-card-section>
                 <q-card-section>
-                  <q-input v-model="editLessonAudience" label="Аудитория"/>
+                  <q-input v-model="editLessonAudience" label="Аудитория" />
                 </q-card-section>
                 <q-card-section>
-                  <q-input filled v-model="editLessonStartTime" mask="time" :rules="['time']" label="Время начала пары">
+                  <q-input v-model="editLessonStartTime" :rules="['time']" filled label="Время начала пары" mask="time">
                     <template v-slot:append>
-                      <q-icon name="access_time" class="cursor-pointer">
-                        <q-popup-proxy transition-show="scale" transition-hide="scale">
+                      <q-icon class="cursor-pointer" name="access_time">
+                        <q-popup-proxy transition-hide="scale" transition-show="scale">
                           <q-time v-model="editLessonStartTime">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat/>
+                              <q-btn v-close-popup color="primary" flat label="Close" />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -247,13 +262,13 @@
                   </q-input>
                 </q-card-section>
                 <q-card-section>
-                  <q-input filled v-model="editLessonFinishTime" mask="time" :rules="['time']" label="Время конца пары">
+                  <q-input v-model="editLessonFinishTime" :rules="['time']" filled label="Время конца пары" mask="time">
                     <template v-slot:append>
-                      <q-icon name="access_time" class="cursor-pointer">
-                        <q-popup-proxy transition-show="scale" transition-hide="scale">
+                      <q-icon class="cursor-pointer" name="access_time">
+                        <q-popup-proxy transition-hide="scale" transition-show="scale">
                           <q-time v-model="editLessonFinishTime">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup label="Close" color="primary" flat/>
+                              <q-btn v-close-popup color="primary" flat label="Close" />
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -263,50 +278,50 @@
                 </q-card-section>
                 <q-card-section>
                   <q-select
-                    filled
                     v-model="editLessonDay"
                     :options="dayMap"
-                    label="День"
                     emit-value
+                    filled
+                    label="День"
                     map-options
                   />
                 </q-card-section>
                 <q-card-section>
                   <q-select
-                    filled
                     v-model="editLessonNumerator"
                     :options="numeratorMap"
-                    label="Числитель"
                     emit-value
+                    filled
+                    label="Числитель"
                     map-options
                   />
                 </q-card-section>
                 <q-card-section>
                   <q-select
-                    filled
                     v-model="editLessonType"
                     :options="lessonTypes"
-                    label="Тип занятия"
                     emit-value
+                    filled
+                    label="Тип занятия"
                     option-label="typeName"
                   />
                 </q-card-section>
                 <q-card-section v-if="editLessonNumerator === 'CUSTOM'">
                   <q-select
-                    filled
                     v-model="editLessonSelectedWeeks"
-                    multiple
                     :options="editLessonWeeksOptions"
+                    filled
                     label="Недели"
+                    multiple
                   />
                 </q-card-section>
                 <q-card-actions>
-                  <q-btn no-caps flat
+                  <q-btn flat no-caps
                          @click="handleLessonChanging({editLessonSemesterType,editLessonName, editRawLessonString, editLessonStartTime, editLessonFinishTime, editLessonDay, editLessonAudience, editLessonType, editLessonNumerator, editLessonSelectedWeeks})">
                     Сохранить
                   </q-btn>
-                  <q-btn no-caps flat @click="editMode = false">Отмена</q-btn>
-                  <q-btn flat icon="delete" @click="handleLessonDeleting"/>
+                  <q-btn flat no-caps @click="editMode = false">Отмена</q-btn>
+                  <q-btn flat icon="delete" @click="handleLessonDeleting" />
                 </q-card-actions>
               </q-card>
             </template>
@@ -799,15 +814,83 @@ export default {
 }
 
 .page-width {
-  max-width: 1400px;
+  margin: 15px 15px;
 }
 
 .select-ug {
   margin: 0 auto;
 }
 
+.time-cell-inside-border {
+  margin: 0 auto;
+}
+
+.pd-cell-around {
+  padding: 4px;
+}
+
+.mg-b-inside {
+  margin-bottom: 4px;
+}
+
 .row-wc {
-  width: 190px;
+  width: 260px;
+}
+
+.font-size-cell {
+  font-size: 14px;
+}
+
+.h-cell {
+  height: 100px;
+}
+
+.h-cell-part {
+  height: 48px;
+}
+
+.lesson-text {
+
+}
+
+@media (max-width: 1280px) {
+  .row-wc {
+    width: 160px;
+  }
+
+  .font-size-cell {
+    font-size: 9px;
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1440px) {
+  .row-wc {
+    width: 160px;
+  }
+
+  .font-size-cell {
+    font-size: 9px;
+  }
+}
+
+@media (min-width: 1440px) and (max-width: 1600px) {
+  .row-wc {
+    width: 200px;
+  }
+
+  .font-size-cell {
+    font-size: 10px;
+  }
+}
+
+@media (min-width: 1600px) and (max-width: 1920px) {
+  .row-wc {
+    width: 220px;
+  }
+
+  .font-size-cell {
+    font-size: 12px;
+  }
 }
 
 
