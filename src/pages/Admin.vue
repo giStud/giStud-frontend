@@ -538,15 +538,12 @@ export default {
     }
 
     watch(univSelectValue, async (newValue) => {
-      console.log(1)
       try {
         let selectedUnivId;
         if (newValue !== null && (selectedUnivId = newValue.univId)) {
-          console.log(2)
           facultySelectOptions.value = await store.dispatch('schedule/getFacNamesByUnivAction', {
             univId: selectedUnivId
           })
-          console.log(facultySelectOptions.value)
         }
       } catch (e) {
         univSelectValue.value = null;

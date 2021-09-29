@@ -101,18 +101,18 @@
         <q-card class="center-all t-center justify-center items-start row fix-py" flat square>
 
 
-          <template v-for="(dayColumn, index) in scheduleColumns" :key="dayColumn">
+          <template v-for="(dayColumn, columnIndex) in scheduleInfo.daysArray" :key="dayColumn">
             <q-list class="row-wc" style="margin: 2px; border-collapse: collapse">
               <span style="font-weight: bold; font-size: 16px">{{ getFullDayWeekString(dayColumn.day) }} </span>
               <br>
-              <span style="font-size: 14px">{{ datesArray[index] }} </span>
-              <template v-for="lesson in dayColumn.lessons" :key="lesson">
+              <span style="font-size: 14px">{{ datesArray[columnIndex] }} </span>
+              <template v-for="(lesson, rowIndex) in dayColumn.lessons" :key="lesson">
 
-                <template v-if="lesson.value.length === 1">
+                <template v-if="lesson.value.length === 1" >
                   <!--       aaaaaa           -->
                   <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell" clickable
                           style="background-color: rgba(27,99,212,0.47)"
-                          @click="openLessonInfo(lesson.value[0], lesson.time)">
+                          @click="openLessonInfo(lesson.value[0], lesson.time)" :class="isCurrentRowHaveTwinWeeks(scheduleInfo.twinRows, rowIndex) ? 'bg-red' : 'bg-green'">
                     <div style="width: 100%" class="items-center">
 
                       <q-item-label :style="getScheduleCellColor(lesson.value[0])"
@@ -340,7 +340,7 @@ import {
   getDateString,
   getNumberOfWeek,
   getScheduleCellColor,
-  getLessonsFromSelectedWeekDesktop,
+  getScheduleInfoByWeekDesktop,
   getTypeOfWeek,
   isCurrentLessonGoes,
   getFullDayWeekString,
@@ -567,7 +567,7 @@ export default {
           });
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
-          scheduleColumns.value = getLessonsFromSelectedWeekDesktop(selectedGroup.lessons, selectedWeek.value);
+          scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, selectedWeek.value);
         } else {
           title.value = '';
           console.log('Find deleted group');
@@ -581,7 +581,7 @@ export default {
     }
     //schedule table start
     const rawLessonStringMode = ref(null)
-    const scheduleColumns = ref([]);
+    const scheduleInfo = ref({});
     const title = ref('');
     const selectedDate = ref(null);
     const selectedWeek = ref(null);
@@ -664,7 +664,8 @@ export default {
         currentWeekType.value = getTypeOfWeek(newValue);
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
-          scheduleColumns.value = getLessonsFromSelectedWeekDesktop(selectedGroup.lessons, newValue)
+          scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, newValue)
+          console.log(scheduleInfo.value)
         }
       }
     })
@@ -760,7 +761,7 @@ export default {
       dayMap,
       numeratorMap,
       semestersMap,
-      scheduleColumns,
+      scheduleInfo,
       rawLessonStringMode,
       currentWeekType,
       datesArray,
@@ -789,7 +790,10 @@ export default {
       theme,
       getNumberOfWeek,
       getTypeColorByValue,
-      getTypeNameByValue
+      getTypeNameByValue,
+      isCurrentRowHaveTwinWeeks(twinRowsArray, rowIndex) {
+        return twinRowsArray.includes(rowIndex);
+      }
     }
   }
 }

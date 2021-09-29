@@ -33,7 +33,11 @@ const debugTimeArray = [
   },
 ]
 
-export function getLessonsFromSelectedWeekDesktop(lessons, week) {
+export function getScheduleInfoByWeekDesktop(lessons, week) {
+  let scheduleInfoObject = {}
+  let twinRows = [];
+  let maxTwinLessonLength = 0;
+
   let timeArray = [];
   const daysArray = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
   const numerator = getTypeOfWeek(week);
@@ -53,7 +57,7 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
         lessonFinishTime: lesson.finishTime.substr(0, 5)
       });
     }
-    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
+    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonBeginTime));
     timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
 
     for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
@@ -76,18 +80,20 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
       let time = lesson.startTime.substr(0, 5);
       const lessonNumerator = lesson.numerator;
 
-
       for (let rowObject of rowsArray) {
         if (lesson.day === rowObject.day) {
-          for (let lessonVal of rowObject.lessons) {
+          for (let i = 0; i < rowObject.lessons.length; i++) {
+            let lessonVal = rowObject.lessons[i];
             if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
               if (lesson.name !== '') {
-
                 if (lessonVal.value.length !== 0) {
                   if (lessonVal.value[0].name === '') {
                     lessonVal.value[0] = lesson;
                   } else {
                     lessonVal.value.push(lesson);
+                    twinRows.push(i);
+                    const lengthOfSplitterLesson = Math.max(lessonVal.value[0].rawLessonString.length, lessonVal.value[0].rawLessonString.length);
+                    maxTwinLessonLength = Math.max(maxTwinLessonLength, lengthOfSplitterLesson);
                   }
                 } else {
                   lessonVal.value.push(lesson);
@@ -116,7 +122,12 @@ export function getLessonsFromSelectedWeekDesktop(lessons, week) {
       rowsArray[indexOfDaysArray] = dayObject;
     }
   }
-  return rowsArray;
+
+  scheduleInfoObject['daysArray'] = rowsArray;
+  scheduleInfoObject['twinRows'] = twinRows;
+  scheduleInfoObject['maxTwinLessonLength'] = maxTwinLessonLength;
+
+  return scheduleInfoObject;
 }
 
 export function getLessonFromSelectedDateMobile(lessons, date) {
@@ -139,7 +150,8 @@ export function getLessonFromSelectedDateMobile(lessons, date) {
         lessonFinishTime: lesson.finishTime.substr(0, 5)
       });
     }
-    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonFinishTime));
+
+    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonBeginTime));
     timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
 
     let filteredLessonsByDay = []
@@ -320,7 +332,7 @@ export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lesso
 export function getLessonNumeratorByWeeks(lessons, semester) {
   if (lessons.length !== 0) {
     const weeksArray = getWeeksArrayByLessons(lessons);
-    return getNumeratorByWeeksArray(weeksArray, semester === 'AUTUMN'  ? autumnLimit : springLimit);
+    return getNumeratorByWeeksArray(weeksArray, semester === 'AUTUMN' ? autumnLimit : springLimit);
   }
 }
 
