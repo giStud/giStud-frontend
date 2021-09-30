@@ -38,6 +38,9 @@ export function getScheduleInfoByWeekDesktop(lessons, week) {
   let twinRows = [];
   let maxTwinLessonLength = 0;
 
+  let maxLesson = '';
+  let maxLessonDouble = '';
+
   let timeArray = [];
   const daysArray = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
   const numerator = getTypeOfWeek(week);
@@ -84,16 +87,16 @@ export function getScheduleInfoByWeekDesktop(lessons, week) {
         if (lesson.day === rowObject.day) {
           for (let i = 0; i < rowObject.lessons.length; i++) {
             let lessonVal = rowObject.lessons[i];
+            maxLesson = lesson.rawLessonString.length > maxLesson.length ? lesson.rawLessonString : maxLesson;
             if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
               if (lesson.name !== '') {
                 if (lessonVal.value.length !== 0) {
                   if (lessonVal.value[0].name === '') {
                     lessonVal.value[0] = lesson;
                   } else {
+                    maxLessonDouble = lesson.rawLessonString.length > maxLessonDouble.length ? lesson.rawLessonString : maxLessonDouble;
                     lessonVal.value.push(lesson);
                     twinRows.push(i);
-                    const lengthOfSplitterLesson = Math.max(lessonVal.value[0].rawLessonString.length, lessonVal.value[0].rawLessonString.length);
-                    maxTwinLessonLength = Math.max(maxTwinLessonLength, lengthOfSplitterLesson);
                   }
                 } else {
                   lessonVal.value.push(lesson);
@@ -122,11 +125,11 @@ export function getScheduleInfoByWeekDesktop(lessons, week) {
       rowsArray[indexOfDaysArray] = dayObject;
     }
   }
-
   scheduleInfoObject['daysArray'] = rowsArray;
   scheduleInfoObject['twinRows'] = twinRows;
   scheduleInfoObject['maxTwinLessonLength'] = maxTwinLessonLength;
-
+  scheduleInfoObject['maxLesson'] = maxLesson;
+  scheduleInfoObject['maxLessonDouble'] = maxLessonDouble;
   return scheduleInfoObject;
 }
 
@@ -293,6 +296,7 @@ export function getScheduleCellColor(dayObject) {
     const typeName = dayObject.typeEntity.typeName;
     return getTypeColorByValue(typeName);
   }
+  return 'background-color: gray'
 }
 
 export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lessonFinishTime) {
@@ -307,18 +311,20 @@ export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lesso
   const lessonDay = lesson.day;
   const currentDate = new Date();
   const currentDay = getWeekDayStringFromDate(currentDate);
-  //const currentDate = new Date(2021,8,6,8,20);
-  //const currentDay = 'MONDAY';
+  // const currentDate = new Date(2021,9,5,15,40);
+  // const currentDay = 'THURSDAY';
   const currentWeek = getNumberOfWeek(currentDate);
 
   if (currentWeek === selectedWeek && currentDay === lessonDay) {
     const beginLessonArray = lessonBeginTime.split(":");
     const finishLessonArray = lessonFinishTime.split(":");
     let startDate = new Date();
+    // let startDate = new Date(2021,9,5,15,35);
     startDate.setHours(beginLessonArray[0])
     startDate.setMinutes(beginLessonArray[1])
     startDate.setSeconds(0);
     let finishDate = new Date();
+    // let finishDate = new Date(2021,9,5,15,50);
     finishDate.setHours(finishLessonArray[0])
     finishDate.setMinutes(finishLessonArray[1])
     startDate.setSeconds(0);

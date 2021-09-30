@@ -96,113 +96,87 @@
 
       </q-card>
 
-      <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width fix-pa" flat>
-        <q-card class="t-center bg-none fix-pb" flat square>ТАБЛИЦА</q-card>
+      <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width fix-py" flat>
         <q-card class="center-all t-center justify-center items-start row fix-py" flat square>
 
+          <q-item id="hidden-span-calc" :style="setSquareCellSchedule(columnWidth)"  style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule">
+            <q-card flat square class="max-width-schedule q-pa-none bg-none">
+              <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none text-black font-size-cell time-cell-inside-border">
+                <span>00.00 - 00.00</span>
+              </q-card-section>
+              <q-card-section class="q-pa-none lesson-text font-size-cell q-mt-sm">
+<!--                <span class="lesson-content-schedule">лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
+                <span class="lesson-content-schedule">{{ scheduleInfo.maxLesson }}</span>
+              </q-card-section>
+            </q-card>
+          </q-item>
+
+          <q-item id="hidden-span-double-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule">
+            <q-card flat square class="q-pa-none max-width-schedule bg-none">
+              <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none q-mb-sm text-black font-size-cell time-cell-inside-border">
+                <span>00.00 - 00.00</span>
+              </q-card-section>
+              <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
+                <div class="lesson-text">
+                  <span>{{ scheduleInfo.maxLessonDouble }}</span>
+<!--                  <span>лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
+                </div>
+              </q-card-section>
+              <q-card-section class="q-pa-none">
+              </q-card-section>
+            </q-card>
+          </q-item>
+
           <template v-for="(dayColumn, columnIndex) in scheduleInfo.daysArray" :key="dayColumn">
-            <q-list :style="'width:' + columnWidth + 'px'" style="margin: 2px; border-collapse: collapse">
+            <q-list :style="setSquareCellSchedule(columnWidth)" class="q-list-cell-schedule">
               <span style="font-weight: bold; font-size: 16px">{{ getFullDayWeekString(dayColumn.day) }} </span>
               <br>
-              <span style="font-size: 14px">{{ datesArray[columnIndex] }} </span>
+              <span style="font-size: 14px">{{ datesArray[columnIndex] }}</span>
               <template v-for="(lesson, rowIndex) in dayColumn.lessons" :key="lesson">
 
-                <template v-if="lesson.value.length === 1">
+                <template v-if="lesson.value.length === 1 || lesson.value.length === 0">
                   <!--       ОБЫЧНАЯ ПАРА           -->
-                  <q-item :style="'width:' + columnWidth+ 'px'"
-                          class="t-center q-pa-none pd-cell-around mg-b-inside"
-                          clickable style="background-color: rgba(27,99,212,0.47)"
-                          @click="openLessonInfo(lesson.value[0], lesson.time)"
+                  <q-item :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)" class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule"
+                          clickable @click="openLessonInfo(lesson.value[0], lesson.time)"
                   >
-                    <div class="items-center" style="width: 100%">
-
-                      <q-item-label :style="getScheduleCellColor(lesson.value[0])"
-                                    class="text-black font-size-cell time-cell-inside-border"
-                                    style="line-height: 10px;">
-                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
-                      </q-item-label>
-
-                      <div v-if="lesson.value[0].rawLessonString === '' || lesson.value[0].name === ''" class="text-grey lesson-text font-size-cell">
-                        Нет занятий
-                      </div>
-                      <div id="default-lesson" v-else class="lesson-text font-size-cell">
-                        {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
+                    <q-card flat square class="max-width-schedule q-pa-none bg-none">
+                      <q-card-section :style="getScheduleCellColor(lesson.value[0])" class="q-pa-none text-black font-size-cell time-cell-inside-border">
                         <q-chip v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                                class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас"
-                                outline square style="border: none; font-size: 10px" text-color="white">
+                                class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm" label="Идёт сейчас" outline square text-color="white">
                         </q-chip>
-                      </div>
+                        <span v-else>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</span>
+                      </q-card-section>
 
-                    </div>
+                      <q-card-section v-if="isEmptyLesson(lesson)" class="q-pa-none text-grey lesson-text font-size-cell q-mt-sm">
+                        <span class="lesson-content-schedule">Нет занятий</span>
+                      </q-card-section>
+                      <q-card-section  v-else-if="lesson.value.length === 1" id="default-lesson" class="q-pa-none lesson-text font-size-cell q-mt-sm">
+                        <span class="lesson-content-schedule">{{ getLessonString(lesson.value[0]) }}</span>
+                      </q-card-section>
+                    </q-card>
                   </q-item>
-
                 </template>
 
                 <template v-else-if="lesson.value.length === 2">
-                  <!--       ДВОЙНАЯ ПАРА ВВЕРХ           -->
-                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'top-lesson-text') ? 'height: ' + (defaultCellHeight * 15 + 30) + 'px' : 'height: ' + (defaultCellHeight * 15 + 30) + 'px'" class="t-center q-pa-none pd-cell-around mg-b-inside"
-                          clickable
-                          style="background-color: rgba(27,99,212,0.47)"
-                          @click="openLessonInfo(lesson.value[0], lesson.time)"
-                  >
-                    <div>
-                      <q-item-label :style="getScheduleCellColor(lesson.value[0])" class="q-mb-sm text-black font-size-cell time-cell-inside-border"
-                                    style="">{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
-                      </q-item-label>
-                      <q-item-label class="font-size-cell" lines="4">
-                        <div id="top-lesson-text" class="lesson-text">
-                          {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
-                        </div>
-                      </q-item-label>
-                    </div>
-                  </q-item>
-                  <!--       ДВОЙНАЯ ПАРА НИЗ           -->
-                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'bot-lesson-text') ? 'height: ' + (defaultCellHeight * 15 + 30) + 'px' : 'height: ' + (defaultCellHeight * 15 + 30) + 'px'" class="t-center q-pa-none pd-cell-around mg-b-inside"
-                          clickable
-                          style="background-color: rgba(27,99,212,0.47)"
-                          @click="openLessonInfo(lesson.value[1], lesson.time)"
-                  >
-                    <div>
-                      <q-item-label :style="getScheduleCellColor(lesson.value[0])" class="q-mb-sm text-black font-size-cell time-cell-inside-border"
-                                    style="line-height: 10px">
-                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
-                      </q-item-label>
-                      <q-item-label class="font-size-cell" lines="4">
-                        <div id="bot-lesson-text" class="lesson-text">
-                          {{ rawLessonStringMode ? lesson.value[1].rawLessonString : lesson.value[1].name }}
-                        </div>
-                      </q-item-label>
-                      <q-item-label>
+                  <q-item v-for="(les) in lesson.value" :key="les" :style="'height:' + ((doubleCellHeight-4)/2) + 'px'"
+                          class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule" clickable @click="openLessonInfo(les, lesson.time)">
+                    <q-card flat square class="q-pa-none max-width-schedule bg-none">
+                      <q-card-section :style="getScheduleCellColor(les)" class="q-pa-none q-mb-sm text-black font-size-cell time-cell-inside-border">
                         <q-chip
-                          v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                          class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас" outline square
-                          style="border: none; font-size: 10px" text-color="white">
+                          v-if="isCurrentLessonGoes(selectedWeek, les, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
+                          class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm"
+                          label="Идёт сейчас" outline square text-color="white">
                         </q-chip>
-                      </q-item-label>
-                    </div>
+                        <span v-else>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</span>
+                      </q-card-section>
+                      <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
+                        <div id="top-lesson-text" class="lesson-text">
+                          <span>{{ getLessonString(les) }}</span>
+                        </div>
+                      </q-card-section>
+                    </q-card>
                   </q-item>
                 </template>
-
-                <template v-else-if="lesson.value.length === 0">
-                  <!--       ВОСКРЕСЕНЬЕ           -->
-                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'sunday-lesson') ? 'height: ' + (heightCell * 60 + 4) + 'px' : 'height: ' + (defaultCellHeight * 25 + 25) + 'px'"
-                          class="t-center q-pa-none pd-cell-around mg-b-inside" clickable
-                          style="background-color: rgba(27,99,212,0.47)"
-                  >
-                    <div style="width: 100%;">
-                      <q-item-label class="q-mb-sm text-black font-size-cell time-cell-inside-border"
-                                    style="background-color: gray;line-height: 10px">
-                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
-                      </q-item-label>
-                      <q-item-label class="text-grey font-size-cell">
-                        <div id="sunday-lesson" class="lesson-text">Нет занятий</div>
-                      </q-item-label>
-                    </div>
-                  </q-item>
-
-                </template>
-
-
               </template>
             </q-list>
           </template>
@@ -459,11 +433,10 @@ export default {
 
 
     const openLessonInfo = (lesson, time) => {
-      if ((lesson.name && lesson.name !== '' && time) || isAdmin) {
+      if ((lesson && lesson.name !== '' && time) || isAdmin.value) {
         lessonInfoDialog.value = true;
         const audienceValue = lesson.audienceEntity.audience;
         const typeValue = lesson.typeEntity.typeName;
-
         const audience = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
         const type = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
         const lessonText = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
@@ -669,7 +642,7 @@ export default {
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, newValue)
-          console.log(scheduleInfo.value)
+          console.log( scheduleInfo.value)
         }
       }
     })
@@ -703,11 +676,8 @@ export default {
     const columnWidth = ref(0);
     const heightRef = ref(0);
 
-    watch(columnWidth, (newVal) => {
-      console.log("width:" + newVal)})
-
-    watch(heightRef, (newVal) => {
-      console.log("height:" + newVal)})
+    const defaultCellHeight = ref(1);
+    const doubleCellHeight = ref(1);
 
     const resizeObserver = new ResizeObserver(entries => {
       for (let entry of entries) {
@@ -716,6 +686,12 @@ export default {
         const mainTableNewWidth = entry.contentRect.width;
         columnWidth.value = (mainTableNewWidth - (marginValue * 6 + innerPadding * 2)) / 7;
         heightRef.value = entry.contentRect.height;
+        let cell = document.getElementById('hidden-span-calc');
+        defaultCellHeight.value = cell.clientHeight;
+
+        let cellDouble = document.getElementById('hidden-span-double-calc');
+        doubleCellHeight.value = (cellDouble.clientHeight * 2) + 4;
+
       }
     });
 
@@ -768,7 +744,7 @@ export default {
       }
     });
 
-    onBeforeUnmount(()=> {
+    onBeforeUnmount(() => {
       const mainTableElement = document.getElementById("MAIN-TABLE")
       resizeObserver.unobserve(mainTableElement);
     })
@@ -822,8 +798,24 @@ export default {
       }
     }
 
-    const defaultCellHeight = ref(1);
 
+
+    const setWidthCellSchedule = (size) => {
+      return 'width:' + size + 'px'
+    }
+
+    const setHeightCellSchedule = (twinRows, rowIndex) => {
+      if (twinRows.includes(rowIndex)) return 'height:' + doubleCellHeight.value + 'px';
+      return 'height:' + defaultCellHeight.value + 'px'
+    }
+
+    const isEmptyLesson = (lesson) => {
+      return lesson.value.length === 0 || (lesson.value[0].rawLessonString === '' || lesson.value[0].name === '');
+    }
+
+    const getLessonString = (les) => {
+      return rawLessonStringMode.value ? les.rawLessonString : les.name
+    }
 
     return {
       isAdmin,
@@ -874,15 +866,11 @@ export default {
       getNumberOfWeek,
       getTypeColorByValue,
       getTypeNameByValue,
-      isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, id) {
-        editHCell();
-        getHCell(id)
-        return scheduleInfo.twinRows.includes(rowIndex);
-      },
       heightCell, defaultCellHeight, getHCell,
-      cellStyle : {
-        width: computed(()=> 'width: ' + columnWidth.value + 'px'),
-      }
+      cellStyle: {
+        width: computed(() => 'width: ' + columnWidth.value + 'px'),
+      },
+      setSquareCellSchedule: setWidthCellSchedule, setHeightCellSchedule, isEmptyLesson, getLessonString, doubleCellHeight
     }
   }
 }
@@ -926,70 +914,27 @@ export default {
   margin-bottom: 4px;
 }
 
-
-
 .font-size-cell {
   font-size: 13px;
-}
-/*
-
-.row-wc {
-  width: 260px;
+  /*line-height: 10px;*/
 }
 
-.h-cell {
-  height: 100px;
+.q-list-cell-schedule {
+  margin: 2px;
+  border-collapse: collapse;
 }
 
-.h-cell-part {
-  height: 48px;
+.bg-cell-schedule {
+  background-color: rgba(27, 99, 212, 0.47)
 }
 
-.lesson-text {
-
+.max-width-schedule {
+  width: 100%;
 }
 
-
-@media (max-width: 1280px) {
-  .row-wc {
-    width: 160px;
-  }
-
-  .font-size-cell {
-    font-size: 9px;
-  }
+.chip-current-lesson-schedule {
+  border: none;
+  font-size: 10px
 }
-
-@media (min-width: 1280px) and (max-width: 1440px) {
-  .row-wc {
-    width: 160px;
-  }
-
-  .font-size-cell {
-    font-size: 10px;
-  }
-}
-
-@media (min-width: 1440px) and (max-width: 1600px) {
-  .row-wc {
-    width: 200px;
-  }
-
-  .font-size-cell {
-    font-size: 11px;
-  }
-}
-
-@media (min-width: 1600px) and (max-width: 1920px) {
-  .row-wc {
-    width: 220px;
-  }
-
-  .font-size-cell {
-    font-size: 12px;
-  }
-}
-*/
-
 
 </style>
