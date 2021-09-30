@@ -108,23 +108,25 @@
               <span style="font-size: 14px">{{ datesArray[columnIndex] }} </span>
               <template v-for="(lesson, rowIndex) in dayColumn.lessons" :key="lesson">
 
-                <template v-if="lesson.value.length === 1" >
-                  <!--       aaaaaa           -->
-                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell" clickable
-                          style="background-color: rgba(27,99,212,0.47)"
-                          @click="openLessonInfo(lesson.value[0], lesson.time)" :class="isCurrentRowHaveTwinWeeks(scheduleInfo.twinRows, rowIndex) ? 'bg-red' : 'bg-green'">
-                    <div style="width: 100%" class="items-center">
+                <template v-if="lesson.value.length === 1">
+                  <!--       ОБЫЧНАЯ ПАРА           -->
+                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'default-lesson') ? 'min-height: ' + (heightCell * 60 + 4) + 'px' : 'height: ' + (defaultCellHeight * 25 + 25) + 'px'"
+                          class="t-center q-pa-none pd-cell-around mg-b-inside"
+                          clickable style="background-color: rgba(27,99,212,0.47)"
+                          @click="openLessonInfo(lesson.value[0], lesson.time)"
+                  >
+                    <div class="items-center" style="width: 100%">
 
                       <q-item-label :style="getScheduleCellColor(lesson.value[0])"
                                     class="text-black font-size-cell time-cell-inside-border"
                                     style="line-height: 10px;">
-                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
+                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
                       </q-item-label>
 
                       <div v-if="lesson.value[0].rawLessonString === '' || lesson.value[0].name === ''" class="text-grey lesson-text font-size-cell">
                         Нет занятий
                       </div>
-                      <div v-else class="lesson-text font-size-cell">
+                      <div id="default-lesson" v-else class="lesson-text font-size-cell">
                         {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
                         <q-chip v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                                 class="q-my-none q-py-none" color="red" icon="alarm" label="Идёт сейчас"
@@ -138,33 +140,36 @@
                 </template>
 
                 <template v-else-if="lesson.value.length === 2">
-                  <!--       aaaaaa           -->
-                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell-part" clickable
-                          style="background-color: rgba(27,99,212,0.47);"
-                          @click="openLessonInfo(lesson.value[0], lesson.time)">
+                  <!--       ДВОЙНАЯ ПАРА ВВЕРХ           -->
+                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'top-lesson-text') ? 'height: ' + (defaultCellHeight * 15 + 30) + 'px' : 'height: ' + (defaultCellHeight * 15 + 30) + 'px'" class="t-center q-pa-none pd-cell-around mg-b-inside"
+                          clickable
+                          style="background-color: rgba(27,99,212,0.47)"
+                          @click="openLessonInfo(lesson.value[0], lesson.time)"
+                  >
                     <div>
                       <q-item-label :style="getScheduleCellColor(lesson.value[0])" class="q-mb-sm text-black font-size-cell time-cell-inside-border"
-                                    style="">{{ lesson.time.lessonBeginTime }} -
-                        {{ lesson.time.lessonFinishTime }}
+                                    style="">{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
                       </q-item-label>
                       <q-item-label class="font-size-cell" lines="4">
-                        <div class="lesson-text">
+                        <div id="top-lesson-text" class="lesson-text">
                           {{ rawLessonStringMode ? lesson.value[0].rawLessonString : lesson.value[0].name }}
                         </div>
                       </q-item-label>
                     </div>
                   </q-item>
-                  <!--       aaaaaa           -->
-                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell-part" clickable
-                          style="background-color: rgba(27,99,212,0.47);"
-                          @click="openLessonInfo(lesson.value[1], lesson.time)">
+                  <!--       ДВОЙНАЯ ПАРА НИЗ           -->
+                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'bot-lesson-text') ? 'height: ' + (defaultCellHeight * 15 + 30) + 'px' : 'height: ' + (defaultCellHeight * 15 + 30) + 'px'" class="t-center q-pa-none pd-cell-around mg-b-inside"
+                          clickable
+                          style="background-color: rgba(27,99,212,0.47)"
+                          @click="openLessonInfo(lesson.value[1], lesson.time)"
+                  >
                     <div>
                       <q-item-label :style="getScheduleCellColor(lesson.value[0])" class="q-mb-sm text-black font-size-cell time-cell-inside-border"
-                                    style="line-height: 10px">{{ lesson.time.lessonBeginTime }} -
-                        {{ lesson.time.lessonFinishTime }}
+                                    style="line-height: 10px">
+                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
                       </q-item-label>
                       <q-item-label class="font-size-cell" lines="4">
-                        <div class="lesson-text">
+                        <div id="bot-lesson-text" class="lesson-text">
                           {{ rawLessonStringMode ? lesson.value[1].rawLessonString : lesson.value[1].name }}
                         </div>
                       </q-item-label>
@@ -180,17 +185,18 @@
                 </template>
 
                 <template v-else-if="lesson.value.length === 0">
-                  <!--       aaaaaa           -->
-                  <q-item class="t-center q-pa-none pd-cell-around mg-b-inside h-cell" clickable
+                  <!--       ВОСКРЕСЕНЬЕ           -->
+                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'sunday-lesson') ? 'height: ' + (heightCell * 60 + 4) + 'px' : 'height: ' + (defaultCellHeight * 25 + 25) + 'px'"
+                          class="t-center q-pa-none pd-cell-around mg-b-inside" clickable
                           style="background-color: rgba(27,99,212,0.47)"
                   >
-                    <div style="width: 100%">
+                    <div style="width: 100%;">
                       <q-item-label class="q-mb-sm text-black font-size-cell time-cell-inside-border"
                                     style="background-color: gray;line-height: 10px">
-                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}
+                        {{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }} Строки: {{ defaultCellHeight }}
                       </q-item-label>
                       <q-item-label class="text-grey font-size-cell">
-                        <div class="lesson-text">Нет занятий</div>
+                        <div id="sunday-lesson" class="lesson-text">Нет занятий</div>
                       </q-item-label>
                     </div>
                   </q-item>
@@ -743,6 +749,58 @@ export default {
       }
     });
 
+    const heightCell = ref(50);
+
+    const editHCell = () => {
+      let div_lesson_top = document.getElementById('top-lesson-text');
+      let div_lesson_bot = document.getElementById('bot-lesson-text');
+
+      if (div_lesson_top !== null && div_lesson_bot !== null) {
+
+        let span_top = document.createElement('span');
+        let span_bot = document.createElement('span');
+
+        span_top.textContent = div_lesson_top.textContent;
+        span_bot.textContent = div_lesson_bot.textContent;
+
+        div_lesson_top.innerHTML = ''
+        div_lesson_bot.innerHTML = ''
+
+        div_lesson_top.appendChild(span_top);
+        div_lesson_bot.appendChild(span_bot);
+
+        let sizeTop = span_top.getClientRects().length;
+        let sizeBot = span_bot.getClientRects().length;
+
+        if (sizeTop >= sizeBot) {
+          heightCell.value = sizeTop;
+        } else {
+          heightCell.value = sizeBot;
+        }
+      }
+    }
+
+    const getHCell = (el) => {
+      let size = 1;
+      if (el !== '') {
+        let element = document.getElementById(el);
+        if (element !== null) {
+          let span = document.createElement('span');
+          span.textContent = element.textContent;
+          element.innerHTML = '';
+          element.appendChild(span);
+          size = span.getClientRects().length;
+          if (defaultCellHeight.value < size) {
+            defaultCellHeight.value = size;
+          }
+        }
+        console.log(defaultCellHeight.value)
+      }
+    }
+
+    const defaultCellHeight = ref(1);
+
+
     return {
       isAdmin,
       editMode,
@@ -791,9 +849,12 @@ export default {
       getNumberOfWeek,
       getTypeColorByValue,
       getTypeNameByValue,
-      isCurrentRowHaveTwinWeeks(twinRowsArray, rowIndex) {
-        return twinRowsArray.includes(rowIndex);
-      }
+      isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, id) {
+        editHCell();
+        getHCell(id)
+        return scheduleInfo.twinRows.includes(rowIndex);
+      },
+      heightCell, defaultCellHeight, getHCell
     }
   }
 }
@@ -842,7 +903,7 @@ export default {
 }
 
 .font-size-cell {
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .h-cell {
@@ -873,7 +934,7 @@ export default {
   }
 
   .font-size-cell {
-    font-size: 9px;
+    font-size: 10px;
   }
 }
 
@@ -883,7 +944,7 @@ export default {
   }
 
   .font-size-cell {
-    font-size: 10px;
+    font-size: 11px;
   }
 }
 
