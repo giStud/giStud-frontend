@@ -100,9 +100,8 @@
         <q-card class="t-center bg-none fix-pb" flat square>ТАБЛИЦА</q-card>
         <q-card class="center-all t-center justify-center items-start row fix-py" flat square>
 
-
           <template v-for="(dayColumn, columnIndex) in scheduleInfo.daysArray" :key="dayColumn">
-            <q-list class="row-wc" style="margin: 2px; border-collapse: collapse">
+            <q-list :style="'width:' + columnWidth + 'px'" style="margin: 2px; border-collapse: collapse">
               <span style="font-weight: bold; font-size: 16px">{{ getFullDayWeekString(dayColumn.day) }} </span>
               <br>
               <span style="font-size: 14px">{{ datesArray[columnIndex] }} </span>
@@ -110,7 +109,7 @@
 
                 <template v-if="lesson.value.length === 1">
                   <!--       ОБЫЧНАЯ ПАРА           -->
-                  <q-item :style="isCurrentRowHaveTwinWeeks(scheduleInfo, rowIndex, 'default-lesson') ? 'min-height: ' + (heightCell * 60 + 4) + 'px' : 'height: ' + (defaultCellHeight * 25 + 25) + 'px'"
+                  <q-item :style="'width:' + columnWidth+ 'px'"
                           class="t-center q-pa-none pd-cell-around mg-b-inside"
                           clickable style="background-color: rgba(27,99,212,0.47)"
                           @click="openLessonInfo(lesson.value[0], lesson.time)"
@@ -340,7 +339,7 @@
 </template>
 
 <script>
-import {computed, onMounted, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import {
   getDateOfMonday,
   getDateString,
@@ -660,7 +659,6 @@ export default {
     watch(rawLessonStringMode, (newValue) => {
       localStorage.setItem('rawLessonStringMode', newValue)
     })
-
     watch(selectedWeek, (newValue) => {
       const date = selectedDate.value;
       //const date = getDateOfMonday(new Date(2020,10, 23))
@@ -702,12 +700,33 @@ export default {
         selectedWeek.value = getNumberOfWeek(newValue);
       }
     })
+    const columnWidth = ref(0);
+    const heightRef = ref(0);
+
+    watch(columnWidth, (newVal) => {
+      console.log("width:" + newVal)})
+
+    watch(heightRef, (newVal) => {
+      console.log("height:" + newVal)})
+
+    const resizeObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const innerPadding = 15;
+        const marginValue = 4;
+        const mainTableNewWidth = entry.contentRect.width;
+        columnWidth.value = (mainTableNewWidth - (marginValue * 6 + innerPadding * 2)) / 7;
+        heightRef.value = entry.contentRect.height;
+      }
+    });
 
     onMounted(async () => {
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
       if (isAdmin.value) {
         lessonTypes.value = await store.dispatch('schedule/getLessonTypes');
       }
+
+      const mainTableElement = document.getElementById("MAIN-TABLE")
+      resizeObserver.observe(mainTableElement);
 
       let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
@@ -748,6 +767,11 @@ export default {
         }
       }
     });
+
+    onBeforeUnmount(()=> {
+      const mainTableElement = document.getElementById("MAIN-TABLE")
+      resizeObserver.unobserve(mainTableElement);
+    })
 
     const heightCell = ref(50);
 
@@ -794,7 +818,7 @@ export default {
             defaultCellHeight.value = size;
           }
         }
-        console.log(defaultCellHeight.value)
+        //console.log(defaultCellHeight.value)
       }
     }
 
@@ -831,6 +855,7 @@ export default {
       groupsFilteredOptions,
       selectedWeek,
       datePickerDate,
+      columnWidth,
       openEditModeDialog,
       handleLessonChanging,
       handleLessonDeleting,
@@ -854,7 +879,10 @@ export default {
         getHCell(id)
         return scheduleInfo.twinRows.includes(rowIndex);
       },
-      heightCell, defaultCellHeight, getHCell
+      heightCell, defaultCellHeight, getHCell,
+      cellStyle : {
+        width: computed(()=> 'width: ' + columnWidth.value + 'px'),
+      }
     }
   }
 }
@@ -898,12 +926,15 @@ export default {
   margin-bottom: 4px;
 }
 
-.row-wc {
-  width: 260px;
-}
+
 
 .font-size-cell {
   font-size: 13px;
+}
+/*
+
+.row-wc {
+  width: 260px;
 }
 
 .h-cell {
@@ -917,6 +948,7 @@ export default {
 .lesson-text {
 
 }
+
 
 @media (max-width: 1280px) {
   .row-wc {
@@ -957,6 +989,7 @@ export default {
     font-size: 12px;
   }
 }
+*/
 
 
 </style>
