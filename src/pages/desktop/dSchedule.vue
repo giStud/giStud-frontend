@@ -57,7 +57,7 @@
           </q-select>
         </q-card>
       </q-card>
-      <q-card id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa" flat>
+      <q-card id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa">
         <q-card class="t-center">НАВИГАЦИЯ</q-card>
 
         <q-toggle v-model="rawLessonStringMode" :color="theme('primary','white')" label="Режим без обработки: "
@@ -71,10 +71,10 @@
                    @click="loadPreviousWeekLessons" />
           </div>
           <div>
-            <q-btn :class="currentWeekType === 'NUMERATOR' ? 'text-primary' : ''" flat label="Числитель" no-caps
+            <q-btn class="btn-select-schedule" :class="currentWeekType === 'NUMERATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" flat label="Числитель" no-caps
                    outline @click="toggleWeekBtn('NUMERATOR')" />
 
-            <q-btn :class="currentWeekType === 'DENOMINATOR' ? 'text-primary' :''" flat label="Знаменатель" no-caps
+            <q-btn class="btn-select-schedule q-mx-sm" :class="currentWeekType === 'DENOMINATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" flat label="Знаменатель" no-caps
                    outline @click="toggleWeekBtn('DENOMINATOR')" />
 
             <q-btn id="calendar" class="buttons-date" flat icon="today" no-caps>
@@ -96,12 +96,12 @@
 
       </q-card>
 
-      <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width fix-py" flat>
-        <q-card class="center-all t-center justify-center items-start row fix-py" flat square>
+      <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width fix-py">
+        <q-card class="center-all t-center justify-center items-start row fix-py" flat>
 
-          <q-item id="hidden-span-calc" :style="setSquareCellSchedule(columnWidth)"  style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule">
+          <q-item id="hidden-span-calc" :style="setSquareCellSchedule(columnWidth)"  style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
             <q-card flat square class="max-width-schedule q-pa-none bg-none">
-              <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none text-black font-size-cell time-cell-inside-border">
+              <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none font-size-cell time-cell-inside-border">
                 <span>00.00 - 00.00</span>
               </q-card-section>
               <q-card-section class="q-pa-none lesson-text font-size-cell q-mt-sm">
@@ -111,9 +111,9 @@
             </q-card>
           </q-item>
 
-          <q-item id="hidden-span-double-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule">
+          <q-item id="hidden-span-double-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
             <q-card flat square class="q-pa-none max-width-schedule bg-none">
-              <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none q-mb-sm text-black font-size-cell time-cell-inside-border">
+              <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
                 <span>00.00 - 00.00</span>
               </q-card-section>
               <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
@@ -136,18 +136,18 @@
 
                 <template v-if="lesson.value.length === 1 || lesson.value.length === 0">
                   <!--       ОБЫЧНАЯ ПАРА           -->
-                  <q-item :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)" class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule"
-                          clickable @click="openLessonInfo(lesson.value[0], lesson.time)"
+                  <q-item :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)" class="t-center q-pa-none pd-cell-around mg-b-inside"
+                          clickable @click="openLessonInfo(lesson.value[0], lesson.time)" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
                   >
                     <q-card flat square class="max-width-schedule q-pa-none bg-none">
-                      <q-card-section :style="getScheduleCellColor(lesson.value[0])" class="q-pa-none text-black font-size-cell time-cell-inside-border">
+                      <q-card-section :style="getScheduleCellColor(lesson.value[0])" class="q-pa-none font-size-cell time-cell-inside-border">
                         <q-chip v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                                 class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm" label="Идёт сейчас" outline square text-color="white">
                         </q-chip>
                         <span v-else>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</span>
                       </q-card-section>
 
-                      <q-card-section v-if="isEmptyLesson(lesson)" class="q-pa-none text-grey lesson-text font-size-cell q-mt-sm">
+                      <q-card-section v-if="isEmptyLesson(lesson)" class="q-pa-none lesson-text font-size-cell q-mt-sm">
                         <span class="lesson-content-schedule">Нет занятий</span>
                       </q-card-section>
                       <q-card-section  v-else-if="lesson.value.length === 1" id="default-lesson" class="q-pa-none lesson-text font-size-cell q-mt-sm">
@@ -159,9 +159,9 @@
 
                 <template v-else-if="lesson.value.length === 2">
                   <q-item v-for="(les) in lesson.value" :key="les" :style="'height:' + ((doubleCellHeight-4)/2) + 'px'"
-                          class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule" clickable @click="openLessonInfo(les, lesson.time)">
+                          class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" clickable @click="openLessonInfo(les, lesson.time)">
                     <q-card flat square class="q-pa-none max-width-schedule bg-none">
-                      <q-card-section :style="getScheduleCellColor(les)" class="q-pa-none q-mb-sm text-black font-size-cell time-cell-inside-border">
+                      <q-card-section :style="getScheduleCellColor(les)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
                         <q-chip
                           v-if="isCurrentLessonGoes(selectedWeek, les, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                           class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm"
@@ -184,26 +184,29 @@
           <q-dialog v-model="lessonInfoDialog" square @hide="editMode = false">
             <template v-if="!editMode">
               <q-card flat>
-                <q-card-section class="row q-pa-none q-ma-none">
-                  <q-btn v-close-popup dense flat icon="arrow_back" round style="width: 48px;" />
-                  <span class="title-page-dialog">Информация о занятии</span>
+                <q-card-section class="row q-pa-none q-px-sm q-ma-none items-center" style="height: 50px;">
+                  <q-btn v-close-popup dense flat icon="arrow_back" size="md" />
+                  <span class="title-page-dialog q-px-md">Информация о занятии</span>
+                  <q-space/>
+                  <template v-if="isAdmin">
+                    <q-btn size="sm" flat icon="edit" @click="openEditModeDialog(lessonInfoObject)" />
+                  </template>
                 </q-card-section>
                 <q-separator />
                 <template v-if="lessonInfoObject.type">
                   <q-card-section :style="getTypeColorByValue(lessonInfoObject.type)">
-                    {{ getTypeNameByValue(lessonInfoObject.type) }}
+                    <span>Тип: {{ getTypeNameByValue(lessonInfoObject.type) }}</span>
                   </q-card-section>
-                  <q-separator />
                 </template>
+                <q-separator/>
                 <q-card-section>
-                  {{ lessonInfoObject.timeString }}
+                  <span>Время: {{ lessonInfoObject.timeString }}</span>
                 </q-card-section>
+                <q-separator class="q-mx-lg" />
                 <q-card-section>
-                  {{ lessonInfoObject.lessonText }}
+                  <span v-if="lessonInfoObject.lessonText.length > 0">Название: {{ lessonInfoObject.lessonText }}</span>
+                  <span v-else>Нет занятия</span>
                 </q-card-section>
-                <template v-if="isAdmin">
-                  <q-btn flat icon="edit" @click="openEditModeDialog(lessonInfoObject)" />
-                </template>
               </q-card>
             </template>
             <template v-else>
@@ -924,8 +927,25 @@ export default {
   border-collapse: collapse;
 }
 
-.bg-cell-schedule {
-  background-color: rgba(27, 99, 212, 0.47)
+.bg-cell-schedule-l {
+  background-color: #f0f2f5;
+}
+
+.bg-cell-schedule-d {
+  background-color: #4a4f57;
+  color: white;
+}
+
+.btn-select-schedule {
+  border-radius: 20px;
+}
+
+.btn-selected-schedule-l {
+  background: #f0f2f5;
+}
+
+.btn-selected-schedule-d {
+  background: #4a4f57;
 }
 
 .max-width-schedule {
