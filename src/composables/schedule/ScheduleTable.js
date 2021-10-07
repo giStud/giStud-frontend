@@ -54,56 +54,35 @@ export function getScheduleInfoByWeekDesktop(lessons, week) {
 
   let rowsArray = []
   if (lessonsOfSelectedWeek.length !== 0) {
-    for (let lesson of lessonsOfSelectedWeek) {
-      timeArray.push({
-        lessonBeginTime: lesson.startTime.substr(0, 5),
-        lessonFinishTime: lesson.finishTime.substr(0, 5)
-      });
-    }
-    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonBeginTime));
-    timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
-
     for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
       let dayObject = {}
-      let lessonsArray = [];
-      for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
-        let timeObject = timeArray[indexOfTimeArray];
-        let valueArray = [];
-        let lessonObject = {}
-        lessonObject['time'] = timeObject;
-        lessonObject['value'] = valueArray;
-        lessonsArray[indexOfTimeArray] = lessonObject;
-      }
       dayObject['day'] = daysArray[indexOfDaysArray];
-      dayObject['lessons'] = lessonsArray;
+      dayObject['lessons'] = [];
       rowsArray[indexOfDaysArray] = dayObject;
     }
 
+    console.log(lessonsOfSelectedWeek)
     for (let lesson of lessonsOfSelectedWeek) {
-      let time = lesson.startTime.substr(0, 5);
       const lessonNumerator = lesson.numerator;
-
-      for (let rowObject of rowsArray) {
+      for (let i = 0; i < rowsArray.length; i++) {
+        let rowObject = rowsArray[i];
         if (lesson.day === rowObject.day) {
-          for (let i = 0; i < rowObject.lessons.length; i++) {
-            let lessonVal = rowObject.lessons[i];
-            maxLesson = lesson.rawLessonString.length > maxLesson.length ? lesson.rawLessonString : maxLesson;
-            if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
-              if (lesson.name !== '') {
-                if (lessonVal.value.length !== 0) {
-                  if (lessonVal.value[0].name === '') {
-                    lessonVal.value[0] = lesson;
-                  } else {
-                    maxLessonDouble = lesson.rawLessonString.length > maxLessonDouble.length ? lesson.rawLessonString : maxLessonDouble;
-                    lessonVal.value.push(lesson);
-                    twinRows.push(i);
-                  }
+          maxLesson = lesson.rawLessonString.length > maxLesson.length ? lesson.rawLessonString : maxLesson;
+          if (lessonNumerator === numerator || lessonNumerator === 'FULL') {
+            if (lesson.name !== '') {
+              if (rowObject.lessons.length !== 0) {
+                if (rowObject.lessons[i][0].name === '') {
+                  rowObject.lessons[i][0] = lesson;
                 } else {
-                  lessonVal.value.push(lesson);
+                  maxLessonDouble = lesson.rawLessonString.length > maxLessonDouble.length ? lesson.rawLessonString : maxLessonDouble;
+                  rowObject.lessons.push(lesson);
+                  twinRows.push(i);
                 }
-              } else if (lessonVal.value.length === 0) {
-                lessonVal.value.push(lesson);
+              } else {
+                rowObject.lessons.push(lesson);
               }
+            } else if (rowObject.lessons.length === 0) {
+              rowObject.lessons.push(lesson);
             }
           }
         }
