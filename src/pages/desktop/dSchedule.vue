@@ -132,42 +132,42 @@
               <span style="font-weight: bold; font-size: 16px">{{ getFullDayWeekString(dayColumn.day) }} </span>
               <br>
               <span style="font-size: 14px">{{ datesArray[columnIndex] }}</span>
-              <template v-for="(day, rowIndex) in dayColumn.lessons" :key="day">
+              <template v-for="(lesson, rowIndex) in dayColumn.lessons" :key="lesson">
 
-                <template v-if="day.lessons.length === 1 || day.lessons.length === 0">
+                <template v-if="lesson.value.length === 1 || lesson.value.length === 0">
                   <!--       ОБЫЧНАЯ ПАРА           -->
                   <q-item :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)" class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule"
-                          clickable @click="openLessonInfo(day.lessons[0])"
+                          clickable @click="openLessonInfo(lesson.value[0], lesson.time)"
                   >
                     <q-card flat square class="max-width-schedule q-pa-none bg-none">
-                      <q-card-section :style="getScheduleCellColor(day.lessons[0])" class="q-pa-none text-black font-size-cell time-cell-inside-border">
-                        <q-chip v-if="isCurrentLessonGoes(selectedWeek, day.lessons[0], day.lessons[0].lessonBeginTime, day.lessons[0].lessonFinishTime)"
+                      <q-card-section :style="getScheduleCellColor(lesson.value[0])" class="q-pa-none text-black font-size-cell time-cell-inside-border">
+                        <q-chip v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                                 class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm" label="Идёт сейчас" outline square text-color="white">
                         </q-chip>
-                        <span v-else>{{ day.lessons[0].lessonBeginTime }} - {{ day.lessons[0].lessonFinishTime }}</span>
+                        <span v-else>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</span>
                       </q-card-section>
 
-                      <q-card-section v-if="isEmptyLesson(day.lessons)" class="q-pa-none text-grey lesson-text font-size-cell q-mt-sm">
+                      <q-card-section v-if="isEmptyLesson(lesson)" class="q-pa-none text-grey lesson-text font-size-cell q-mt-sm">
                         <span class="lesson-content-schedule">Нет занятий</span>
                       </q-card-section>
-                      <q-card-section  v-else-if="day.lessons.length === 1" id="default-lesson" class="q-pa-none lesson-text font-size-cell q-mt-sm">
-                        <span class="lesson-content-schedule">{{ getLessonString(day.lessons[0]) }}</span>
+                      <q-card-section  v-else-if="lesson.value.length === 1" id="default-lesson" class="q-pa-none lesson-text font-size-cell q-mt-sm">
+                        <span class="lesson-content-schedule">{{ getLessonString(lesson.value[0]) }}</span>
                       </q-card-section>
                     </q-card>
                   </q-item>
                 </template>
 
-                <template v-else-if="day.lessons.length === 2">
-                  <q-item v-for="(les) in day.lessons" :key="les" :style="'height:' + ((doubleCellHeight-4)/2) + 'px'"
-                          class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule" clickable @click="openLessonInfo(les)">
+                <template v-else-if="lesson.value.length === 2">
+                  <q-item v-for="(les) in lesson.value" :key="les" :style="'height:' + ((doubleCellHeight-4)/2) + 'px'"
+                          class="t-center q-pa-none pd-cell-around mg-b-inside bg-cell-schedule" clickable @click="openLessonInfo(les, lesson.time)">
                     <q-card flat square class="q-pa-none max-width-schedule bg-none">
                       <q-card-section :style="getScheduleCellColor(les)" class="q-pa-none q-mb-sm text-black font-size-cell time-cell-inside-border">
                         <q-chip
-                          v-if="isCurrentLessonGoes(selectedWeek, les, les.lessonBeginTime,les.lessonFinishTime)"
+                          v-if="isCurrentLessonGoes(selectedWeek, les, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                           class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm"
                           label="Идёт сейчас" outline square text-color="white">
                         </q-chip>
-                        <span v-else>{{ les.lessonBeginTime }} - {{ les.lessonFinishTime }}</span>
+                        <span v-else>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</span>
                       </q-card-section>
                       <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
                         <div id="top-lesson-text" class="lesson-text">
@@ -432,7 +432,7 @@ export default {
     const lessonInfoDialog = ref(false);
 
 
-    const openLessonInfo = (lesson) => {
+    const openLessonInfo = (lesson, time) => {
       if ((lesson && lesson.name !== '' && time) || isAdmin.value) {
         lessonInfoDialog.value = true;
         const audienceValue = lesson.audienceEntity.audience;
@@ -440,7 +440,7 @@ export default {
         const audience = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
         const type = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
         const lessonText = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
-        const timeString = lesson.lessonBeginTime + '-' + lesson.lessonFinishTime;
+        const timeString = time.lessonBeginTime + '-' + time.lessonFinishTime;
         lessonInfoObject.value = {
           audience,
           type,
@@ -546,7 +546,6 @@ export default {
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, selectedWeek.value);
-          console.log(scheduleInfo)
         } else {
           title.value = '';
           console.log('Find deleted group');
@@ -643,6 +642,7 @@ export default {
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, newValue)
+          console.log( scheduleInfo.value)
         }
       }
     })
@@ -809,8 +809,8 @@ export default {
       return 'height:' + defaultCellHeight.value + 'px'
     }
 
-    const isEmptyLesson = (day) => {
-      return day.lessons.length === 0 || (day.lessons[0].rawLessonString === '' || day.lessons[0].name === '');
+    const isEmptyLesson = (lesson) => {
+      return lesson.value.length === 0 || (lesson.value[0].rawLessonString === '' || lesson.value[0].name === '');
     }
 
     const getLessonString = (les) => {
