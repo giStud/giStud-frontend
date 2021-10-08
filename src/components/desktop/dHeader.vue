@@ -16,7 +16,7 @@
         <q-btn flat no-caps :to="'/'" class="btn-menu text-size-menu">Главная</q-btn>
         <q-btn flat no-caps :to="'/schedule'" class="btn-menu text-size-menu">Расписание</q-btn>
         <q-btn flat no-caps :to="'/news'" class="btn-menu text-size-menu">Новости</q-btn>
-        <q-btn disable flat no-caps :to="''" class="btn-menu gistud-dev text-size-menu">Доска объявлений</q-btn>
+        <q-btn disable flat no-caps :to="''"  class="btn-menu gistud-dev text-size-menu">Доска объявлений</q-btn>
         <q-btn flat no-caps @click="goUrl('https://boosty.to/gistud.info')" class="btn-menu text-size-menu">Поддержать проект</q-btn>
       </q-list>
     </q-card-section>
@@ -34,7 +34,7 @@
         </q-card-section>
 
         <q-card-section class="items-center q-pa-none q-pl-sm">
-          <q-btn-dropdown v-if="isAdmin" class="gistud-dev" no-caps flat :label="currentUser === null ? '' : currentUser.username">
+          <q-btn-dropdown :disable="!isAdmin" class="gistud-dev" :style="isAdmin ? '' : theme('color: white', 'color: #2e2f31')" no-caps flat :label="currentUser === null ? 'Кто здесь ?' : currentUser.username">
             <div class="row q-pa-md">
               <div class="column">
                 <div class="text-h6 q-mb-md">Настройки</div>

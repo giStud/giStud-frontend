@@ -58,26 +58,35 @@
         </q-card>
       </q-card>
       <q-card id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa">
-        <q-card class="t-center">НАВИГАЦИЯ</q-card>
-
-        <q-toggle v-model="rawLessonStringMode" :color="theme('primary','white')" label="Режим без обработки: "
-                  left-label />
-
-        {{ selectedWeek }} неделя, {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}
+        <q-card class="t-center" style="font-size: 16px; margin-top: -25px">{{ selectedWeek }} неделя, {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}</q-card>
 
         <q-card id="schedule-nav-btn" class="row center-all justify-between items-center fix-pa">
           <div>
             <q-btn class="buttons-week" flat label="❮ Предыдущая неделя" no-caps rounded
                    @click="loadPreviousWeekLessons" />
+
           </div>
           <div>
+            <q-btn rounded class="buttons-date q-mx-sm" flat icon="settings" no-caps @click="settingsDialog = true">
+              <q-dialog v-model="settingsDialog" v-close-popup >
+                <q-card>
+                  <q-card-section>
+                    <span>Настройки</span>
+                  </q-card-section>
+                  <q-separator/>
+                  <q-card-section>
+                    <q-toggle v-model="rawLessonStringMode" :color="theme('primary','white')" label="Режим без обработки: " left-label />
+                  </q-card-section>
+                </q-card>
+              </q-dialog>
+            </q-btn>
             <q-btn class="btn-select-schedule" :class="currentWeekType === 'NUMERATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" flat label="Числитель" no-caps
-                   outline @click="toggleWeekBtn('NUMERATOR')" />
+                   outline @click="toggleWeekBtn('NUMERATOR')" style="width: 120px" />
 
             <q-btn class="btn-select-schedule q-mx-sm" :class="currentWeekType === 'DENOMINATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" flat label="Знаменатель" no-caps
-                   outline @click="toggleWeekBtn('DENOMINATOR')" />
+                   outline @click="toggleWeekBtn('DENOMINATOR')" style="width: 120px" />
 
-            <q-btn id="calendar" class="buttons-date" flat icon="today" no-caps>
+            <q-btn id="calendar" rounded class="buttons-date" flat icon="today" no-caps>
               <q-popup-proxy transition-hide="scale" transition-show="scale">
                 <q-date v-model="datePickerDate"
                         :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
@@ -431,6 +440,7 @@ export default {
     const editLessonWeeksOptions = ref([]);
     const lessonInfoObject = ref({});
     const lessonInfoDialog = ref(false);
+    const settingsDialog = ref(false);
 
 
     const openLessonInfo = (lesson, time) => {
@@ -798,6 +808,7 @@ export default {
       editLessonWeeksOptions,
       editLessonSelectedWeeks,
       lessonTypes,
+      settingsDialog,
       dayMap,
       numeratorMap,
       semestersMap,
@@ -834,7 +845,7 @@ export default {
       getTypeNameByValue,
       setSquareCellSchedule: setWidthCellSchedule, setHeightCellSchedule, isEmptyLesson, getLessonString,
       updateCellHeight,
-      defaultCellHeight, doubleCellHeight,styleObject
+      defaultCellHeight, doubleCellHeight, styleObject
     }
   }
 }
@@ -850,12 +861,18 @@ export default {
 }
 
 #SCHEDULE-SELECT {
-  border-radius: 4px;
-  align-items: center
+  border-radius: 4px 4px 0 0;
+  align-items: center;
 }
 
 #SCHEDULE-NAVIGATION {
+  border-radius: 0 0 4px 4px;
   margin-top: -15px;
+}
+
+#MAIN-TABLE {
+  border-radius: 4px;
+  margin-bottom: -5px;
 }
 
 .page-width {
