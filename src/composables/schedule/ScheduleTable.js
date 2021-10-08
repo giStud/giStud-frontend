@@ -38,8 +38,14 @@ export function getScheduleInfoByWeekDesktop(lessons, week) {
   let twinRows = [];
   let maxTwinLessonLength = 0;
 
-  let maxLesson = '';
-  let maxLessonDouble = '';
+  let maxLesson = {
+    name : '',
+    rawLessonString : ''
+  };
+  let maxLessonDouble = {
+    name : '',
+    rawLessonString: ''
+  };
 
   const daysArray = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
   const numerator = getTypeOfWeek(week);
@@ -81,14 +87,16 @@ export function getScheduleInfoByWeekDesktop(lessons, week) {
         if (lesson.day === rowObject.day) {
           for (let i = 0; i < rowObject.lessons.length; i++) {
             let lessonVal = rowObject.lessons[i];
-            maxLesson = lesson.rawLessonString.length > maxLesson.length ? lesson.rawLessonString : maxLesson;
+            maxLesson.name = lesson.name.length > maxLesson.name.length ? lesson.name : maxLesson.name;
+            maxLesson.rawLessonString = lesson.rawLessonString.length > maxLesson.rawLessonString.length ? lesson.rawLessonString : maxLesson.rawLessonString;
             if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
               if (lesson.name !== '') {
                 if (lessonVal.value.length !== 0) {
                   if (lessonVal.value[0].name === '') {
                     lessonVal.value[0] = lesson;
                   } else {
-                    maxLessonDouble = lesson.rawLessonString.length > maxLessonDouble.length ? lesson.rawLessonString : maxLessonDouble;
+                    maxLessonDouble.name = lesson.name.length > maxLessonDouble.name.length ? lesson.name : maxLessonDouble.name;
+                    maxLessonDouble.rawLessonString = lesson.rawLessonString.length > maxLessonDouble.rawLessonString.length ? lesson.rawLessonString : maxLessonDouble.rawLessonString;
                     lessonVal.value.push(lesson);
                     twinRows.push(i);
                   }

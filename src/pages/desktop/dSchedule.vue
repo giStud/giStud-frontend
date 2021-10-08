@@ -98,19 +98,17 @@
 
       <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width fix-py">
         <q-card class="center-all t-center justify-center items-start row fix-py" flat>
-
-          <q-item id="hidden-span-calc" :style="setSquareCellSchedule(columnWidth)"  style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
+          <q-item id="hidden-span-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
             <q-card flat square class="max-width-schedule q-pa-none bg-none">
               <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none font-size-cell time-cell-inside-border">
                 <span>00.00 - 00.00</span>
               </q-card-section>
               <q-card-section class="q-pa-none lesson-text font-size-cell q-mt-sm">
 <!--                <span class="lesson-content-schedule">лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
-                <span class="lesson-content-schedule">{{ scheduleInfo.maxLesson }}</span>
+                <span class="lesson-content-schedule">{{ getLessonString(scheduleInfo.maxLesson) }}</span>
               </q-card-section>
             </q-card>
           </q-item>
-
           <q-item id="hidden-span-double-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
             <q-card flat square class="q-pa-none max-width-schedule bg-none">
               <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
@@ -118,7 +116,7 @@
               </q-card-section>
               <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
                 <div class="lesson-text">
-                  <span>{{ scheduleInfo.maxLessonDouble }}</span>
+                  <span>{{ getLessonString(scheduleInfo.maxLessonDouble) }}</span>
 <!--                  <span>лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
                 </div>
               </q-card-section>
@@ -632,8 +630,9 @@ export default {
       }
     }
 
-    watch(rawLessonStringMode, (newValue) => {
+    watch(rawLessonStringMode, async (newValue) => {
       localStorage.setItem('rawLessonStringMode', newValue)
+      await updateCellHeight();
     })
     watch(selectedWeek, (newValue) => {
       const date = selectedDate.value;
@@ -645,7 +644,7 @@ export default {
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, newValue)
-          console.log( scheduleInfo.value)
+          console.log(scheduleInfo.value)
         }
       }
     })
@@ -666,8 +665,9 @@ export default {
 
     })
 
-    watch(groupSelectValue, (newValue) => {
-      loadGroupSchedule(newValue)
+    watch(groupSelectValue, async (newValue) => {
+      await loadGroupSchedule(newValue)
+      await updateCellHeight();
     });
 
     watch(selectedDate, (newValue) => {
@@ -677,24 +677,28 @@ export default {
       }
     })
     const columnWidth = ref(0);
-    const heightRef = ref(0);
-
     const defaultCellHeight = ref(1);
     const doubleCellHeight = ref(1);
+    const styleObject = ref({
+      defaultCellHeightStyle : computed(()=> 'height: ' + defaultCellHeight.value + 'px'),
+      doubleCellHeightStyle : computed(()=> 'height: ' + doubleCellHeight.value + 'px'),
+      columnWidthStyle : computed(()=> 'width: ' + columnWidth.value + 'px')
+    })
 
-    const resizeObserver = new ResizeObserver(entries => {
+    const updateCellHeight = async ()=> {
+      let cell = await document.getElementById('hidden-span-calc');
+      defaultCellHeight.value = cell.clientHeight;
+      let cellDouble = await document.getElementById('hidden-span-double-calc');
+      doubleCellHeight.value = (cellDouble.clientHeight * 2) + 4;
+    }
+
+    const resizeObserver = new ResizeObserver(async (entries) => {
       for (let entry of entries) {
         const innerPadding = 15;
         const marginValue = 4;
         const mainTableNewWidth = entry.contentRect.width;
         columnWidth.value = (mainTableNewWidth - (marginValue * 6 + innerPadding * 2)) / 7;
-        heightRef.value = entry.contentRect.height;
-        let cell = document.getElementById('hidden-span-calc');
-        defaultCellHeight.value = cell.clientHeight;
-
-        let cellDouble = document.getElementById('hidden-span-double-calc');
-        doubleCellHeight.value = (cellDouble.clientHeight * 2) + 4;
-
+        await updateCellHeight();
       }
     });
 
@@ -745,6 +749,8 @@ export default {
           }
         }
       }
+
+      await updateCellHeight();
     });
 
     onBeforeUnmount(() => {
@@ -752,64 +758,17 @@ export default {
       resizeObserver.unobserve(mainTableElement);
     })
 
-    const heightCell = ref(50);
-
-    const editHCell = () => {
-      let div_lesson_top = document.getElementById('top-lesson-text');
-      let div_lesson_bot = document.getElementById('bot-lesson-text');
-
-      if (div_lesson_top !== null && div_lesson_bot !== null) {
-
-        let span_top = document.createElement('span');
-        let span_bot = document.createElement('span');
-
-        span_top.textContent = div_lesson_top.textContent;
-        span_bot.textContent = div_lesson_bot.textContent;
-
-        div_lesson_top.innerHTML = ''
-        div_lesson_bot.innerHTML = ''
-
-        div_lesson_top.appendChild(span_top);
-        div_lesson_bot.appendChild(span_bot);
-
-        let sizeTop = span_top.getClientRects().length;
-        let sizeBot = span_bot.getClientRects().length;
-
-        if (sizeTop >= sizeBot) {
-          heightCell.value = sizeTop;
-        } else {
-          heightCell.value = sizeBot;
-        }
-      }
-    }
-
-    const getHCell = (el) => {
-      let size = 1;
-      if (el !== '') {
-        let element = document.getElementById(el);
-        if (element !== null) {
-          let span = document.createElement('span');
-          span.textContent = element.textContent;
-          element.innerHTML = '';
-          element.appendChild(span);
-          size = span.getClientRects().length;
-          if (defaultCellHeight.value < size) {
-            defaultCellHeight.value = size;
-          }
-        }
-        //console.log(defaultCellHeight.value)
-      }
-    }
-
-
-
-    const setWidthCellSchedule = (size) => {
-      return 'width:' + size + 'px'
+    const setWidthCellSchedule = () => {
+      return styleObject.value.columnWidthStyle;
     }
 
     const setHeightCellSchedule = (twinRows, rowIndex) => {
-      if (twinRows.includes(rowIndex)) return 'height:' + doubleCellHeight.value + 'px';
-      return 'height:' + defaultCellHeight.value + 'px'
+      if(twinRows.includes(rowIndex)) {
+        return styleObject.value.doubleCellHeightStyle
+      }
+      else {
+        return styleObject.value.defaultCellHeightStyle
+      }
     }
 
     const isEmptyLesson = (lesson) => {
@@ -817,7 +776,11 @@ export default {
     }
 
     const getLessonString = (les) => {
-      return rawLessonStringMode.value ? les.rawLessonString : les.name
+      if (les) {
+        return rawLessonStringMode.value ? les.rawLessonString : les.name
+      } else {
+        return '';
+      }
     }
 
     return {
@@ -869,11 +832,9 @@ export default {
       getNumberOfWeek,
       getTypeColorByValue,
       getTypeNameByValue,
-      heightCell, defaultCellHeight, getHCell,
-      cellStyle: {
-        width: computed(() => 'width: ' + columnWidth.value + 'px'),
-      },
-      setSquareCellSchedule: setWidthCellSchedule, setHeightCellSchedule, isEmptyLesson, getLessonString, doubleCellHeight
+      setSquareCellSchedule: setWidthCellSchedule, setHeightCellSchedule, isEmptyLesson, getLessonString,
+      updateCellHeight,
+      defaultCellHeight, doubleCellHeight,styleObject
     }
   }
 }
