@@ -255,7 +255,7 @@ export default {
     const currentDayLessons = ref([]);
     const selectedDate = ref(new Date());
     const datePickerDate = ref(formatDate(new Date()));
-    const rawLessonStringMode = ref(false);
+    const rawLessonStringMode = ref(true);
     const groupSelectDialog = ref(false)
     const settingsDialog = ref(false);
     const helpDialog = ref(false);
@@ -432,6 +432,10 @@ export default {
       groupSelectDialog.value = false;
     })
 
+    watch(rawLessonStringMode, (newValue) => {
+      localStorage.setItem('rawLessonStringMode', newValue)
+    })
+    
     watch(selectedDate, (val) => {
       if (val) {
         localStorage.setItem('selectedDate', val.toString())
@@ -458,7 +462,16 @@ export default {
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
       let lastLoadedGroup = localStorage.getItem('lastLoadedGroupNew');
 
+      let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
+
+      if (!rlsMode) {
+        rawLessonStringMode.value = true;
+      } else {
+        rawLessonStringMode.value = rlsMode === 'true';
+      }
+      localStorage.setItem('rawLessonStringMode', 'true');
+
       if (dateFromStorage !== null) {
         let currentDate = new Date();
         if (dateFromStorage < currentDate) {

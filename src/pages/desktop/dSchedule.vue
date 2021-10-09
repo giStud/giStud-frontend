@@ -569,7 +569,7 @@ export default {
 
     }
     //schedule table start
-    const rawLessonStringMode = ref(null)
+    const rawLessonStringMode = ref(true)
     const scheduleInfo = ref({});
     const title = ref('');
     const selectedDate = ref(null);
@@ -726,12 +726,12 @@ export default {
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
       let lastLoadedGroup = localStorage.getItem('lastLoadedGroupNew');
 
-      if (rlsMode === 'true') {
+      if (!rlsMode) {
         rawLessonStringMode.value = true;
       } else {
-        rawLessonStringMode.value = false;
-        localStorage.setItem('rawLessonStringMode', 'false');
+        rawLessonStringMode.value = rlsMode === 'true';
       }
+      localStorage.setItem('rawLessonStringMode', 'true');
 
       if (dateFromStorage !== null) {
         let currentDate = getDateOfMonday(new Date());
