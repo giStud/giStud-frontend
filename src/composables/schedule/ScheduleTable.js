@@ -87,9 +87,9 @@ export function getScheduleInfoByWeekDesktop(lessons, week) {
         if (lesson.day === rowObject.day) {
           for (let i = 0; i < rowObject.lessons.length; i++) {
             let lessonVal = rowObject.lessons[i];
-            maxLesson.name = lesson.name.length > maxLesson.name.length ? lesson.name : maxLesson.name;
-            maxLesson.rawLessonString = lesson.rawLessonString.length > maxLesson.rawLessonString.length ? lesson.rawLessonString : maxLesson.rawLessonString;
             if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+              maxLesson.name = lesson.name.length > maxLesson.name.length ? lesson.name : maxLesson.name;
+              maxLesson.rawLessonString = lesson.rawLessonString.length > maxLesson.rawLessonString.length ? lesson.rawLessonString : maxLesson.rawLessonString;
               if (lesson.name !== '') {
                 if (lessonVal.value.length !== 0) {
                   if (lessonVal.value[0].name === '') {

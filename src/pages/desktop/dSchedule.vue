@@ -63,7 +63,7 @@
         <q-card id="schedule-nav-btn" class="row center-all justify-between items-center fix-pa">
           <div>
             <q-btn class="buttons-week" flat label="❮ Предыдущая неделя" no-caps rounded
-                   @click="loadPreviousWeekLessons" />
+                   @click="loadPreviousWeekLessons" :disable="selectedWeek <= 1" />
 
           </div>
           <div>
@@ -114,7 +114,7 @@
               </q-card-section>
               <q-card-section class="q-pa-none lesson-text font-size-cell q-mt-sm">
 <!--                <span class="lesson-content-schedule">лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
-                <span class="lesson-content-schedule">{{ getLessonString(scheduleInfo.maxLesson) }}</span>
+                <span class="lesson-content-schedule">{{ getLessonStringDebug(scheduleInfo.maxLesson) }}</span>
               </q-card-section>
             </q-card>
           </q-item>
@@ -125,7 +125,7 @@
               </q-card-section>
               <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
                 <div class="lesson-text">
-                  <span>{{ getLessonString(scheduleInfo.maxLessonDouble) }}</span>
+                  <span>{{ getLessonStringDebug(scheduleInfo.maxLessonDouble) }}</span>
 <!--                  <span>лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
                 </div>
               </q-card-section>
@@ -644,7 +644,7 @@ export default {
       localStorage.setItem('rawLessonStringMode', newValue)
       await updateCellHeight();
     })
-    watch(selectedWeek, (newValue) => {
+    watch(selectedWeek, async (newValue) => {
       const date = selectedDate.value;
       //const date = getDateOfMonday(new Date(2020,10, 23))
       if (date !== null) {
@@ -656,6 +656,7 @@ export default {
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, newValue)
           console.log(scheduleInfo.value)
         }
+        //await updateCellHeight();
       }
     })
 
@@ -793,6 +794,14 @@ export default {
       }
     }
 
+    const getLessonStringDebug = (les) => {
+      if (les) {
+        return (rawLessonStringMode.value ? les.rawLessonString : les.name) + "ЫЫЫЫЫЫЫ";
+      } else {
+        return '';
+      }
+    }
+
     return {
       isAdmin,
       editMode,
@@ -845,7 +854,7 @@ export default {
       getTypeNameByValue,
       setSquareCellSchedule: setWidthCellSchedule, setHeightCellSchedule, isEmptyLesson, getLessonString,
       updateCellHeight,
-      defaultCellHeight, doubleCellHeight, styleObject
+      defaultCellHeight, doubleCellHeight, styleObject, getLessonStringDebug
     }
   }
 }

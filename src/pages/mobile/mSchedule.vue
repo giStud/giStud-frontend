@@ -435,7 +435,7 @@ export default {
     watch(rawLessonStringMode, (newValue) => {
       localStorage.setItem('rawLessonStringMode', newValue)
     })
-    
+
     watch(selectedDate, (val) => {
       if (val) {
         localStorage.setItem('selectedDate', val.toString())

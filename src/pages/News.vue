@@ -132,7 +132,7 @@ import {customClass, customStyle, goUrl} from "src/services/other/tools";
 import {debounce, useMeta} from "quasar";
 
 const meta = {
-  title: 'Расписание - GISTUD',
+  title: 'Новости - GISTUD',
   script: {
     yandexMetrika: {
       type: 'application/javascript',
