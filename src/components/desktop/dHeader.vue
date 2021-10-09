@@ -1,5 +1,5 @@
 <template>
-  <q-card :class="theme('bg-l', 'bg-d')" class="bg-main row items-center q-pa-none flex-center" flat>
+  <q-card :class="theme('bg-l', 'bg-d')" class="bg-main row items-center q-pa-none justify-center" flat>
 
     <q-card-section class="items-center q-pa-none q-px-sm">
       <q-btn class=" q-pa-none bg-none" :to="'/'" flat>
@@ -34,7 +34,7 @@
         </q-card-section>
 
         <q-card-section class="items-center q-pa-none q-pl-sm">
-          <q-btn-dropdown :disable="!isAdmin" class="gistud-dev" :style="isAdmin ? '' : theme('color: white', 'color: #2e2f31')" no-caps flat :label="currentUser === null ? 'Кто здесь ?' : currentUser.username">
+          <q-btn-dropdown :disable="!isAdmin" class="gistud-dev" :style="isAdmin ? '' : theme('color: white', 'color: #2e2f31')" no-caps flat :label="currentUser === null ? 'Кто здесь a???' : currentUser.username">
             <div class="row q-pa-md">
               <div class="column">
                 <div class="text-h6 q-mb-md">Настройки</div>

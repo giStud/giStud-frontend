@@ -1,7 +1,7 @@
 <template>
   <q-page>
-    <q-card id="MAIN-PAGE" class="bg-none" flat square>
-      <q-card id="REKLAMA" class="center-all page-width fix-my" flat>
+    <q-card id="MAIN-PAGE" class="bg-none q-ma-none" flat square>
+      <q-card id="REKLAMA" class="center-all page-width" flat>
         Реклама
       </q-card>
 
@@ -105,7 +105,7 @@
 
       </q-card>
 
-      <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width fix-py">
+      <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width">
         <q-card class="center-all t-center justify-center items-start row fix-py" flat>
           <q-item id="hidden-span-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
             <q-card flat square class="max-width-schedule q-pa-none bg-none">
@@ -863,6 +863,9 @@ export default {
 <style lang="css">
 @import 'src/css/main.css';
 
+#MAIN-PAGE {
+
+}
 #REKLAMA {
   height: 90px;
   border-radius: 4px;
@@ -880,8 +883,9 @@ export default {
 }
 
 #MAIN-TABLE {
+  padding: 0;
   border-radius: 4px;
-  margin-bottom: -5px;
+
 }
 
 .page-width {
