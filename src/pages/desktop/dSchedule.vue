@@ -144,7 +144,7 @@
                 <template v-if="lesson.value.length === 1 || lesson.value.length === 0">
                   <!--       ОБЫЧНАЯ ПАРА           -->
                   <q-item :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)" class="t-center q-pa-none pd-cell-around mg-b-inside"
-                          clickable @click="openLessonInfo(lesson.value[0], lesson.time)" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
+                          clickable @click="openLessonInfo(lesson.value[0], lesson.time, datesArray[columnIndex], (rowIndex + 1))" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
                   >
                     <q-card flat square class="max-width-schedule q-pa-none bg-none">
                       <q-card-section :style="getScheduleCellColor(lesson.value[0])" class="q-pa-none font-size-cell time-cell-inside-border">
@@ -166,7 +166,7 @@
 
                 <template v-else-if="lesson.value.length === 2">
                   <q-item v-for="(les) in lesson.value" :key="les" :style="'height:' + ((doubleCellHeight-4)/2) + 'px'"
-                          class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" clickable @click="openLessonInfo(les, lesson.time)">
+                          class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" clickable @click="openLessonInfo(les, lesson.time, datesArray[columnIndex], (rowIndex + 1))">
                     <q-card flat square class="q-pa-none max-width-schedule bg-none">
                       <q-card-section :style="getScheduleCellColor(les)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
                         <q-chip
@@ -205,6 +205,18 @@
                     <span>Тип: {{ getTypeNameByValue(lessonInfoObject.type) }}</span>
                   </q-card-section>
                 </template>
+                <q-card-section>
+                  <span>День: {{ lessonInfoObject.day}}, {{lessonInfoObject.dateString}}, {{ selectedWeek }} неделя, {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}</span>
+                </q-card-section>
+                <template v-if="lessonInfoObject.isGoingNow">
+<!--                <template v-if="true">-->
+                  <q-card-section >
+                    Идёт сейчас
+                  </q-card-section>
+                </template>
+                <q-card-section>
+                  {{lessonInfoObject.numberOfLesson}} пара.
+                </q-card-section>
                 <q-separator/>
                 <q-card-section>
                   <span>Время: {{ lessonInfoObject.timeString }}</span>
@@ -336,7 +348,7 @@ import {
   getTypeColorByValue,
   getTypeNameByValue,
   getLessonNumeratorByWeeks,
-  getWeeksArrayByLessons
+  getWeeksArrayByLessons, getMonthStringByDate
 } from "src/composables/schedule/ScheduleTable";
 import LessonService from 'src/services/schedule/lessonService'
 import {useStore} from "vuex";
@@ -443,7 +455,8 @@ export default {
     const settingsDialog = ref(false);
 
 
-    const openLessonInfo = (lesson, time) => {
+    const openLessonInfo = (lesson, time, lessonDate, numberOfLesson) => {
+      console.log(lessonDate)
       if ((lesson && lesson.name !== '' && time) || isAdmin.value) {
         lessonInfoDialog.value = true;
         const audienceValue = lesson.audienceEntity.audience;
@@ -452,11 +465,22 @@ export default {
         const type = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
         const lessonText = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
         const timeString = time.lessonBeginTime + '-' + time.lessonFinishTime;
+        const day = getFullDayWeekString(lesson.day);
+        const dateArray = lessonDate.split('.');
+        const date = new Date(dateArray[1] + '.' + dateArray[0] + '.' + dateArray[2]);
+        console.log(date)
+        const dateString = date.getDate().toString() + ' ' + getMonthStringByDate(date);
+        const isGoingNow = isCurrentLessonGoes(selectedWeek.value, lesson, time.lessonBeginTime, time.lessonFinishTime);
+
         lessonInfoObject.value = {
           audience,
           type,
           lessonText,
           timeString,
+          day,
+          dateString,
+          numberOfLesson,
+          isGoingNow,
           lessonId: lesson.lessonId
         }
       }
