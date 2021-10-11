@@ -353,6 +353,7 @@ import {
 import LessonService from 'src/services/schedule/lessonService'
 import {useStore} from "vuex";
 import {theme} from "src/services/other/tools";
+import {useMeta} from "quasar";
 
 function formatDate(date) {
   let dd = date.getDate();
@@ -424,6 +425,20 @@ const semestersMap = [
   }
 ]
 
+const meta = {
+  title: 'Расписание - GISTUD',
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Расписание - GISTUD | Удобная информация вашего университета: студенческие новости, расписание и многое другое'
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud'
+    },
+  }
+}
+
 export default {
   name: "dSchedule",
   props: {
@@ -433,8 +448,8 @@ export default {
     }
   },
   setup(props) {
+    useMeta(() => meta);
     const store = useStore();
-
     const isAdmin = ref(computed(() => store.getters['auth/isAdmin']));
     const lessonTypes = ref([]);
     const lessonsToEditArray = ref([]);

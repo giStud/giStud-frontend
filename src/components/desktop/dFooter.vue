@@ -4,27 +4,26 @@
       <q-card-section class=" row items-start q-py-none fix-px">
         <q-card flat square class="bg-none">
           <q-card-section class="title-footer">Карта сайта</q-card-section>
-          <q-item clickable class="text-footer">Главная</q-item>
-          <q-item clickable class="text-footer">Расписание</q-item>
-          <q-item clickable class="text-footer">Новости</q-item>
-          <q-item clickable class="text-footer">Доска объявлений</q-item>
+          <q-item clickable :to="'/'" class="text-footer">Главная</q-item>
+          <q-item clickable :to="'/schedule'" class="text-footer">Расписание</q-item>
+          <q-item clickable :to="'/news'" class="text-footer">Новости</q-item>
+          <q-item clickable disable class="text-footer">Доска объявлений</q-item>
         </q-card>
       </q-card-section>
       <q-card-section class="row items-start q-py-none fix-px">
         <q-card flat square class="bg-none">
           <q-card-section class="title-footer">Проект</q-card-section>
-          <q-item clickable class="text-footer">О проекте</q-item>
+          <q-item clickable :to="'/about'" class="text-footer">О проекте</q-item>
           <q-item clickable class="text-footer">История создания</q-item>
           <q-item clickable class="text-footer">Реклама на сайте</q-item>
-          <q-item clickable class="text-footer">Вакансии</q-item>
+          <q-item clickable disable class="text-footer">Вакансии</q-item>
         </q-card>
       </q-card-section>
       <q-card-section class="row items-start q-py-none fix-px">
         <q-card flat class="bg-none" square >
           <q-card-section class="title-footer">База знаний</q-card-section >
           <q-item clickable class="text-footer"><span>Найти свое расписание</span></q-item>
-          <q-item clickable class="text-footer">Создать объявление</q-item>
-          <q-item clickable class="text-footer">Как какать</q-item>
+          <q-item clickable disable class="text-footer">Создать объявление</q-item>
         </q-card>
       </q-card-section>
 
@@ -33,7 +32,7 @@
           <q-card-section class="title-footer row items-start">Обратная связь</q-card-section >
           <input v-model="requestDialogEmail" :class="theme('bg-input-l', 'bg-input-d')" class="text-field__input" style="height: 25px" type="text" name="email" id="email" placeholder="Email">
           <textarea v-model="requestDialogText" :class="theme('bg-input-l', 'bg-input-d')" class="text-field__input" style="height: 70px" type="textarea" name="text" id="text" placeholder="Введите текст"/>
-          <q-btn size="sm" v-close-popup flat no-caps label="Отправить" :disable="sendButtonModel" @click="sendUserMessage(requestDialogEmail, requestDialogText)"/>
+          <q-btn size="sm" v-close-popup flat no-caps label="Отправить" :class="sendButtonModel ? 'hidden' : ''" @click="sendUserMessage(requestDialogEmail, requestDialogText)"/>
         </q-card>
       </q-card-section>
       <q-card-section class="row items-start q-py-none fix-px">
@@ -159,6 +158,7 @@ export default {
 }
 
 .text-footer {
+  text-decoration: none;
   align-items: center;
   min-height: 10px;
   padding: 0 8px;
@@ -166,6 +166,11 @@ export default {
   line-height: 12px;
   font-size: 12px;
   margin: 0 0 2px;
+}
+
+.text-footer:visited {
+  text-decoration: none;
+  color: white;
 }
 
 .text-field__input {

@@ -71,6 +71,21 @@ import UserMessageDialog from "components/UserMessageDialog";
 import {ref} from "vue";
 import {goUrl, theme} from "src/services/other/tools";
 import texts from "src/info/texts";
+import {useMeta} from "quasar";
+
+const meta = {
+  title: 'Главная - GISTUD',
+  meta: {
+    description: {
+      name: 'description',
+      content: 'Главная - GISTUD | Удобная информация вашего университета: студенческие новости, расписание и многое другое'
+    },
+    keywords: {
+      name: 'keywords',
+      content: 'расписание, информационный сервис, студенты, студенческий сервис, вуз, университет, РФ, Россия, gistud'
+    },
+  }
+}
 
 export default {
   name: "dHome",
@@ -79,6 +94,7 @@ export default {
     UserMessageDialog,
   },
   setup() {
+    useMeta(() => meta);
     return {
       slide: ref(1),
       dialogModel: ref(false),
