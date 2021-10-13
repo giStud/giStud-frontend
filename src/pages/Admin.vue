@@ -73,7 +73,8 @@
                     <q-input class="q-my-sm" square outlined filled v-model="newsImgSrc" label="Ссылка на фотографию"/>
                     <q-input class="q-my-sm" square outlined filled v-model="newsSource" label="Источник"/>
                     <q-select class="q-my-sm" square label="Выберите тип новости" filled v-model="newsType"
-                              :options="newsTypesOptions" option-label="type"
+                              :options="newsTypesOptions" option-label="type" option-value="newsTypeId"
+                              map-options
                               option-disable="inactive" emit-value/>
                     <div class="text-h6">Короткий текст</div>
                     <q-editor square v-model="newsShortText" :dense="$q.screen.lt.md" :toolbar="newsToolbar"
