@@ -102,7 +102,8 @@
           <q-select :color="theme('primary','white')" v-model="univSelectValue" :options="univFilteredOptions" behavior="menu" borderless bottom-slots dense fill-input hide-selected
                     option-label="univName" outlined
                     square transition-hide="jump-up" transition-show="jump-up" use-input
-                    @filter="filterUniversitiesFn">
+                    @filter="filterUniversitiesFn"
+                    @update:model-value="groupSelectValue = null;">
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
@@ -316,13 +317,13 @@ export default {
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
 
           currentDayLessons.value = getLessonFromSelectedDateMobile(selectedGroup.lessons, selectedDate.value);
-          console.log(currentDayLessons.value)
+          groupSelectDialog.value = false;
         } else {
           groupName.value = '';
+          localStorage.removeItem("lastLoadedGroupNew");
         }
       } catch (e) {
         localStorage.removeItem("lastLoadedGroupNew");
-        groupSelectValue.value = null;
       }
 
     }
@@ -424,12 +425,10 @@ export default {
         localStorage.removeItem("lastLoadedUniv");
         univSelectValue.value = null;
       }
-
     })
 
     watch(groupSelectValue, (val) => {
       loadGroupSchedule(val)
-      groupSelectDialog.value = false;
     })
 
     watch(rawLessonStringMode, (newValue) => {
