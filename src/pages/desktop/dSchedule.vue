@@ -12,7 +12,8 @@
                     label="Выберите университет"
                     option-label="univName"
                     outlined transition-hide="jump-up" transition-show="jump-up"
-                    use-input @filter="filterUniversitiesFn">
+                    use-input @filter="filterUniversitiesFn"
+                    @update:model-value="groupSelectValue = null;">
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
@@ -598,7 +599,7 @@ export default {
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, selectedWeek.value);
         } else {
           title.value = '';
-          console.log('Find deleted group');
+          localStorage.removeItem("lastLoadedGroupNew");
         }
       } catch (e) {
         console.log(e)
@@ -710,9 +711,7 @@ export default {
         }
       } catch (e) {
         localStorage.removeItem("lastLoadedUniv");
-        univSelectValue.value = null;
       }
-
     })
 
     watch(groupSelectValue, async (newValue) => {

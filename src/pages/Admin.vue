@@ -14,7 +14,7 @@
           <q-separator/>
           <q-tab name="schedule" icon="schedule" label="Загрузка расписания"/>
           <q-separator/>
-          <q-tab name="groupCreating" icon="group" label="Создание группы"/>
+          <q-tab name="groupCreating" icon="group" label="Создание расписания"/>
 
         </q-tabs>
       </template>
@@ -149,183 +149,117 @@
             </div>
           </q-tab-panel>
           <q-tab-panel class="bg-none" name="groupCreating">
-            <q-card flat>
-              <q-card-section class="text-h4 q-mb-md">Создать группу</q-card-section>
-              <q-card-section>
-                <q-option-group
-                  v-model="groupCreatingSemester"
-                  :options="semestersMap"
-                  color="primary"
-                  inline
-                />
-              </q-card-section>
-              <q-card-section>
-                <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
-                          class="select-ug"
-                          fill-input hide-selected
-                          label="Выберите университет"
-                          option-label="univName"
-                          outlined transition-hide="jump-up" transition-show="jump-up"
-                          use-input @filter="filterUniversitiesFn">
-                  <template v-slot:option="scope">
-                    <q-item v-bind="scope.itemProps">
-                      <q-item-section>
-                        <q-item-label v-html="scope.opt.univName"/>
-                        <q-item-label caption>{{ scope.opt.city }}</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">Не найдено</q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:append>
-                    <q-icon name="search"/>
-                  </template>
-                </q-select>
-              </q-card-section>
-              <q-card-section>
-                <q-select v-model="facultySelectValue" :options="facultyFilteredOptions" borderless bottom-slots
-                          class="select-ug" fill-input hide-selected
-                          label="Выберите факультет"
-                          outlined transition-hide="jump-up" transition-show="jump-up"
-                          use-input @filter="filterFacultiesFn">
-                  <template v-slot:no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">Не найдено</q-item-section>
-                    </q-item>
-                  </template>
-                  <template v-slot:append>
-                    <q-icon name="search"/>
-                  </template>
-                </q-select>
-              </q-card-section>
-              <q-card-section>
-                <q-input v-model="creatingGroupName" label="Имя группы"/>
-              </q-card-section>
-              <q-card-section>
-                <q-input filled v-model="groupTimeArray[0]" mask="time" :rules="['time']" label="Время начала 1 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[0]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section><q-card-section>
-                <q-input filled v-model="groupTimeArray[1]" mask="time" :rules="['time']" label="Время начала 2 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[1]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-section>
-                <q-input filled v-model="groupTimeArray[2]" mask="time" :rules="['time']" label="Время начала 3 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[2]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-section>
-                <q-input filled v-model="groupTimeArray[3]" mask="time" :rules="['time']" label="Время начала 4 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[3]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-section>
-                <q-input filled v-model="groupTimeArray[4]" mask="time" :rules="['time']" label="Время начала 5 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[4]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-section>
-                <q-input filled v-model="groupTimeArray[5]" mask="time" :rules="['time']" label="Время начала 6 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[5]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-section>
-                <q-input filled v-model="groupTimeArray[6]" mask="time" :rules="['time']" label="Время начала 7 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[6]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-section>
-                <q-input filled v-model="groupTimeArray[7]" mask="time" :rules="['time']" label="Время начала 8 пары" style="width: 250px">
-                  <template v-slot:append>
-                    <q-icon name="access_time" class="cursor-pointer">
-                      <q-popup-proxy transition-show="scale" transition-hide="scale">
-                        <q-time v-model="groupTimeArray[7]">
-                          <div class="row items-center justify-end">
-                            <q-btn v-close-popup label="Close" color="primary" flat/>
-                          </div>
-                        </q-time>
-                      </q-popup-proxy>
-                    </q-icon>
-                  </template>
-                </q-input>
-              </q-card-section>
-              <q-card-actions>
-                <q-btn flat icon="create" @click="handleGroupCreating({univ : univSelectValue, facName : facultySelectValue, name : creatingGroupName, timeArray : groupTimeArray}, groupCreatingSemester)"/>
-              </q-card-actions>
+            <q-card flat square class="bg-none">
+              <q-tabs v-model="scheduleCreatingTab" dense active-color="primary" indicator-color="primary"
+                      align="justify"
+                      narrow-indicator>
+                <q-tab name="universityCreate" label="Добавление университета"/>
+                <q-tab name="groupCreate" label="Добавление группы"/>
+              </q-tabs>
+
+              <q-separator/>
+
+              <q-tab-panels v-model="scheduleCreatingTab" animated>
+                <q-tab-panel class="bg-none" name="universityCreate">
+                  <q-card flat square class="bg-none">
+                    <q-card-section class="text-h4 q-mb-md">Добавление нового университета</q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingUniversityName" label="Имя университета"/>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingUniversityCityName" label="Город"/>
+                    </q-card-section>
+                    <q-card-actions>
+                      <q-btn color="primary"
+                             @click="handleUnivCreating(creatingUniversityName, creatingUniversityCityName)"
+                             no-caps label="Добавить"/>
+                    </q-card-actions>
+                  </q-card>
+                </q-tab-panel>
+                <q-tab-panel class="bg-none" name="groupCreate">
+                  <q-card flat square class="bg-none">
+                    <q-card-section class="text-h4 q-mb-md">Создание расписания группы</q-card-section>
+                    <q-card-section>
+                      <q-option-group
+                        v-model="groupCreatingSemester"
+                        :options="semestersMap"
+                        color="primary"
+                        inline
+                      />
+                    </q-card-section>
+                    <q-card-section>
+                      <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
+                                class="select-ug"
+                                fill-input hide-selected
+                                label="Выберите университет"
+                                option-label="univName"
+                                outlined transition-hide="jump-up" transition-show="jump-up"
+                                use-input @filter="filterUniversitiesFn">
+                        <template v-slot:option="scope">
+                          <q-item v-bind="scope.itemProps">
+                            <q-item-section>
+                              <q-item-label v-html="scope.opt.univName"/>
+                              <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">Не найдено</q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:append>
+                          <q-icon name="search"/>
+                        </template>
+                      </q-select>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-select v-model="facultySelectValue" :options="facultyFilteredOptions" borderless bottom-slots
+                                class="select-ug" fill-input hide-selected
+                                label="Выберите факультет"
+                                outlined transition-hide="jump-up" transition-show="jump-up"
+                                use-input @filter="filterFacultiesFn"
+                                @update:model-value="facultyNameInput = ''">
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">Не найдено</q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:append>
+                          <q-icon name="search"/>
+                        </template>
+                      </q-select>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-input v-model="facultyNameInput" label="Имя факультета" @update:model-value="facultySelectValue = null"/>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingGroupName" label="Имя группы"/>
+                    </q-card-section>
+                    <q-card-section v-for="(time, index) of groupTimeArray" :key="index">
+                      <q-input filled v-model="groupTimeArray[index]" mask="time"
+                               :label="'Время начала ' + (index + 1) + ' пары'" style="width: 250px">
+                        <template v-slot:append>
+                          <q-icon name="access_time" class="cursor-pointer">
+                            <q-popup-proxy transition-show="scale" transition-hide="scale">
+                              <q-time v-model="groupTimeArray[index]">
+                                <div class="row items-center justify-end">
+                                  <q-btn v-close-popup label="Close" color="primary" flat/>
+                                </div>
+                              </q-time>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </q-card-section>
+                    <q-card-actions>
+                      <q-btn color="primary"
+                             @click="handleGroupCreating({univ : univSelectValue, facName : facultySelectValue != null ? facultySelectValue : facultyNameInput, name : creatingGroupName, timeArray : groupTimeArray}, groupCreatingSemester)"
+                             no-caps label="Добавить"/>
+                    </q-card-actions>
+                  </q-card>
+                </q-tab-panel>
+              </q-tab-panels>
             </q-card>
           </q-tab-panel>
 
@@ -339,15 +273,16 @@
 
 <script>
 import {computed, onMounted, ref, watch} from "vue";
-import UserMessagesService from "../services/other/userMessagesService"
 import {getDateString} from "src/composables/schedule/ScheduleTable";
+import UserMessagesService from "../services/other/userMessagesService"
 import UtilsService from "../services/other/utilsService"
 import NewsService from "../services/news/newsService"
 import NewsTypeService from "../services/news/newsTypesService"
-import {useQuasar} from "quasar";
-import {useStore} from "vuex";
+import UniversityService from "../services/schedule/universityService"
 import TokenService from "src/services/auth/tokenService";
 import GroupService from "src/services/schedule/groupsService"
+import {useQuasar} from "quasar";
+import {useStore} from "vuex";
 import authHeader from "src/services/auth/authHeader";
 
 const newsEditorFonts = {
@@ -502,9 +437,10 @@ export default {
     const univFilteredOptions = ref(univSelectOptions.value);
     const facultySelectOptions = ref([]);
     const facultyFilteredOptions = ref(facultySelectOptions.value);
+    const facultyNameInput = ref('');
     const creatingGroupName = ref('');
     const groupCreatingSemester = ref('AUTUMN');
-    const groupTimeArray = ref(['08:00','09:45','11:30','13:30','15:15','17:00','','']);
+    const groupTimeArray = ref(['08:00', '09:45', '11:30', '13:30', '15:15', '17:00', '', '']);
 
     const handleGroupCreating = async (group, semester) => {
       await GroupService.createGroup(group, semester);
@@ -531,7 +467,7 @@ export default {
           facultyFilteredOptions.value = facultySelectOptions.value;
         } else {
           facultyFilteredOptions.value = facultySelectOptions.value.filter((v) => {
-            return v.toLowerCase().includes(needle)
+              return v.toLowerCase().includes(needle)
             }
           );
         }
@@ -643,6 +579,14 @@ export default {
         }
         newsTypesOptions.value = await NewsTypeService.getNewsTypes();
       }
+    }
+
+    const scheduleCreatingTab = ref('universityCreate');
+    const creatingUniversityName = ref('');
+    const creatingUniversityCityName = ref('');
+
+    const handleUnivCreating = async (name, cityName) => {
+       await store.dispatch('schedule/createUniversityAction', {name, cityName});
     }
 
     onMounted(async () => {
@@ -776,6 +720,11 @@ export default {
       onFailed,
       splitterModel: ref(10),
       apiPath: computed(() => process.env.API),
+      scheduleCreatingTab,
+      creatingUniversityName,
+      creatingUniversityCityName,
+      facultyNameInput,
+      handleUnivCreating,
       handleGroupCreating,
       filterUniversitiesFn,
       filterFacultiesFn,
