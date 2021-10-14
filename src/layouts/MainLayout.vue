@@ -1,11 +1,11 @@
 <template>
-  <q-layout :class="theme('bg-l', 'bg-d')">
+  <q-layout :class="theme('bg-l', 'bg-d')" style="min-width: 1280px">
     <dHeader/>
     <q-page-container class="q-pa-none" style="padding-top: 0;">
       <router-view/>
     </q-page-container>
     <q-footer class="bg-none">
-      <dFooter class=""/>
+      <dFooter/>
     </q-footer>
   </q-layout>
 </template>

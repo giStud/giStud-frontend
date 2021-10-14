@@ -33,7 +33,7 @@
           <q-btn disable class="gistud-dev" :class="theme('two-btn-l', '')" flat icon="fas fa-bullhorn" round size="10px"></q-btn>
         </q-card-section>
 
-        <q-card-section class="items-center q-pa-none q-pl-sm">
+        <q-card-section :class="!isAdmin ? 'hidden' : ''" class="items-center q-pa-none q-pl-sm">
           <q-btn-dropdown :disable="!isAdmin" class="gistud-dev" :style="isAdmin ? '' : theme('color: white', 'color: #2e2f31')" no-caps flat :label="currentUser === null ? 'Кто здесь a???' : currentUser.username">
             <div class="row q-pa-md">
               <div class="column">

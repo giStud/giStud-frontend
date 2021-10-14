@@ -37,18 +37,26 @@ const desktop = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {path: '', component: () => import('pages/desktop/dHome'), meta: {isAuth: false, isAdmin: false}},
       {
+        path: '',
+        component: () => import('pages/desktop/dHome'),
+        meta: {isAuth: false, isAdmin: false}
+      }, {
         path: '/schedule',
         name: 'schedule',
         component: () => import('pages/desktop/dSchedule'),
         props: (route) => ({univName: route.query.univName}),
         meta: {isAuth: false, isAdmin: false}
-      },
-      {
+      }, {
         path: '/news',
         name: 'news',
         component: () => import('pages/News.vue'),
+        props: (route) => ({newsId: route.query.newsId}),
+        meta: {isAuth: false, isAdmin: false}
+      }, {
+        path: '/about',
+        name: 'about',
+        component: () => import('pages/desktop/dAbout.vue'),
         props: (route) => ({newsId: route.query.newsId}),
         meta: {isAuth: false, isAdmin: false}
       }
