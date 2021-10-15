@@ -1,22 +1,23 @@
 <template>
   <q-page>
     <q-card id="MAIN-PAGE-NEWS" class="bg-none fix-ma" flat square>
-
       <q-card id="NEWS-CONTAINER-NEWS" class="center-all container-base bg-none row justify-center" flat>
         <q-card id="NEWS-PROJECT-NEWS" class="bg-none q-ma-none q-pa-none fix-mr">
-
-          <q-card v-for="itemNews in news" :key="itemNews.newsId" class="q-pa-none fix-pa fix-mb" style="border-radius: 3px">
+          <q-card v-for="itemNews in news" :key="itemNews.newsId" class="q-pa-none fix-pa fix-mb cursor-pointer" style="border-radius: 3px" @click="getNews(itemNews)">
             <q-card-section class="q-pa-none">
               <span class="text-h6 q-pb-sm">{{ itemNews.title }}</span><br>
-              <span class="text-caption" v-html="itemNews.shortText"></span><br>
-              <span @click="getNews(itemNews)">Читать подробнее...</span>
+              <span class="text-caption" v-html="itemNews.shortText"></span><br><br>
+              <span class="text-caption cursor-pointer" @click="getNews(itemNews)">Читать подробнее...</span>
             </q-card-section>
             <q-card-section class="q-pa-none fix-mt" style="text-align: center">
               <q-img :src="itemNews.imgSrc" />
             </q-card-section>
           </q-card>
-
-
+          <q-card flat class="bg-none">
+            <q-chip v-if="visibleLoadBtn && (news.length % 5 === 0) && (news.length !== 0)" clickable icon-right="arrow_drop_down" outline @click="loadNextPage">
+              Загрузить ещё
+            </q-chip>
+          </q-card>
         </q-card>
         <q-card id="NEWS-STUDENTS-NEWS" :style="'height:' + (31 + 11 + 31 * newsTypesOptions.length) + 'px'" class="q-ma-none q-pa-none fix-pa">
           <q-list class="q-py-none" padding>
@@ -30,49 +31,10 @@
         </q-card>
       </q-card>
     </q-card>
-
-    <!--    <div id="top-adw" :style="customStyle('min-width: 1250px', '')" class="main-row q-mt-md">-->
-    <!--      <q-card class="bg-none" flat square>-->
-    <!--      </q-card>-->
-    <!--    </div>-->
-    <!--    <div :class="customClass('row main-row', '')" :style="customStyle('min-width: 1250px', '')">-->
-    <!--      <div :class="customClass('col-9 q-pr-sm', '')" class="bg-none">-->
-    <!--        <template v-for="itemNews in news" :key="itemNews.newsId">-->
-    <!--          <q-card :class="customClass('', 'q-mx-sm')" flat square>-->
-    <!--            <q-card>-->
-    <!--              <q-card-section class="mobile-hide" horizontal>-->
-    <!--                <q-card-section class="col-6 q-pt-xs">-->
-    <!--                  <div class="text-h5 q-mt-sm q-mb-xs">-->
-
-    <!--                  </div>-->
-    <!--                  <div>-->
-    <!--                  </div>-->
-    <!--                </q-card-section>-->
-    <!--                <q-card-section class="col-6">-->
-    <!--                  <q-img :src="itemNews.imgSrc" height="250px" />-->
-    <!--                  &lt;!&ndash;                  <q-skeleton square height="250px"/>&ndash;&gt;-->
-    <!--                </q-card-section>-->
-    <!--              </q-card-section>-->
-
-    <!--              <q-separator />-->
-    <!--              <q-card-actions class="justify-between">-->
-    <!--                <q-btn id="btn-read" flat @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">Читать-->
-    <!--                </q-btn>-->
-    <!--                <div>-->
-    <!--                  <q-icon color="black" name="event" size="16px" />-->
-    <!--                  <span class="q-pl-sm"> {{ getDateString(new Date(itemNews.date)) }}</span>-->
-    <!--                </div>-->
-    <!--              </q-card-actions>-->
-    <!--              <div class="news-p bg-none"></div>-->
-    <!--            </q-card>-->
-    <!--          </q-card>-->
-    <!--        </template>-->
-    <!--      </div>-->
-
     <q-dialog v-model="newsDialog" class="q-pa-none" transition-show="0" transition-hide="0" maximized >
       <q-card class="q-pa-none fix-pa row no-wrap justify-center" style="background: rgba(0,0,0,0.5)">
-        <q-card @mouseenter="aaaa = false" class="bg-none" style="width: 100%" v-close-popup ></q-card>
-        <q-card class="scroll" @mouseenter="aaaa = false" style="max-width: 657px; border-radius: 3px; position: relative">
+        <q-card @mouseenter="checkerMouse = false" class="bg-none" style="width: 100%" v-close-popup ></q-card>
+        <q-card class="scroll-hidden" @mouseenter="checkerMouse = false" style="max-width: 657px; position: relative">
           <q-card-section class="row items-center bg-primary q-pa-none fix-px" style="color: white;">
             <span> Источник:</span>
             <q-btn class="q-ma-sm " flat icon="fas fa-external-link-alt" round style="height: 8px; font-size: 8px" @click="goUrl(src)" />
@@ -87,41 +49,17 @@
             <q-img :src="img"/>
           </q-card-section>
         </q-card>
-        <q-card @mouseenter="aaaa = true" class="bg-none" style="width: 100%;" v-close-popup >
-          <q-icon :color="aaaa?'white':''"  name="close" id="close-bt-dialog" size="lg" v-close-popup style="margin-left: 15px;color: rgba(255,255,255,0.5)" />
+        <q-card @mouseenter="checkerMouse = true" class="bg-none cursor-pointer" style="width: 100%;" v-close-popup >
+          <q-icon :color="checkerMouse?'white':''"  name="close" id="close-bt-dialog" size="lg" v-close-popup style="margin-left: 15px;color: rgba(255,255,255,0.5)" />
         </q-card>
       </q-card>
     </q-dialog>
-
-    <!--      <div class="col-3 q-pt-none q-px-sm bg-none mobile-hide">-->
-    <!--        <q-card flat square>-->
-    <!--          <div>-->
-
-    <!--          </div>-->
-
-    <!--          <q-card class="bg-none">-->
-    <!--            <q-card-section>-->
-    <!--              <div id="yandex_rtb_R-A-1273406-5"></div>-->
-    <!--            </q-card-section>-->
-    <!--          </q-card>-->
-    <!--        </q-card>-->
-    <!--      </div>-->
-    <!--    </div>-->
-    <!--    &lt;!&ndash;    <div class="q-px-lg q-py-sm">&ndash;&gt;-->
-    <!--    &lt;!&ndash;      <q-btn flat @click="loadNextPage">Загрузить ещё</q-btn>&ndash;&gt;-->
-    <!--    &lt;!&ndash;    </div>&ndash;&gt;-->
-    <!--    <div class="q-px-lg" style="text-align: left; margin-bottom: 30px; margin-top: 15px;">-->
-    <!--      <q-chip v-if="visibleLoadBtn && (news.length % 5 === 0) && (news.length !== 0)" clickable color="primary" icon-right="arrow_drop_down" outline square text-color="white" @click="loadNextPage">-->
-    <!--        Загрузить ещё-->
-    <!--      </q-chip>-->
-    <!--    </div>-->
-
   </q-page>
 </template>
 
 <script>
 import {computed, onMounted, ref, watch} from 'vue'
-import NewsService from '../services/news/newsService.js'
+import NewsService from '../../services/news/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 import {useStore} from "vuex";
 import {customClass, customStyle, goUrl, theme} from "src/services/other/tools";
@@ -174,7 +112,7 @@ export default {
 
     const visibleLoadBtn = ref(true);
 
-    const aaaa = ref(false);
+    const checkerMouse = ref(false);
 
 
     const getNews = (news) => {
@@ -249,14 +187,14 @@ export default {
       goUrl,
       getDateString,
       theme,
-      aaaa, img
+      checkerMouse, img
     }
   }
 }
 </script>
 
 <style lang="css">
-@import 'src/css/main.css';
+@import '../../css/main.css';
 
 .bg-none {
   background: none;

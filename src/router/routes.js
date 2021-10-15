@@ -50,7 +50,7 @@ const desktop = [
       }, {
         path: '/news',
         name: 'news',
-        component: () => import('pages/News.vue'),
+        component: () => import('pages/desktop/dNews.vue'),
         props: (route) => ({newsId: route.query.newsId}),
         meta: {isAuth: false, isAdmin: false}
       }, {
