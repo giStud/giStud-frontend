@@ -34,11 +34,11 @@
     <q-dialog v-model="newsDialog" class="q-pa-none" transition-show="0" transition-hide="0" maximized >
       <q-card class="q-pa-none fix-pa row no-wrap justify-center" style="background: rgba(0,0,0,0.5)">
         <q-card @mouseenter="checkerMouse = false" class="bg-none" style="width: 100%" v-close-popup ></q-card>
-        <q-card class="scroll-hidden" @mouseenter="checkerMouse = false" style="max-width: 657px; position: relative">
+        <q-card class="scroll-hidden" @mouseenter="checkerMouse = false" style="min-width: 640px; max-width: 657px; position: relative">
           <q-card-section class="row items-center bg-primary q-pa-none fix-px" style="color: white;">
             <span> Источник:</span>
             <q-btn class="q-ma-sm " flat icon="fas fa-external-link-alt" round style="height: 8px; font-size: 8px" @click="goUrl(src)" />
-            <q-space />
+            <q-space/>
           </q-card-section>
           <q-card-section style="text-align: center">
             <span style="font-size: 16px;">{{ newsTitle }}</span>
