@@ -7,24 +7,24 @@
           <q-item clickable :to="'/'" class="text-footer">Главная</q-item>
           <q-item clickable :to="'/schedule'" class="text-footer">Расписание</q-item>
           <q-item clickable :to="'/news'" class="text-footer">Новости</q-item>
-          <q-item clickable disable class="text-footer">Доска объявлений</q-item>
+<!--          <q-item clickable disable class="text-footer">Доска объявлений</q-item>-->
         </q-card>
       </q-card-section>
-      <q-card-section class="row items-start q-py-none fix-px">
-        <q-card flat square class="bg-none">
-          <q-card-section class="title-footer">Проект</q-card-section>
-          <q-item clickable :to="'/about'" class="text-footer">О проекте</q-item>
-          <q-item clickable class="text-footer">История создания</q-item>
-          <q-item clickable class="text-footer">Реклама на сайте</q-item>
-          <q-item clickable disable class="text-footer">Вакансии</q-item>
-        </q-card>
+      <q-card-section class="row items-start q-py-none fix-px" style="width: 200px">
+<!--        <q-card flat square class="bg-none">-->
+<!--          <q-card-section class="title-footer">Проект</q-card-section>-->
+<!--          <q-item clickable :to="'/about'" class="text-footer">О проекте</q-item>-->
+<!--          <q-item clickable class="text-footer">История создания</q-item>-->
+<!--          <q-item clickable class="text-footer">Реклама на сайте</q-item>-->
+<!--          <q-item clickable disable class="text-footer">Вакансии</q-item>-->
+<!--        </q-card>-->
       </q-card-section>
-      <q-card-section class="row items-start q-py-none fix-px">
-        <q-card flat class="bg-none" square >
-          <q-card-section class="title-footer">База знаний</q-card-section >
-          <q-item clickable class="text-footer"><span>Найти свое расписание</span></q-item>
-          <q-item clickable disable class="text-footer">Создать объявление</q-item>
-        </q-card>
+      <q-card-section class="row items-start q-py-none fix-px" style="width: 200px">
+<!--        <q-card flat class="bg-none" square >-->
+<!--          <q-card-section class="title-footer">База знаний</q-card-section >-->
+<!--          <q-item clickable class="text-footer"><span>Найти свое расписание</span></q-item>-->
+<!--          <q-item clickable disable class="text-footer">Создать объявление</q-item>-->
+<!--        </q-card>-->
       </q-card-section>
 
       <q-card-section class="row items-start q-py-none fix-px">
@@ -39,9 +39,8 @@
         <q-card flat class="bg-none" square >
           <q-card-section class="title-footer row items-start">Контакты</q-card-section>
           <q-card-section class="text-footer">Мы в социальных сетях</q-card-section>
-          <q-btn flat>vk</q-btn>
-          <q-btn flat>tg</q-btn>
-          <q-btn flat>ХЗ</q-btn>
+          <q-btn icon="img:https://cdn.discordapp.com/attachments/886791383740985464/886959234552586240/vk-brands.svg" flat/>
+          <q-btn icon="telegram" flat/>
         </q-card>
       </q-card-section>
     </q-card-section>
