@@ -160,7 +160,7 @@ function getTimeArrayByLessons(lessons) {
   return timeArray;
 }
 
-export function getLessonFromSelectedDate(lessons, date) {
+export function getLessonFromSelectedDateMobile(lessons, date) {
   const currentDayOfWeek = getWeekDayStringFromDate(date);
   const selectedWeek = getNumberOfWeek(getDateOfMonday(date));
 
