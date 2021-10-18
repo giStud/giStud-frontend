@@ -209,22 +209,21 @@
                 <q-card-section>
                   <span>День: {{ lessonInfoObject.day}}, {{lessonInfoObject.dateString}}, {{ selectedWeek }} неделя, {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}</span>
                 </q-card-section>
-                <template v-if="lessonInfoObject.isGoingNow">
-<!--                <template v-if="true">-->
-                  <q-card-section >
-                    Идёт сейчас
-                  </q-card-section>
-                </template>
-                <q-card-section>
-                  {{lessonInfoObject.numberOfLesson}} пара.
-                </q-card-section>
-                <q-separator/>
                 <q-card-section>
                   <span>Время: {{ lessonInfoObject.timeString }}</span>
                 </q-card-section>
-                <q-separator class="q-mx-lg" />
                 <q-card-section>
-                  <span v-if="lessonInfoObject.lessonText.length > 0">Название: {{ lessonInfoObject.lessonText }}</span>
+                  {{lessonInfoObject.numberOfLesson}} пара
+                </q-card-section>
+                <!--                <q-separator/>-->
+                <template v-if="lessonInfoObject.isGoingNow">
+                  <q-card-section>
+                    Идёт сейчас
+                  </q-card-section>
+                </template>
+<!--                <q-separator class="q-mx-lg" />-->
+                <q-card-section>
+                  <span v-if="lessonInfoObject.lessonText.length> 0">Название: {{ lessonInfoObject.lessonText }}</span>
                   <span v-else>Нет занятия</span>
                 </q-card-section>
               </q-card>

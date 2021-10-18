@@ -39,8 +39,8 @@
         <q-card flat class="bg-none" square >
           <q-card-section class="title-footer row items-start">Контакты</q-card-section>
           <q-card-section class="text-footer">Мы в социальных сетях</q-card-section>
-          <q-btn icon="img:https://cdn.discordapp.com/attachments/886791383740985464/886959234552586240/vk-brands.svg" flat/>
-          <q-btn icon="telegram" flat/>
+          <q-btn icon="img:https://cdn.discordapp.com/attachments/886791383740985464/886959234552586240/vk-brands.svg" flat @click="goUrl('https://vk.com/gistud')"/>
+          <q-btn icon="telegram" flat @click="goUrl('https://t.me/gistud_info')"/>
         </q-card>
       </q-card-section>
     </q-card-section>
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import {theme} from "src/services/other/tools";
+import {goUrl, theme} from "src/services/other/tools";
 import {ref, watch} from "vue";
 import UtilsService from "src/services/other/utilsService";
 import {useQuasar} from "quasar";
@@ -100,7 +100,7 @@ export default {
       isValidEmail(val) {
         return UtilsService.isValidEmail(val);
       },
-      validateInputs, sendUserMessage,
+      validateInputs, sendUserMessage, goUrl,
       requestDialogEmail, requestDialogText, sendButtonModel,
     }
   }
