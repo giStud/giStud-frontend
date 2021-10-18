@@ -1,10 +1,54 @@
 import UtilsService from '../../services/other/utilsService'
 import {theme} from "src/services/other/tools";
 import {Dark} from "quasar";
+import Login from "components/Login";
+import {arraysEqual} from '../../services/other/tools'
 
-export function getTableRowsFromLessons(lessons, week) {
-  let timeArray = [];
-  const daysArray = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+const autumnLimit = 23;
+const springLimit = 45;
+
+const debugTimeArray = [
+  {
+    lessonBeginTime: '08:00',
+    lessonFinishTime: '09:35'
+  },
+  {
+    lessonBeginTime: '09:45',
+    lessonFinishTime: '11:20'
+  },
+  {
+    lessonBeginTime: '11:30',
+    lessonFinishTime: '13:05'
+  },
+  {
+    lessonBeginTime: '13:30',
+    lessonFinishTime: '15:05'
+  },
+  {
+    lessonBeginTime: '15:15',
+    lessonFinishTime: '16:50'
+  },
+  {
+    lessonBeginTime: '17:00',
+    lessonFinishTime: '18:35'
+  },
+]
+
+export function getScheduleInfoByWeekDesktop(lessons, week) {
+  let scheduleInfoObject = {}
+  let twinRows = [];
+  let maxTwinLessonLength = 0;
+
+  let maxLesson = {
+    name : '',
+    rawLessonString : ''
+  };
+  let maxLessonDouble = {
+    name : '',
+    rawLessonString: ''
+  };
+
+  const daysArray = ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'];
   const numerator = getTypeOfWeek(week);
   let lessonsOfSelectedWeek = [];
   for (let lesson of lessons) {
@@ -14,68 +58,106 @@ export function getTableRowsFromLessons(lessons, week) {
     }
   }
 
-  for (let lesson of lessonsOfSelectedWeek) {
-    timeArray.push(lesson.time);
-  }
-  timeArray.sort();
-  timeArray = Array.from(new Set(timeArray));
-
-  for (let time in timeArray) {
-    let timeValue = timeArray[time];
-    const timeSplittedArray = timeValue.split(":");
-    let tempDate = new Date();
-    tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
-    let lessonBeginTime = UtilsService.getTimeString(tempDate);
-
-    tempDate.setHours(tempDate.getHours() + 1);
-    tempDate.setMinutes(tempDate.getMinutes() + 35)
-
-    let lessonFinishTime = UtilsService.getTimeString(tempDate);
-
-    timeArray[time] = {
-      lessonBeginTime,
-      lessonFinishTime
-    }
-  }
   let rowsArray = []
-  for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
-    let rowObject = {}
-    rowObject['rowNum'] = indexOfTimeArray;
-    rowObject['time'] = timeArray[indexOfTimeArray]
-    rowObject['days'] = {}
-    for (let indexOfDaysArray = 0; indexOfDaysArray < 6; indexOfDaysArray++) {
-      let day = daysArray[indexOfDaysArray];
-      rowObject['days'][day] = []
+  if (lessonsOfSelectedWeek.length !== 0) {
+    for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
+      let dayObject = {}
+      let lessonsArray = [];
+      const day = daysArray[indexOfDaysArray];
+      const filteredByDayLessons = filterLessonsByDay(day, lessonsOfSelectedWeek);
+      const timeArray = getTimeArrayByLessons(filteredByDayLessons);
+
+
+      for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
+        let timeObject = timeArray[indexOfTimeArray];
+        let lessonObject = {}
+        lessonObject['time'] = timeObject;
+        lessonObject['value'] = [];
+        lessonsArray[indexOfTimeArray] = lessonObject;
+      }
+      dayObject['day'] = day;
+      dayObject['lessons'] = lessonsArray;
+      rowsArray[indexOfDaysArray] = dayObject;
     }
-    rowsArray[indexOfTimeArray] = rowObject
-  }
 
-  for (let lesson of lessonsOfSelectedWeek) {
-    let time = lesson.time.substr(0, 5);
-    const day = lesson.day.toLocaleLowerCase();
-    const lessonNumerator = lesson.numerator;
+    for (let lesson of lessonsOfSelectedWeek) {
+      let time = lesson.startTime.substr(0, 5);
+      const lessonNumerator = lesson.numerator;
 
-
-    for (let rowObject of rowsArray) {
-      if (rowObject.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
-        let dayArray = rowObject['days'][day];
-        if (lesson.name !== '') {
-          if (dayArray.length !== 0) {
-            if (dayArray[0].name === '') {
-              dayArray[0] = lesson;
-            } else {
-              dayArray.push(lesson);
+      for (let rowObject of rowsArray) {
+        if (lesson.day === rowObject.day) {
+          for (let i = 0; i < rowObject.lessons.length; i++) {
+            let lessonVal = rowObject.lessons[i];
+            if (lessonVal.time.lessonBeginTime === time && (lessonNumerator === numerator || lessonNumerator === 'FULL')) {
+              maxLesson.name = lesson.name.length > maxLesson.name.length ? lesson.name : maxLesson.name;
+              maxLesson.rawLessonString = lesson.rawLessonString.length > maxLesson.rawLessonString.length ? lesson.rawLessonString : maxLesson.rawLessonString;
+              if (lesson.name !== '') {
+                if (lessonVal.value.length !== 0) {
+                  if (lessonVal.value[0].name === '') {
+                    lessonVal.value[0] = lesson;
+                  } else {
+                    maxLessonDouble.name = lesson.name.length > maxLessonDouble.name.length ? lesson.name : maxLessonDouble.name;
+                    maxLessonDouble.rawLessonString = lesson.rawLessonString.length > maxLessonDouble.rawLessonString.length ? lesson.rawLessonString : maxLessonDouble.rawLessonString;
+                    lessonVal.value.push(lesson);
+                    twinRows.push(i);
+                  }
+                } else {
+                  lessonVal.value.push(lesson);
+                }
+              } else if (lessonVal.value.length === 0) {
+                lessonVal.value.push(lesson);
+              }
             }
-          } else {
-            dayArray.push(lesson);
           }
-        } else if (dayArray.length === 0) {
-          dayArray.push(lesson);
         }
       }
     }
+  } else {
+    for (let indexOfDaysArray = 0; indexOfDaysArray < daysArray.length; indexOfDaysArray++) {
+      let dayObject = {}
+      let lessonsArray = [];
+      for (let indexOfTimeArray = 0; indexOfTimeArray < debugTimeArray.length; indexOfTimeArray++) {
+        let timeObject = debugTimeArray[indexOfTimeArray];
+        let lessonObject = {}
+        lessonObject['time'] = timeObject;
+        lessonObject['value'] = [];
+        lessonsArray[indexOfTimeArray] = lessonObject;
+      }
+      dayObject['day'] = daysArray[indexOfDaysArray];
+      dayObject['lessons'] = lessonsArray;
+      rowsArray[indexOfDaysArray] = dayObject;
+    }
   }
-  return rowsArray;
+  scheduleInfoObject['daysArray'] = rowsArray;
+  scheduleInfoObject['twinRows'] = twinRows;
+  scheduleInfoObject['maxTwinLessonLength'] = maxTwinLessonLength;
+  scheduleInfoObject['maxLesson'] = maxLesson;
+  scheduleInfoObject['maxLessonDouble'] = maxLessonDouble;
+  return scheduleInfoObject;
+}
+
+function filterLessonsByDay(day, lessons) {
+  let filteredLessons = [];
+  for (let lesson of lessons) {
+    if (lesson.day === day) {
+      filteredLessons.push(lesson);
+    }
+  }
+  return filteredLessons;
+}
+
+function getTimeArrayByLessons(lessons) {
+  let timeArray = [];
+  for (let lesson of lessons) {
+    timeArray.push({
+      lessonBeginTime: lesson.startTime.substr(0, 5),
+      lessonFinishTime: lesson.finishTime.substr(0, 5)
+    });
+  }
+  timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonBeginTime));
+  timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
+
+  return timeArray;
 }
 
 export function getLessonFromSelectedDate(lessons, date) {
@@ -93,28 +175,15 @@ export function getLessonFromSelectedDate(lessons, date) {
   if (lessonsOfSelectedWeek.length !== 0) {
     let timeArray = [];
     for (let lesson of lessonsOfSelectedWeek) {
-      timeArray.push(lesson.time);
+      timeArray.push({
+        lessonBeginTime: lesson.startTime.substr(0, 5),
+        lessonFinishTime: lesson.finishTime.substr(0, 5)
+      });
     }
-    timeArray.sort();
-    timeArray = Array.from(new Set(timeArray));
 
-    for (let time in timeArray) {
-      let timeValue = timeArray[time];
-      const timeSplittedArray = timeValue.split(":");
-      let tempDate = new Date();
-      tempDate.setHours(timeSplittedArray[0], timeSplittedArray[1]);
-      let lessonBeginTime = UtilsService.getTimeString(tempDate);
+    timeArray.sort((a, b) => a.lessonBeginTime.localeCompare(b.lessonBeginTime));
+    timeArray = Array.from(new Set(timeArray.map(JSON.stringify))).map(JSON.parse);
 
-      tempDate.setHours(tempDate.getHours() + 1);
-      tempDate.setMinutes(tempDate.getMinutes() + 35)
-
-      let lessonFinishTime = UtilsService.getTimeString(tempDate);
-
-      timeArray[time] = {
-        lessonBeginTime,
-        lessonFinishTime,
-      }
-    }
 
     let filteredLessonsByDay = []
     for (let lesson of lessonsOfSelectedWeek) {
@@ -134,7 +203,7 @@ export function getLessonFromSelectedDate(lessons, date) {
     const numerator = getTypeOfWeek(selectedWeek);
 
     for (let lesson of filteredLessonsByDay) {
-      let time = lesson.time.substr(0, 5);
+      let time = lesson.startTime.substr(0, 5);
       const lessonNumerator = lesson.numerator;
 
 
@@ -158,37 +227,10 @@ export function getLessonFromSelectedDate(lessons, date) {
       }
     }
   } else {
-    const timeArray = [
-      {
-        lessonBeginTime: '08:00',
-        lessonFinishTime: '09:35'
-      },
-      {
-        lessonBeginTime: '09:45',
-        lessonFinishTime: '11:20'
-      },
-      {
-        lessonBeginTime: '11:30',
-        lessonFinishTime: '13:05'
-      },
-      {
-        lessonBeginTime: '13:30',
-        lessonFinishTime: '15:05'
-      },
-      {
-        lessonBeginTime: '15:15',
-        lessonFinishTime: '16:50'
-      },
-      {
-        lessonBeginTime: '17:00',
-        lessonFinishTime: '18:35'
-      },
-    ]
-
-    for (let indexOfTimeArray = 0; indexOfTimeArray < timeArray.length; indexOfTimeArray++) {
+    for (let indexOfTimeArray = 0; indexOfTimeArray < debugTimeArray.length; indexOfTimeArray++) {
       let rowObject = {}
       rowObject['lessonNumber'] = indexOfTimeArray + 1;
-      rowObject['time'] = timeArray[indexOfTimeArray]
+      rowObject['time'] = debugTimeArray[indexOfTimeArray]
       rowObject['lessons'] = [];
       rowsArray[indexOfTimeArray] = rowObject
     }
@@ -359,17 +401,12 @@ export function getNumberOfWeek(date) {
   return weekCounter;
 }
 
-export function getScheduleCellColor(dayObject, splitterMode) {
+export function getScheduleCellColor(dayObject) {
   if (dayObject && dayObject.typeEntity) {
     const typeName = dayObject.typeEntity.typeName;
-    let style = 'border-color: #959595; ';//width: 250px; text-align: center;
-    if (splitterMode) {
-      style += 'padding: 0px; '
-    } else {
-      style += getTypeColorByValue(typeName);
-    }
-    return style;
+    return getTypeColorByValue(typeName);
   }
+  return 'background-color: gray'
 }
 
 export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lessonFinishTime) {
@@ -392,10 +429,12 @@ export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lesso
     const beginLessonArray = lessonBeginTime.split(":");
     const finishLessonArray = lessonFinishTime.split(":");
     let startDate = new Date();
+    // let startDate = new Date(2021,9,5,15,35);
     startDate.setHours(beginLessonArray[0])
     startDate.setMinutes(beginLessonArray[1])
     startDate.setSeconds(0);
     let finishDate = new Date();
+    // let finishDate = new Date(2021,9,5,15,50);
     finishDate.setHours(finishLessonArray[0])
     finishDate.setMinutes(finishLessonArray[1])
     startDate.setSeconds(0);
@@ -404,6 +443,46 @@ export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lesso
   } else {
     return false;
   }
+}
+
+export function getLessonNumeratorByWeeks(lessons, semester) {
+  if (lessons.length !== 0) {
+    const weeksArray = getWeeksArrayByLessons(lessons);
+    return getNumeratorByWeeksArray(weeksArray, semester === 'AUTUMN' ? autumnLimit : springLimit);
+  }
+}
+
+export function getWeeksArrayByLessons(lessons) {
+  let weeksArray = [];
+  for (let lesson of lessons) {
+    weeksArray.push(lesson.week);
+  }
+  return weeksArray.sort((a, b) => a - b);
+}
+
+function getNumeratorByWeeksArray(weeks, limit) {
+  let weeksToCompare = [];
+  for (let i = limit === autumnLimit ? 1 : autumnLimit; i < limit; i += 2) {
+    weeksToCompare.push(i);
+  }
+  if (arraysEqual(weeksToCompare, weeks)) {
+    return 'NUMERATOR';
+  }
+  weeksToCompare = [];
+  for (let i = limit === autumnLimit ? 2 : (autumnLimit + 1); i < limit; i += 2) {
+    weeksToCompare.push(i);
+  }
+  if (arraysEqual(weeksToCompare, weeks)) {
+    return 'DENOMINATOR';
+  }
+  weeksToCompare = [];
+  for (let i = limit === autumnLimit ? 1 : autumnLimit; i < limit; i++) {
+    weeksToCompare.push(i);
+  }
+  if (arraysEqual(weeksToCompare, weeks)) {
+    return 'FULL';
+  }
+  return 'CUSTOM';
 }
 
 export function getWeekDayStringFromDate(date) {
@@ -442,6 +521,25 @@ export function getShortDayWeekString(string) {
       return 'Сб';
     default :
       return 'Вс';
+  }
+}
+
+export function getFullDayWeekString(string) {
+  switch (string) {
+    case 'MONDAY' :
+      return 'Понедельник';
+    case 'TUESDAY' :
+      return 'Вторник';
+    case 'WEDNESDAY' :
+      return 'Среда';
+    case 'THURSDAY' :
+      return 'Четверг';
+    case 'FRIDAY' :
+      return 'Пятница';
+    case 'SATURDAY' :
+      return 'Суббота';
+    default :
+      return 'Воскресенье';
   }
 }
 
@@ -534,7 +632,7 @@ export function getTypeColorByValue(type) {
       case 'RELOCATION' :
         return 'background-color: rgba(195,171,7,0.4);';
       default:
-        return Dark.isActive ? 'background-color: gray' : '';
+        return Dark.isActive ? 'background-color: gray' : 'background-color: gray';
     }
   } else {
     return Dark.isActive ? 'background-color: gray' : '';

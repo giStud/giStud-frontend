@@ -12,7 +12,7 @@ class NewsTypeService {
 
   async getNewsTypes() {
     try {
-      const {data} = await api.get("/newsTypes/")
+      const {data} = await api.get("/newsTypes")
       return data;
     } catch (e) {
       throw e;

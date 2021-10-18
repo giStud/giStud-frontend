@@ -103,7 +103,8 @@
           <q-select :color="theme('primary','white')" v-model="univSelectValue" :options="univFilteredOptions" behavior="menu" borderless bottom-slots dense fill-input hide-selected
                     option-label="univName" outlined
                     square transition-hide="jump-up" transition-show="jump-up" use-input
-                    @filter="filterUniversitiesFn">
+                    @filter="filterUniversitiesFn"
+                    @update:model-value="groupSelectValue = null;">
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
@@ -215,7 +216,7 @@ import {onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {
   getDateOfMonday,
-  getLessonFromSelectedDate,
+  getLessonFromSelectedDateMobile,
   getMonthStringByDate,
   getNumberOfWeek,
   getScheduleCellColor,
@@ -277,7 +278,7 @@ export default {
     const currentDayLessons = ref([]);
     const selectedDate = ref(new Date());
     const datePickerDate = ref(formatDate(new Date()));
-    const rawLessonStringMode = ref(false);
+    const rawLessonStringMode = ref(true);
     const groupSelectDialog = ref(false)
     const settingsDialog = ref(false);
     const helpDialog = ref(false);
@@ -337,13 +338,14 @@ export default {
           groupName.value = 'Группа: ' + selectedGroup.name /*+ " (" + selectedGroup.universityEntity.name + ")"*/;
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
 
-          currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
+          currentDayLessons.value = getLessonFromSelectedDateMobile(selectedGroup.lessons, selectedDate.value);
+          groupSelectDialog.value = false;
         } else {
           groupName.value = '';
+          localStorage.removeItem("lastLoadedGroupNew");
         }
       } catch (e) {
         localStorage.removeItem("lastLoadedGroupNew");
-        groupSelectValue.value = null;
       }
 
     }
@@ -445,12 +447,14 @@ export default {
         localStorage.removeItem("lastLoadedUniv");
         univSelectValue.value = null;
       }
-
     })
 
     watch(groupSelectValue, (val) => {
       loadGroupSchedule(val)
-      groupSelectDialog.value = false;
+    })
+
+    watch(rawLessonStringMode, (newValue) => {
+      localStorage.setItem('rawLessonStringMode', newValue)
     })
 
     watch(selectedDate, (val) => {
@@ -466,7 +470,7 @@ export default {
 
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
-          currentDayLessons.value = getLessonFromSelectedDate(selectedGroup.lessons, selectedDate.value);
+          currentDayLessons.value = getLessonFromSelectedDateMobile(selectedGroup.lessons, selectedDate.value);
         }
       }
     })
@@ -479,7 +483,16 @@ export default {
       let lastLoadedUniv = localStorage.getItem('lastLoadedUniv');
       let lastLoadedGroup = localStorage.getItem('lastLoadedGroupNew');
 
+      let rlsMode = localStorage.getItem('rawLessonStringMode');
       let dateFromStorage = new Date(localStorage.getItem('selectedDate'));
+
+      if (!rlsMode) {
+        rawLessonStringMode.value = true;
+      } else {
+        rawLessonStringMode.value = rlsMode === 'true';
+      }
+      localStorage.setItem('rawLessonStringMode', 'true');
+
       if (dateFromStorage !== null) {
         let currentDate = new Date();
         if (dateFromStorage < currentDate) {

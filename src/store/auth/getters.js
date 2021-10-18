@@ -5,3 +5,15 @@ export function getCurrentUser (state) {
 export function isLogged (state) {
   return state.loggedIn;
 }
+
+export function isAdmin (state) {
+  if (!state.user) {
+    return false;
+  } else {
+    if (state.user.roles) {
+      return state.user.roles.includes("ROLE_ADMIN")
+    } else {
+      return false;
+    }
+  }
+}

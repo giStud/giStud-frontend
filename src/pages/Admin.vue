@@ -13,6 +13,8 @@
           <q-tab name="news" icon="format_size" label="Новости"/>
           <q-separator/>
           <q-tab name="schedule" icon="schedule" label="Загрузка расписания"/>
+          <q-separator/>
+          <q-tab name="groupCreating" icon="group" label="Создание расписания"/>
 
         </q-tabs>
       </template>
@@ -57,7 +59,8 @@
                   <div class="q-pa-md">
                     <q-btn class="btr-square" color="primary" no-caps label="Удалить выбранные новости"
                            @click="deleteSelectedNewsRows"/>
-                    <q-btn class="btr-square q-mx-lg" color="primary" no-caps label="Изменить выбранную новость" :disable="selectedNewsRows.length !== 1"
+                    <q-btn class="btr-square q-mx-lg" color="primary" no-caps label="Изменить выбранную новость"
+                           :disable="selectedNewsRows.length !== 1"
                            @click="changeSelectedNewsItem(selectedNewsRows[0])"/>
                   </div>
                 </q-tab-panel>
@@ -70,7 +73,8 @@
                     <q-input class="q-my-sm" square outlined filled v-model="newsImgSrc" label="Ссылка на фотографию"/>
                     <q-input class="q-my-sm" square outlined filled v-model="newsSource" label="Источник"/>
                     <q-select class="q-my-sm" square label="Выберите тип новости" filled v-model="newsType"
-                              :options="newsTypesOptions" option-label="type"
+                              :options="newsTypesOptions" option-label="type" option-value="newsTypeId"
+                              map-options
                               option-disable="inactive" emit-value/>
                     <div class="text-h6">Короткий текст</div>
                     <q-editor square v-model="newsShortText" :dense="$q.screen.lt.md" :toolbar="newsToolbar"
@@ -144,6 +148,120 @@
               </div>
             </div>
           </q-tab-panel>
+          <q-tab-panel class="bg-none" name="groupCreating">
+            <q-card flat square class="bg-none">
+              <q-tabs v-model="scheduleCreatingTab" dense active-color="primary" indicator-color="primary"
+                      align="justify"
+                      narrow-indicator>
+                <q-tab name="universityCreate" label="Добавление университета"/>
+                <q-tab name="groupCreate" label="Добавление группы"/>
+              </q-tabs>
+
+              <q-separator/>
+
+              <q-tab-panels v-model="scheduleCreatingTab" animated>
+                <q-tab-panel class="bg-none" name="universityCreate">
+                  <q-card flat square class="bg-none">
+                    <q-card-section class="text-h4 q-mb-md">Добавление нового университета</q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingUniversityName" label="Имя университета"/>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingUniversityCityName" label="Город"/>
+                    </q-card-section>
+                    <q-card-actions>
+                      <q-btn color="primary"
+                             @click="handleUnivCreating(creatingUniversityName, creatingUniversityCityName)"
+                             no-caps label="Добавить"/>
+                    </q-card-actions>
+                  </q-card>
+                </q-tab-panel>
+                <q-tab-panel class="bg-none" name="groupCreate">
+                  <q-card flat square class="bg-none">
+                    <q-card-section class="text-h4 q-mb-md">Создание расписания группы</q-card-section>
+                    <q-card-section>
+                      <q-option-group
+                        v-model="groupCreatingSemester"
+                        :options="semestersMap"
+                        color="primary"
+                        inline
+                      />
+                    </q-card-section>
+                    <q-card-section>
+                      <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
+                                class="select-ug"
+                                fill-input hide-selected
+                                label="Выберите университет"
+                                option-label="univName"
+                                outlined transition-hide="jump-up" transition-show="jump-up"
+                                use-input @filter="filterUniversitiesFn">
+                        <template v-slot:option="scope">
+                          <q-item v-bind="scope.itemProps">
+                            <q-item-section>
+                              <q-item-label v-html="scope.opt.univName"/>
+                              <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">Не найдено</q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:append>
+                          <q-icon name="search"/>
+                        </template>
+                      </q-select>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-select v-model="facultySelectValue" :options="facultyFilteredOptions" borderless bottom-slots
+                                class="select-ug" fill-input hide-selected
+                                label="Выберите факультет"
+                                outlined transition-hide="jump-up" transition-show="jump-up"
+                                use-input @filter="filterFacultiesFn"
+                                @update:model-value="facultyNameInput = ''">
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">Не найдено</q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:append>
+                          <q-icon name="search"/>
+                        </template>
+                      </q-select>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-input v-model="facultyNameInput" label="Имя факультета" @update:model-value="facultySelectValue = null"/>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingGroupName" label="Имя группы"/>
+                    </q-card-section>
+                    <q-card-section v-for="(time, index) of groupTimeArray" :key="index">
+                      <q-input filled v-model="groupTimeArray[index]" mask="time"
+                               :label="'Время начала ' + (index + 1) + ' пары'" style="width: 250px">
+                        <template v-slot:append>
+                          <q-icon name="access_time" class="cursor-pointer">
+                            <q-popup-proxy transition-show="scale" transition-hide="scale">
+                              <q-time v-model="groupTimeArray[index]">
+                                <div class="row items-center justify-end">
+                                  <q-btn v-close-popup label="Close" color="primary" flat/>
+                                </div>
+                              </q-time>
+                            </q-popup-proxy>
+                          </q-icon>
+                        </template>
+                      </q-input>
+                    </q-card-section>
+                    <q-card-actions>
+                      <q-btn color="primary"
+                             @click="handleGroupCreating({univ : univSelectValue, facName : facultySelectValue != null ? facultySelectValue : facultyNameInput, name : creatingGroupName, timeArray : groupTimeArray}, groupCreatingSemester)"
+                             no-caps label="Добавить"/>
+                    </q-card-actions>
+                  </q-card>
+                </q-tab-panel>
+              </q-tab-panels>
+            </q-card>
+          </q-tab-panel>
 
         </q-tab-panels>
       </template>
@@ -155,14 +273,16 @@
 
 <script>
 import {computed, onMounted, ref, watch} from "vue";
-import UserMessagesService from "../services/other/userMessagesService"
 import {getDateString} from "src/composables/schedule/ScheduleTable";
+import UserMessagesService from "../services/other/userMessagesService"
 import UtilsService from "../services/other/utilsService"
 import NewsService from "../services/news/newsService"
 import NewsTypeService from "../services/news/newsTypesService"
+import UniversityService from "../services/schedule/universityService"
+import TokenService from "src/services/auth/tokenService";
+import GroupService from "src/services/schedule/groupsService"
 import {useQuasar} from "quasar";
 import {useStore} from "vuex";
-import TokenService from "src/services/auth/tokenService";
 import authHeader from "src/services/auth/authHeader";
 
 const newsEditorFonts = {
@@ -176,42 +296,44 @@ const newsEditorFonts = {
   verdana: 'Verdana'
 }
 
-const newsColumns = [{
-  name: 'id',
-  required: true,
-  label: 'Id',
-  align: 'center',
-  field: 'newsId',
-  headerStyle: 'width: 200px',
-  sortable: true
-}, {
-  name: 'title',
-  required: true,
-  label: 'Заголовок',
-  align: 'center',
-  field: 'title',
-  headerStyle: 'width: 500px',
-  sortable: true
-}
+const newsColumns = [
+  {
+    name: 'id',
+    required: true,
+    label: 'Id',
+    align: 'center',
+    field: 'newsId',
+    headerStyle: 'width: 200px',
+    sortable: true
+  }, {
+    name: 'title',
+    required: true,
+    label: 'Заголовок',
+    align: 'center',
+    field: 'title',
+    headerStyle: 'width: 500px',
+    sortable: true
+  }
 ]
 
-const newsTypesColumns = [{
-  name: 'id',
-  required: true,
-  label: 'Id',
-  align: 'center',
-  field: 'newsTypeId',
-  headerStyle: 'width: 200px',
-  sortable: true
-}, {
-  name: 'name',
-  required: true,
-  label: 'Имя',
-  align: 'center',
-  headerStyle: 'width: 500px',
-  field: 'type',
-  sortable: true
-},
+const newsTypesColumns = [
+  {
+    name: 'id',
+    required: true,
+    label: 'Id',
+    align: 'center',
+    field: 'newsTypeId',
+    headerStyle: 'width: 200px',
+    sortable: true
+  }, {
+    name: 'name',
+    required: true,
+    label: 'Имя',
+    align: 'center',
+    headerStyle: 'width: 500px',
+    field: 'type',
+    sortable: true
+  },
   {
     name: 'icon',
     required: true,
@@ -222,50 +344,62 @@ const newsTypesColumns = [{
   }
 ]
 
-const univRequestsColumns = [{
-  name: 'id',
-  required: true,
-  label: 'Id',
-  align: 'center',
-  field: 'requestId',
-  sortable: true
-}, {
-  name: 'text',
-  required: true,
-  label: 'Текст',
-  align: 'center',
-  headerStyle: 'width: 500px',
-  field: 'text',
-  sortable: true
-}, {
-  name: 'email',
-  required: true,
-  label: 'Email',
-  align: 'center',
-  field: 'email',
-  sortable: true
-}, {
-  name: 'type',
-  required: true,
-  label: 'Тип сообщения',
-  align: 'center',
-  field: 'type',
-  sortable: true
-}, {
-  name: 'createdTime',
-  required: true,
-  label: 'Время создания',
-  align: 'center',
-  field:
-    (row) => {
-      let result = '';
-      const date = new Date(row.createdTime);
-      result += getDateString(date) + '\t';
-      result += UtilsService.getTimeString(date);
-      return result;
-    },
-  sortable: true
-}
+const univRequestsColumns = [
+  {
+    name: 'id',
+    required: true,
+    label: 'Id',
+    align: 'center',
+    field: 'requestId',
+    sortable: true
+  }, {
+    name: 'text',
+    required: true,
+    label: 'Текст',
+    align: 'center',
+    headerStyle: 'width: 500px',
+    field: 'text',
+    sortable: true
+  }, {
+    name: 'email',
+    required: true,
+    label: 'Email',
+    align: 'center',
+    field: 'email',
+    sortable: true
+  }, {
+    name: 'type',
+    required: true,
+    label: 'Тип сообщения',
+    align: 'center',
+    field: 'type',
+    sortable: true
+  }, {
+    name: 'createdTime',
+    required: true,
+    label: 'Время создания',
+    align: 'center',
+    field:
+      (row) => {
+        let result = '';
+        const date = new Date(row.createdTime);
+        result += getDateString(date) + '\t';
+        result += UtilsService.getTimeString(date);
+        return result;
+      },
+    sortable: true
+  }
+]
+
+const semestersMap = [
+  {
+    label: 'Осенний семестр',
+    value: 'AUTUMN'
+  },
+  {
+    label: 'Весенний семестр',
+    value: 'SPRING'
+  }
 ]
 
 export default {
@@ -296,6 +430,62 @@ export default {
         univRequestsRows.value = await UserMessagesService.getUserMessages();
       }
     }
+
+    const univSelectValue = ref(null);
+    const facultySelectValue = ref('');
+    const univSelectOptions = ref([]);
+    const univFilteredOptions = ref(univSelectOptions.value);
+    const facultySelectOptions = ref([]);
+    const facultyFilteredOptions = ref(facultySelectOptions.value);
+    const facultyNameInput = ref('');
+    const creatingGroupName = ref('');
+    const groupCreatingSemester = ref('AUTUMN');
+    const groupTimeArray = ref(['08:00', '09:45', '11:30', '13:30', '15:15', '17:00', '', '']);
+
+    const handleGroupCreating = async (group, semester) => {
+      await GroupService.createGroup(group, semester);
+    }
+
+    const filterUniversitiesFn = (val, update, abort) => {
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        if (needle === '') {
+          univFilteredOptions.value = univSelectOptions.value;
+        } else {
+          univFilteredOptions.value = univSelectOptions.value.filter((v) => {
+              return v.univName.toLowerCase().includes(needle)
+            }
+          );
+        }
+      });
+    }
+
+    const filterFacultiesFn = (val, update, abort) => {
+      update(() => {
+        const needle = val.toLocaleLowerCase();
+        if (needle === '') {
+          facultyFilteredOptions.value = facultySelectOptions.value;
+        } else {
+          facultyFilteredOptions.value = facultySelectOptions.value.filter((v) => {
+              return v.toLowerCase().includes(needle)
+            }
+          );
+        }
+      });
+    }
+
+    watch(univSelectValue, async (newValue) => {
+      try {
+        let selectedUnivId;
+        if (newValue !== null && (selectedUnivId = newValue.univId)) {
+          facultySelectOptions.value = await store.dispatch('schedule/getFacNamesByUnivAction', {
+            univId: selectedUnivId
+          })
+        }
+      } catch (e) {
+        univSelectValue.value = null;
+      }
+    })
 
     const tab = ref('');
     const newsRows = ref([]);
@@ -391,13 +581,25 @@ export default {
       }
     }
 
+    const scheduleCreatingTab = ref('universityCreate');
+    const creatingUniversityName = ref('');
+    const creatingUniversityCityName = ref('');
+
+    const handleUnivCreating = async (name, cityName) => {
+       await store.dispatch('schedule/createUniversityAction', {name, cityName});
+    }
+
     onMounted(async () => {
       tab.value = localStorage.getItem("adminCurrentTab");
+
       newsProperty.value = localStorage.getItem("adminNewsCurrentTab");
       univRequestsRows.value = await UserMessagesService.getUserMessages();
+
       await store.dispatch('news/downloadAllNews');
       newsRows.value = store.getters['news/getNews'];
       newsTypesOptions.value = await NewsTypeService.getNewsTypes();
+
+      univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
     })
 
     const newsToolbar = [
@@ -485,6 +687,14 @@ export default {
 
     return {
       tab,
+      semestersMap,
+      groupCreatingSemester,
+      groupTimeArray,
+      univSelectValue,
+      univFilteredOptions,
+      facultySelectValue,
+      facultyFilteredOptions,
+      creatingGroupName,
       newsProperty,
       selectedUserMessagesRows,
       univRequestsRows,
@@ -510,6 +720,14 @@ export default {
       onFailed,
       splitterModel: ref(10),
       apiPath: computed(() => process.env.API),
+      scheduleCreatingTab,
+      creatingUniversityName,
+      creatingUniversityCityName,
+      facultyNameInput,
+      handleUnivCreating,
+      handleGroupCreating,
+      filterUniversitiesFn,
+      filterFacultiesFn,
       deleteSelectedUserMessagesRows,
       deleteSelectedNewsTypesRows,
       handleNewsCreating,
