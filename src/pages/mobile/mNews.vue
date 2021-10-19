@@ -19,13 +19,13 @@
         <q-separator v-if="!Dark.isActive"/>
         <q-card :class="theme('bg-none-l', 'bg-none-d')" class="q-mt-sm" flat square>
           <template v-for="itemNews in news" :key="itemNews">
-            <q-card class="q-mb-sm" flat square>
+            <q-card class="q-mb-sm cursor-pointer" flat square @click="getNews(itemNews)">
               <q-separator v-if="!Dark.isActive"/>
               <q-card-section>
                 <p :class="theme('text-black', 'text-white')" class="text-justify" style="font-size: 15px; margin: 0 0 10px 0; font-weight: bold">
                   {{ itemNews.title }}</p>
                 <div :style="theme('', 'color: white')" class="text-justify alodaun" style="margin: 0;" v-html="itemNews.shortText" />
-                <a :class="theme('text-primary', 'text-grey')" style="transform: none" type="a" @click="getNews(itemNews.title, itemNews.fullText, itemNews.source)">
+                <a :class="theme('text-primary', 'text-grey')" style="transform: none" type="a">
                   Открыть полностью...
                 </a>
               </q-card-section>
@@ -91,11 +91,11 @@ export default {
     const currentNewsTypeIndex = ref(0);
     const visibleLoadBtn = ref(true);
 
-    const getNews = (title, text, sources) => {
+    const getNews = (newsObject) => {
       newsDialog.value = true;
-      newsTitle.value = title;
-      newsText.value = text;
-      newsSrc.value = sources;
+      newsTitle.value = newsObject.title;
+      newsText.value = newsObject.fullText;
+      newsSrc.value = newsObject.source;
     };
 
     const loadNextPage = async () => {
