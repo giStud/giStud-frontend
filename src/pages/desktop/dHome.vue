@@ -2,8 +2,8 @@
   <q-page>
     <q-card id="MAIN-PAGE" class="bg-none" flat square>
 
-      <q-card id="REKLAMA" class="center-all container-base fix-my" flat>
-        Реклама
+      <q-card id="REKLAMA" class="center-all container-base fix-ma" flat>
+        <div id="yandex_rtb_R-A-1296363-3"></div>
       </q-card>
 
       <q-card id="NEWS-CONTAINER" class="center-all container-base bg-none row justify-evenly" flat>
@@ -75,6 +75,12 @@ import {useMeta} from "quasar";
 
 const meta = {
   title: 'Главная - GISTUD',
+  script: {
+    yandex: {
+      type: 'application/javascript',
+      innerHTML: `window.yaContextCb.push(()=>{ Ya.Context.AdvManager.render({ renderTo: 'yandex_rtb_R-A-1296363-3', blockId: 'R-A-1296363-3' }) })`
+    }
+  },
   meta: {
     description: {
       name: 'description',
@@ -109,9 +115,8 @@ export default {
 <style lang="css">
 @import 'src/css/main.css';
 #REKLAMA {
-  height: 120px;
   border-radius: 4px;
-  background-color: #00e0e3;
+  /*background-color: #00e0e3;*/
 }
 
 #NEWS-PROJECT {

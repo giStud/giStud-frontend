@@ -9,7 +9,7 @@
               <span class="text-caption" v-html="itemNews.shortText"></span><br><br>
               <span class="text-caption cursor-pointer" @click="getNews(itemNews)">Читать подробнее...</span>
             </q-card-section>
-            <q-card-section class="q-pa-none fix-mt" style="text-align: center">
+            <q-card-section v-if="itemNews.imgSrc" class="q-pa-none fix-mt" style="text-align: center">
               <q-img :src="itemNews.imgSrc" />
             </q-card-section>
           </q-card>

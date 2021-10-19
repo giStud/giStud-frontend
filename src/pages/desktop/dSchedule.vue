@@ -2,7 +2,7 @@
   <q-page>
     <q-card id="MAIN-PAGE" class="bg-none q-ma-none" flat square>
       <q-card id="REKLAMA" class="center-all page-width" flat>
-        Реклама
+        <div id="yandex_rtb_R-A-1296363-4"></div>
       </q-card>
 
       <q-card id="SCHEDULE-SELECT" class="row justify-center items-center center-all page-width" flat>
@@ -59,35 +59,37 @@
         </q-card>
       </q-card>
       <q-card id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa">
-        <q-card class="t-center" style="font-size: 16px; margin-top: -25px">{{ selectedWeek }} неделя, {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}</q-card>
+        <q-card class="t-center" style="font-size: 16px; margin-top: -25px">{{ selectedWeek }} неделя,
+          {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}
+        </q-card>
 
         <q-card id="schedule-nav-btn" class="row center-all justify-between items-center fix-pa">
           <div>
-            <q-btn class="buttons-week" flat label="❮ Предыдущая неделя" no-caps rounded
-                   @click="loadPreviousWeekLessons" :disable="selectedWeek <= 1" />
+            <q-btn :disable="selectedWeek <= 1" class="buttons-week" flat label="❮ Предыдущая неделя" no-caps
+                   rounded @click="loadPreviousWeekLessons" />
 
           </div>
           <div>
-            <q-btn rounded class="buttons-date q-mx-sm" flat icon="settings" no-caps @click="settingsDialog = true">
-              <q-dialog v-model="settingsDialog" v-close-popup >
+            <q-btn class="buttons-date q-mx-sm" flat icon="settings" no-caps rounded @click="settingsDialog = true">
+              <q-dialog v-model="settingsDialog" v-close-popup>
                 <q-card>
                   <q-card-section>
                     <span>Настройки</span>
                   </q-card-section>
-                  <q-separator/>
+                  <q-separator />
                   <q-card-section>
                     <q-toggle v-model="rawLessonStringMode" :color="theme('primary','white')" label="Режим без обработки: " left-label />
                   </q-card-section>
                 </q-card>
               </q-dialog>
             </q-btn>
-            <q-btn class="btn-select-schedule" :class="currentWeekType === 'NUMERATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" flat label="Числитель" no-caps
-                   outline @click="toggleWeekBtn('NUMERATOR')" style="width: 120px" />
+            <q-btn :class="currentWeekType === 'NUMERATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" class="btn-select-schedule" flat label="Числитель" no-caps
+                   outline style="width: 120px" @click="toggleWeekBtn('NUMERATOR')" />
 
-            <q-btn class="btn-select-schedule q-mx-sm" :class="currentWeekType === 'DENOMINATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" flat label="Знаменатель" no-caps
-                   outline @click="toggleWeekBtn('DENOMINATOR')" style="width: 120px" />
+            <q-btn :class="currentWeekType === 'DENOMINATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" class="btn-select-schedule q-mx-sm" flat label="Знаменатель" no-caps
+                   outline style="width: 120px" @click="toggleWeekBtn('DENOMINATOR')" />
 
-            <q-btn id="calendar" rounded class="buttons-date" flat icon="today" no-caps>
+            <q-btn id="calendar" class="buttons-date" flat icon="today" no-caps rounded>
               <q-popup-proxy transition-hide="scale" transition-show="scale">
                 <q-date v-model="datePickerDate"
                         :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
@@ -108,26 +110,26 @@
 
       <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width">
         <q-card class="center-all t-center justify-center items-start row fix-py" flat>
-          <q-item id="hidden-span-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
-            <q-card flat square class="max-width-schedule q-pa-none bg-none">
+          <q-item id="hidden-span-calc" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" :style="setSquareCellSchedule(columnWidth)" class="t-center q-pa-none pd-cell-around mg-b-inside" style="position:absolute; left:-9999px;">
+            <q-card class="max-width-schedule q-pa-none bg-none" flat square>
               <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none font-size-cell time-cell-inside-border">
                 <span>00.00 - 00.00</span>
               </q-card-section>
               <q-card-section class="q-pa-none lesson-text font-size-cell q-mt-sm">
-<!--                <span class="lesson-content-schedule">лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
+                <!--                <span class="lesson-content-schedule">лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
                 <span class="lesson-content-schedule">{{ getLessonStringDebug(scheduleInfo.maxLesson) }}</span>
               </q-card-section>
             </q-card>
           </q-item>
-          <q-item id="hidden-span-double-calc" :style="setSquareCellSchedule(columnWidth)" style="position:absolute; left:-9999px;" class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')">
-            <q-card flat square class="q-pa-none max-width-schedule bg-none">
+          <q-item id="hidden-span-double-calc" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" :style="setSquareCellSchedule(columnWidth)" class="t-center q-pa-none pd-cell-around mg-b-inside" style="position:absolute; left:-9999px;">
+            <q-card class="q-pa-none max-width-schedule bg-none" flat square>
               <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
                 <span>00.00 - 00.00</span>
               </q-card-section>
               <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
                 <div class="lesson-text">
                   <span>{{ getLessonStringDebug(scheduleInfo.maxLessonDouble) }}</span>
-<!--                  <span>лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
+                  <!--                  <span>лаб.9 нед. Технология бетона, стр. изделий и конструкций - 2 п/гПРОФ. ПЕРЦЕВ В.Т. а.6163 Теплотехническое оборудование в технологии стр. материалов - 1 п/г ДОЦ. ЧЕРКАСОВ С.В. - а.6171</span>-->
                 </div>
               </q-card-section>
               <q-card-section class="q-pa-none">
@@ -144,10 +146,10 @@
 
                 <template v-if="lesson.value.length === 1 || lesson.value.length === 0">
                   <!--       ОБЫЧНАЯ ПАРА           -->
-                  <q-item :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)" class="t-center q-pa-none pd-cell-around mg-b-inside"
-                          clickable @click="openLessonInfo(lesson.value[0], lesson.time, datesArray[columnIndex], (rowIndex + 1))" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
+                  <q-item :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)"
+                          class="t-center q-pa-none pd-cell-around mg-b-inside" clickable @click="openLessonInfo(lesson.value[0], lesson.time, datesArray[columnIndex], (rowIndex + 1))"
                   >
-                    <q-card flat square class="max-width-schedule q-pa-none bg-none">
+                    <q-card class="max-width-schedule q-pa-none bg-none" flat square>
                       <q-card-section :style="getScheduleCellColor(lesson.value[0])" class="q-pa-none font-size-cell time-cell-inside-border">
                         <q-chip v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                                 class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm" label="Идёт сейчас" outline square text-color="white">
@@ -158,7 +160,7 @@
                       <q-card-section v-if="isEmptyLesson(lesson)" class="q-pa-none lesson-text font-size-cell q-mt-sm">
                         <span class="lesson-content-schedule">Нет занятий</span>
                       </q-card-section>
-                      <q-card-section  v-else-if="lesson.value.length === 1" id="default-lesson" class="q-pa-none lesson-text font-size-cell q-mt-sm">
+                      <q-card-section v-else-if="lesson.value.length === 1" id="default-lesson" class="q-pa-none lesson-text font-size-cell q-mt-sm">
                         <span class="lesson-content-schedule">{{ getLessonString(lesson.value[0]) }}</span>
                       </q-card-section>
                     </q-card>
@@ -166,9 +168,9 @@
                 </template>
 
                 <template v-else-if="lesson.value.length === 2">
-                  <q-item v-for="(les) in lesson.value" :key="les" :style="'height:' + ((doubleCellHeight-4)/2) + 'px'"
-                          class="t-center q-pa-none pd-cell-around mg-b-inside" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" clickable @click="openLessonInfo(les, lesson.time, datesArray[columnIndex], (rowIndex + 1))">
-                    <q-card flat square class="q-pa-none max-width-schedule bg-none">
+                  <q-item v-for="(les) in lesson.value" :key="les" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
+                          :style="'height:' + ((doubleCellHeight-4)/2) + 'px'" class="t-center q-pa-none pd-cell-around mg-b-inside" clickable @click="openLessonInfo(les, lesson.time, datesArray[columnIndex], (rowIndex + 1))">
+                    <q-card class="q-pa-none max-width-schedule bg-none" flat square>
                       <q-card-section :style="getScheduleCellColor(les)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
                         <q-chip
                           v-if="isCurrentLessonGoes(selectedWeek, les, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
@@ -189,40 +191,36 @@
             </q-list>
           </template>
 
-          <q-dialog v-model="lessonInfoDialog" square @hide="editMode = false">
+          <q-dialog v-model="lessonInfoDialog" @hide="editMode = false">
             <template v-if="!editMode">
-              <q-card flat>
+              <q-card id="dialog-add-info-schedule" class="q-pa-sm" style="max-width: 1024px;">
                 <q-card-section class="row q-pa-none q-px-sm q-ma-none items-center" style="height: 50px;">
                   <q-btn v-close-popup dense flat icon="arrow_back" size="md" />
                   <span class="title-page-dialog q-px-md">Информация о занятии</span>
-                  <q-space/>
+                  <q-space />
                   <template v-if="isAdmin">
-                    <q-btn size="sm" flat icon="edit" @click="openEditModeDialog(lessonInfoObject)" />
+                    <q-btn flat icon="edit" size="sm" @click="openEditModeDialog(lessonInfoObject)" />
                   </template>
                 </q-card-section>
-                <q-separator />
+                <q-separator class="q-mb-sm" />
                 <template v-if="lessonInfoObject.type">
                   <q-card-section :style="getTypeColorByValue(lessonInfoObject.type)">
                     <span>Тип: {{ getTypeNameByValue(lessonInfoObject.type) }}</span>
                   </q-card-section>
                 </template>
                 <q-card-section>
-                  <span>День: {{ lessonInfoObject.day}}, {{lessonInfoObject.dateString}}, {{ selectedWeek }} неделя, {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}</span>
+                  <span>День: {{ lessonInfoObject.day }}, {{ lessonInfoObject.dateString }}, {{ selectedWeek }} неделя, {{
+                      currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель'
+                    }}</span>
                 </q-card-section>
-                <q-card-section>
+                <q-card-section :style="theme('background-color: rgb(240,242,245)','background-color: rgb(74,79,87')">
                   <span>Время: {{ lessonInfoObject.timeString }}</span>
+                  <span v-if="lessonInfoObject.isGoingNow" :class="theme('text-red', '')"> (Идёт сейчас)</span>
                 </q-card-section>
                 <q-card-section>
-                  {{lessonInfoObject.numberOfLesson}} пара
+                  <span>Номер занятия: {{ lessonInfoObject.numberOfLesson }}</span>
                 </q-card-section>
-                <!--                <q-separator/>-->
-                <template v-if="lessonInfoObject.isGoingNow">
-                  <q-card-section>
-                    Идёт сейчас
-                  </q-card-section>
-                </template>
-<!--                <q-separator class="q-mx-lg" />-->
-                <q-card-section>
+                <q-card-section :style="theme('background-color: rgb(240,242,245)','background-color: rgb(74,79,87')">
                   <span v-if="lessonInfoObject.lessonText.length> 0">Название: {{ lessonInfoObject.lessonText }}</span>
                   <span v-else>Нет занятия</span>
                 </q-card-section>
@@ -427,6 +425,12 @@ const semestersMap = [
 
 const meta = {
   title: 'Расписание - GISTUD',
+  script: {
+    yandex: {
+      type: 'application/javascript',
+      innerHTML: `window.yaContextCb.push(()=>{ Ya.Context.AdvManager.render({ renderTo: 'yandex_rtb_R-A-1296363-4', blockId: 'R-A-1296363-4' }) })`
+    }
+  },
   meta: {
     description: {
       name: 'description',
@@ -728,12 +732,12 @@ export default {
     const defaultCellHeight = ref(1);
     const doubleCellHeight = ref(1);
     const styleObject = ref({
-      defaultCellHeightStyle : computed(()=> 'height: ' + defaultCellHeight.value + 'px'),
-      doubleCellHeightStyle : computed(()=> 'height: ' + doubleCellHeight.value + 'px'),
-      columnWidthStyle : computed(()=> 'width: ' + columnWidth.value + 'px')
+      defaultCellHeightStyle: computed(() => 'height: ' + defaultCellHeight.value + 'px'),
+      doubleCellHeightStyle: computed(() => 'height: ' + doubleCellHeight.value + 'px'),
+      columnWidthStyle: computed(() => 'width: ' + columnWidth.value + 'px')
     })
 
-    const updateCellHeight = async ()=> {
+    const updateCellHeight = async () => {
       let cell = await document.getElementById('hidden-span-calc');
       defaultCellHeight.value = cell.clientHeight;
       let cellDouble = await document.getElementById('hidden-span-double-calc');
@@ -811,10 +815,9 @@ export default {
     }
 
     const setHeightCellSchedule = (twinRows, rowIndex) => {
-      if(twinRows.includes(rowIndex)) {
+      if (twinRows.includes(rowIndex)) {
         return styleObject.value.doubleCellHeightStyle
-      }
-      else {
+      } else {
         return styleObject.value.defaultCellHeightStyle
       }
     }
@@ -903,10 +906,10 @@ export default {
 #MAIN-PAGE {
 
 }
+
 #REKLAMA {
-  height: 90px;
   border-radius: 4px;
-  background-color: #00e0e3;
+  /*background-color: #00e0e3;*/
 }
 
 #SCHEDULE-SELECT {
@@ -983,6 +986,10 @@ export default {
 .chip-current-lesson-schedule {
   border: none;
   font-size: 10px
+}
+
+#dialog-add-info-schedule div {
+  border-radius: 3px;
 }
 
 </style>
