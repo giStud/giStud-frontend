@@ -24,8 +24,12 @@
     <q-card-section class="q-pa-none">
       <q-card flat square class="row items-center bg-none">
         <q-card-section class="q-pa-none q-px-sm">
-          <input disabled :class="theme('search-box-l', 'search-box-d')" autocomplete="off" type="text" name="search" placeholder="Поиск" class="q-pa-sm search-box gistud-dev"/>
-
+<!--          <q-select rounded outlined style="width: 180px;"  dense use-input hide-selected  v-model="search" :options="options" hide-dropdown-icon>
+            <template v-slot:append>
+              <q-icon name="search" style="padding-bottom: 7px"/>
+            </template>
+          </q-select>-->
+          <SearchBox/>
         </q-card-section>
 
         <q-card-section class="q-pa-none q-px-sm">
@@ -65,9 +69,13 @@ import {computed, onMounted, ref, watch} from "vue";
 import {Dark} from "quasar";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
+import SearchBox from "components/desktop/SearchBox";
 
 export default {
   name: "dHeader",
+  components: {
+    SearchBox
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -127,6 +135,19 @@ export default {
 
 <style scoped>
 
+.q-select >>> .q-field__control {
+  height: 32px;
+  min-height: 32px;
+  max-width: 180px;
+}
+.q-select >>> .q-field__native {
+  min-height: 32px;
+  height: 32px;
+}
+.q-select >>> {
+  height: 32px;
+}
+
 .gistud-dev {
   /*display: none;*/
 }
@@ -156,37 +177,10 @@ export default {
 }
 
 .btn-menu {
-  align-items: center
+  align-items: center;
 }
 
 .two-btn-l {
   color: #a3a3a3;
-}
-
-.search-box {
-
-}
-
-.search-box {
-  width: 180px;
-  height: 26px;
-  box-sizing: border-box;
-  border-radius: 4px;
-  font-size: 14px;
-  padding: 12px 20px 12px 30px;
-  background-size: 16px;
-  background-position: 5px 5px;
-  background-repeat: no-repeat;
-  border: 0 solid #a3a3a3;
-}
-
-.search-box-l {
-  background-image: url('https://cdn.discordapp.com/attachments/887281514809802806/889373223895068733/search-solid-l.svg');
-  background-color: #edeef0;
-}
-.search-box-d {
-  background-image: url('https://cdn.discordapp.com/attachments/887281514809802806/889373218392141854/search-solid-d.svg');
-  background-color: #3f4349;
-  color: white;
 }
 </style>

@@ -17,7 +17,7 @@
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
-                  <q-item-label v-html="scope.opt.univName" />
+                  <q-item-label v-html="scope.opt.univName"/>
                   <q-item-label caption>{{ scope.opt.city }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -28,7 +28,7 @@
               </q-item>
             </template>
             <template v-slot:append>
-              <q-icon name="search" />
+              <q-icon name="search"/>
             </template>
           </q-select>
         </q-card>
@@ -42,7 +42,7 @@
             <template v-slot:option="scope">
               <q-item v-bind="scope.itemProps">
                 <q-item-section>
-                  <q-item-label v-html="scope.opt.groupName" />
+                  <q-item-label v-html="scope.opt.groupName"/>
                   <q-item-label caption>{{ scope.opt.faculty }}</q-item-label>
                 </q-item-section>
               </q-item>
@@ -53,7 +53,7 @@
               </q-item>
             </template>
             <template v-slot:append>
-              <q-icon name="search" />
+              <q-icon name="search"/>
             </template>
           </q-select>
         </q-card>
@@ -66,7 +66,7 @@
         <q-card id="schedule-nav-btn" class="row center-all justify-between items-center fix-pa">
           <div>
             <q-btn :disable="selectedWeek <= 1" class="buttons-week" flat label="❮ Предыдущая неделя" no-caps
-                   rounded @click="loadPreviousWeekLessons" />
+                   rounded @click="loadPreviousWeekLessons"/>
 
           </div>
           <div>
@@ -76,33 +76,38 @@
                   <q-card-section>
                     <span>Настройки</span>
                   </q-card-section>
-                  <q-separator />
+                  <q-separator/>
                   <q-card-section>
-                    <q-toggle v-model="rawLessonStringMode" :color="theme('primary','white')" label="Режим без обработки: " left-label />
+                    <q-toggle v-model="rawLessonStringMode" :color="theme('primary','white')"
+                              label="Режим без обработки: " left-label/>
                   </q-card-section>
                 </q-card>
               </q-dialog>
             </q-btn>
-            <q-btn :class="currentWeekType === 'NUMERATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" class="btn-select-schedule" flat label="Числитель" no-caps
-                   outline style="width: 120px" @click="toggleWeekBtn('NUMERATOR')" />
+            <q-btn
+              :class="currentWeekType === 'NUMERATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')"
+              class="btn-select-schedule" flat label="Числитель" no-caps
+              outline style="width: 120px" @click="toggleWeekBtn('NUMERATOR')"/>
 
-            <q-btn :class="currentWeekType === 'DENOMINATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')" class="btn-select-schedule q-mx-sm" flat label="Знаменатель" no-caps
-                   outline style="width: 120px" @click="toggleWeekBtn('DENOMINATOR')" />
+            <q-btn
+              :class="currentWeekType === 'DENOMINATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')"
+              class="btn-select-schedule q-mx-sm" flat label="Знаменатель" no-caps
+              outline style="width: 120px" @click="toggleWeekBtn('DENOMINATOR')"/>
 
             <q-btn id="calendar" class="buttons-date" flat icon="today" no-caps rounded>
               <q-popup-proxy transition-hide="scale" transition-show="scale">
                 <q-date v-model="datePickerDate"
                         :options="(date)=>{ return date >= '2020/09/01' && date <= '2100/09/01' }">
                   <div class="row items-center justify-end q-gutter-sm">
-                    <q-btn v-close-popup color="primary" flat label="Перейти" @click="changeDateFromDatePicker" />
-                    <q-btn v-close-popup color="primary" flat label="Отмена" />
+                    <q-btn v-close-popup color="primary" flat label="Перейти" @click="changeDateFromDatePicker"/>
+                    <q-btn v-close-popup color="primary" flat label="Отмена"/>
                   </div>
                 </q-date>
               </q-popup-proxy>
             </q-btn>
           </div>
           <div>
-            <q-btn class="buttons-week" flat label="Следующая неделя ❯" no-caps rounded @click="loadNextWeekLessons" />
+            <q-btn class="buttons-week" flat label="Следующая неделя ❯" no-caps rounded @click="loadNextWeekLessons"/>
           </div>
         </q-card>
 
@@ -110,7 +115,9 @@
 
       <q-card id="MAIN-TABLE" class="center-all justify-center items-center page-width">
         <q-card class="center-all t-center justify-center items-start row fix-py" flat>
-          <q-item id="hidden-span-calc" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" :style="setSquareCellSchedule(columnWidth)" class="t-center q-pa-none pd-cell-around mg-b-inside" style="position:absolute; left:-9999px;">
+          <q-item id="hidden-span-calc" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
+                  :style="setSquareCellSchedule(columnWidth)" class="t-center q-pa-none pd-cell-around mg-b-inside"
+                  style="position:absolute; left:-9999px;">
             <q-card class="max-width-schedule q-pa-none bg-none" flat square>
               <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none font-size-cell time-cell-inside-border">
                 <span>00.00 - 00.00</span>
@@ -121,9 +128,12 @@
               </q-card-section>
             </q-card>
           </q-item>
-          <q-item id="hidden-span-double-calc" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" :style="setSquareCellSchedule(columnWidth)" class="t-center q-pa-none pd-cell-around mg-b-inside" style="position:absolute; left:-9999px;">
+          <q-item id="hidden-span-double-calc" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
+                  :style="setSquareCellSchedule(columnWidth)" class="t-center q-pa-none pd-cell-around mg-b-inside"
+                  style="position:absolute; left:-9999px;">
             <q-card class="q-pa-none max-width-schedule bg-none" flat square>
-              <q-card-section :style="getScheduleCellColor(0)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
+              <q-card-section :style="getScheduleCellColor(0)"
+                              class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
                 <span>00.00 - 00.00</span>
               </q-card-section>
               <q-card-section class="q-pa-none font-size-cell q-mt-sm" lines="4">
@@ -146,13 +156,18 @@
 
                 <template v-if="lesson.value.length === 1 || lesson.value.length === 0">
                   <!--       ОБЫЧНАЯ ПАРА           -->
-                  <q-item :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')" :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)"
-                          class="t-center q-pa-none pd-cell-around mg-b-inside" clickable @click="openLessonInfo(lesson.value[0], lesson.time, datesArray[columnIndex], (rowIndex + 1))"
+                  <q-item :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
+                          :style="setHeightCellSchedule(scheduleInfo.twinRows, rowIndex)"
+                          class="t-center q-pa-none pd-cell-around mg-b-inside" clickable
+                          @click="openLessonInfo(lesson.value[0], lesson.time, datesArray[columnIndex], (rowIndex + 1))"
                   >
                     <q-card class="max-width-schedule q-pa-none bg-none" flat square>
-                      <q-card-section :style="getScheduleCellColor(lesson.value[0])" class="q-pa-none font-size-cell time-cell-inside-border">
-                        <q-chip v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
-                                class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm" label="Идёт сейчас" outline square text-color="white">
+                      <q-card-section :style="getScheduleCellColor(lesson.value[0])"
+                                      class="q-pa-none font-size-cell time-cell-inside-border">
+                        <q-chip
+                          v-if="isCurrentLessonGoes(selectedWeek, lesson.value[0], lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
+                          class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm"
+                          label="Идёт сейчас" outline square text-color="white">
                         </q-chip>
                         <span v-else>{{ lesson.time.lessonBeginTime }} - {{ lesson.time.lessonFinishTime }}</span>
                       </q-card-section>
@@ -160,7 +175,8 @@
                       <q-card-section v-if="isEmptyLesson(lesson)" class="q-pa-none lesson-text font-size-cell q-mt-sm">
                         <span class="lesson-content-schedule">Нет занятий</span>
                       </q-card-section>
-                      <q-card-section v-else-if="lesson.value.length === 1" id="default-lesson" class="q-pa-none lesson-text font-size-cell q-mt-sm">
+                      <q-card-section v-else-if="lesson.value.length === 1" id="default-lesson"
+                                      class="q-pa-none lesson-text font-size-cell q-mt-sm">
                         <span class="lesson-content-schedule">{{ getLessonString(lesson.value[0]) }}</span>
                       </q-card-section>
                     </q-card>
@@ -168,10 +184,14 @@
                 </template>
 
                 <template v-else-if="lesson.value.length === 2">
-                  <q-item v-for="(les) in lesson.value" :key="les" :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
-                          :style="'height:' + ((doubleCellHeight-4)/2) + 'px'" class="t-center q-pa-none pd-cell-around mg-b-inside" clickable @click="openLessonInfo(les, lesson.time, datesArray[columnIndex], (rowIndex + 1))">
+                  <q-item v-for="(les) in lesson.value" :key="les"
+                          :class="theme('bg-cell-schedule-l', 'bg-cell-schedule-d')"
+                          :style="'height:' + ((doubleCellHeight-4)/2) + 'px'"
+                          class="t-center q-pa-none pd-cell-around mg-b-inside" clickable
+                          @click="openLessonInfo(les, lesson.time, datesArray[columnIndex], (rowIndex + 1))">
                     <q-card class="q-pa-none max-width-schedule bg-none" flat square>
-                      <q-card-section :style="getScheduleCellColor(les)" class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
+                      <q-card-section :style="getScheduleCellColor(les)"
+                                      class="q-pa-none q-mb-sm font-size-cell time-cell-inside-border">
                         <q-chip
                           v-if="isCurrentLessonGoes(selectedWeek, les, lesson.time.lessonBeginTime, lesson.time.lessonFinishTime)"
                           class="q-my-none q-py-none chip-current-lesson-schedule" color="red" icon="alarm"
@@ -195,14 +215,14 @@
             <template v-if="!editMode">
               <q-card id="dialog-add-info-schedule" class="q-pa-sm" style="max-width: 1024px;">
                 <q-card-section class="row q-pa-none q-px-sm q-ma-none items-center" style="height: 50px;">
-                  <q-btn v-close-popup dense flat icon="arrow_back" size="md" />
+                  <q-btn v-close-popup dense flat icon="arrow_back" size="md"/>
                   <span class="title-page-dialog q-px-md">Информация о занятии</span>
-                  <q-space />
+                  <q-space/>
                   <template v-if="isAdmin">
-                    <q-btn flat icon="edit" size="sm" @click="openEditModeDialog(lessonInfoObject)" />
+                    <q-btn flat icon="edit" size="sm" @click="openEditModeDialog(lessonInfoObject)"/>
                   </template>
                 </q-card-section>
-                <q-separator class="q-mb-sm" />
+                <q-separator class="q-mb-sm"/>
                 <template v-if="lessonInfoObject.type">
                   <q-card-section :style="getTypeColorByValue(lessonInfoObject.type)">
                     <span>Тип: {{ getTypeNameByValue(lessonInfoObject.type) }}</span>
@@ -243,7 +263,7 @@
                   <q-input v-model="editRawLessonString" label="Необработанное занятие"></q-input>
                 </q-card-section>
                 <q-card-section>
-                  <q-input v-model="editLessonAudience" label="Аудитория" />
+                  <q-input v-model="editLessonAudience" label="Аудитория"/>
                 </q-card-section>
                 <q-card-section>
                   <q-input v-model="editLessonStartTime" :rules="['time']" filled label="Время начала пары" mask="time">
@@ -252,7 +272,7 @@
                         <q-popup-proxy transition-hide="scale" transition-show="scale">
                           <q-time v-model="editLessonStartTime">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup color="primary" flat label="Close" />
+                              <q-btn v-close-popup color="primary" flat label="Close"/>
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -267,7 +287,7 @@
                         <q-popup-proxy transition-hide="scale" transition-show="scale">
                           <q-time v-model="editLessonFinishTime">
                             <div class="row items-center justify-end">
-                              <q-btn v-close-popup color="primary" flat label="Close" />
+                              <q-btn v-close-popup color="primary" flat label="Close"/>
                             </div>
                           </q-time>
                         </q-popup-proxy>
@@ -320,7 +340,7 @@
                     Сохранить
                   </q-btn>
                   <q-btn flat no-caps @click="editMode = false">Отмена</q-btn>
-                  <q-btn flat icon="delete" @click="handleLessonDeleting" />
+                  <q-btn flat icon="delete" @click="handleLessonDeleting"/>
                 </q-card-actions>
               </q-card>
             </template>
@@ -333,7 +353,7 @@
 </template>
 
 <script>
-import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref, toRefs, watch} from "vue";
 import {
   getDateOfMonday,
   getDateString,
@@ -349,6 +369,7 @@ import {
   getWeeksArrayByLessons, getMonthStringByDate
 } from "src/composables/schedule/ScheduleTable";
 import LessonService from 'src/services/schedule/lessonService'
+import GroupService from 'src/services/schedule/groupsService'
 import {useStore} from "vuex";
 import {theme} from "src/services/other/tools";
 import {useMeta} from "quasar";
@@ -449,6 +470,9 @@ export default {
     univName: {
       type: String,
       default: null
+    },
+    grId: {
+      type: Number,
     }
   },
   setup(props) {
@@ -754,6 +778,17 @@ export default {
       }
     });
 
+    const {grId} = toRefs(props);
+    const loadGroupById = async (grId) => {
+      const group = await GroupService.getGroupById(grId);
+      groupSelectValue.value = {
+        groupId : group.grId,
+        faculty : group.facName,
+        groupName : group.name
+      }
+    }
+    watch(grId,(newVal)=> {loadGroupById(newVal)});
+
     onMounted(async () => {
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
       if (isAdmin.value) {
@@ -800,6 +835,12 @@ export default {
             univSelectValue.value = univObject;
           }
         }
+      }
+
+      const grIdFromPath = props.grId;
+      console.log(props)
+      if (grIdFromPath != null) {
+        await loadGroupById(grIdFromPath);
       }
 
       await updateCellHeight();
