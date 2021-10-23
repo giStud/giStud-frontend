@@ -88,11 +88,15 @@
                     </q-item-section>
                     <q-item-section :class="theme('text-grey-8', 'text-white')">Наш телеграм</q-item-section>
                   </q-item>
-                  <q-item disable class="q-pa-none q-ma-none" clickable v-ripple>
+                  <q-item class="q-pa-none q-ma-none" clickable v-ripple>
                     <q-item-section class="q-pa-none fix-px" avatar>
                       <q-icon :color="theme('grey-8', 'white')" name="emoji_events"/>
                     </q-item-section>
-                    <q-item-section :class="theme('text-grey', 'text-white')" >Благодарности</q-item-section>
+
+
+                    <q-item-section @click="creditsDialog = true" :class="theme('text-grey-8', 'text-white')" >Благодарности</q-item-section>
+
+
                   </q-item>
                 </q-list>
               </q-card-section>
@@ -101,6 +105,25 @@
         </q-card>
 
       </q-card>
+
+      <q-dialog maximized square v-model="creditsDialog">
+        <q-card flat square>
+          <q-card-section class="row q-pa-none q-ma-none">
+            <q-btn style="width: 48px;" flat round icon="arrow_back" dense v-close-popup/>
+            <span class="title-page">Благодарности</span>
+          </q-card-section>
+          <q-separator/>
+          <q-card-section class="q-pa-none">
+            <q-list  class="q-pa-none q-ma-none">
+              <q-item class="q-pa-none q-ma-none" clickable v-ripple>
+                <q-item-section class="fix-py fix-px">
+                  <span>QwArty - за всевозможную поддержку</span>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card-section>
+        </q-card>
+      </q-dialog>
 
       <q-dialog maximized square v-model="statusDialog" transition-show="slide-left" transition-hide="slide-right">
         <q-card flat square>
@@ -232,6 +255,7 @@ export default {
   setup() {
     const store = useStore();
     const router = useRouter();
+    const creditsDialog = ref(false);
     const dialogModel = ref(false);
     const loggedIn = computed(() => store.getters['auth/isLogged']);
     const isAdmin = ref(false);
@@ -314,6 +338,7 @@ export default {
       requestDialogEmail,
       requestDialogText,
       sendButtonModel,
+      creditsDialog,
       login,
       logout,
       currentUser: computed(() => store.getters['auth/getCurrentUser']),

@@ -1,5 +1,10 @@
 const newsProject = [
   {
+    title: "Конкурс Red Bull Basement",
+    desc: "Проект GISTUD участвует в конкурсе Red Bull Basement! Поддержи проект проголосовав за него по ссылке: https://basement.redbull.com/ru-ru/projects/1946",
+    img: "https://cdn.discordapp.com/attachments/887281514809802806/901395981432655892/redbull.jpg"
+  },
+  {
     title: "Мобильное приложение",
     desc: "Мы добавили мобильное приложение! Теперь GISTUD доступен прямиком с главного экрана вашего смартфона. Для этого вам нужно зайти на сайт, перейти в настройки вашего браузера и нажать \"Установить приложение\".",
     img: 'https://cdn.discordapp.com/attachments/887281514809802806/890632820475703336/-1.jpg'
