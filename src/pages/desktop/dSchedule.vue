@@ -370,6 +370,7 @@ import {
 } from "src/composables/schedule/ScheduleTable";
 import LessonService from 'src/services/schedule/lessonService'
 import GroupService from 'src/services/schedule/groupsService'
+import UniversityService from 'src/services/schedule/universityService'
 import {useStore} from "vuex";
 import {theme} from "src/services/other/tools";
 import {useMeta} from "quasar";
@@ -472,7 +473,8 @@ export default {
       default: null
     },
     grId: {
-      type: Number,
+      type: String,
+      default: null
     }
   },
   setup(props) {
@@ -624,6 +626,11 @@ export default {
           title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, selectedWeek.value);
+          const univ = selectedGroup.universityEntity;
+          if (univ && univSelectValue.value && univ.univId !== univSelectValue.value.univId) {
+            univSelectValue.value = await UniversityService.getUnivNameById(univ.univId);
+          }
+          console.log(selectedGroup)
         } else {
           title.value = '';
           localStorage.removeItem("lastLoadedGroupNew");
@@ -721,7 +728,6 @@ export default {
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
         if (selectedGroup.lessons) {
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, newValue)
-          console.log(scheduleInfo.value)
         }
         //await updateCellHeight();
       }
@@ -742,6 +748,7 @@ export default {
     })
 
     watch(groupSelectValue, async (newValue) => {
+      console.log(groupSelectValue.value);
       await loadGroupSchedule(newValue)
       await updateCellHeight();
     });
@@ -779,15 +786,15 @@ export default {
     });
 
     const {grId} = toRefs(props);
-    const loadGroupById = async (grId) => {
-      const group = await GroupService.getGroupById(grId);
-      groupSelectValue.value = {
-        groupId : group.grId,
-        faculty : group.facName,
-        groupName : group.name
-      }
+
+    const loadGroupByPropsId = async (grId) => {
+      groupSelectValue.value = await GroupService.getGroupNameById(Number(grId));
     }
-    watch(grId,(newVal)=> {loadGroupById(newVal)});
+
+    watch(grId,async (newVal)=> {
+      await loadGroupByPropsId(newVal);
+    });
+
 
     onMounted(async () => {
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
@@ -822,10 +829,7 @@ export default {
       }
 
       if ((typeof lastLoadedUniv !== 'undefined') && lastLoadedUniv !== null) {
-        univSelectValue.value = JSON.parse(lastLoadedUniv);
-      }
-      if ((typeof lastLoadedGroup !== 'undefined') && lastLoadedGroup !== null) {
-        groupSelectValue.value = JSON.parse(lastLoadedGroup);
+        univSelectValue.value = await JSON.parse(lastLoadedUniv);
       }
 
       const univNameFromPath = props.univName;
@@ -837,10 +841,10 @@ export default {
         }
       }
 
-      const grIdFromPath = props.grId;
-      console.log(props)
-      if (grIdFromPath != null) {
-        await loadGroupById(grIdFromPath);
+      if (grId.value) {
+        await loadGroupByPropsId(grId.value);
+      } else if ((typeof lastLoadedGroup !== 'undefined') && lastLoadedGroup !== null) {
+        groupSelectValue.value = JSON.parse(lastLoadedGroup);
       }
 
       await updateCellHeight();

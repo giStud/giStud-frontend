@@ -7,9 +7,14 @@ class UniversityService {
     return data;
   }
 
+  async getUnivNameById(univId) {
+    const {data} = await api.get("/universities/univName?univId=" + univId)
+    return data;
+  }
+
   async getUnivNames() {
     const {data} = await api.get("/universities/universitiesNames")
-    return data.universities;
+    return data;
   }
 
   async getFacNames(univId) {
