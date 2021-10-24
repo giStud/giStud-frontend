@@ -83,7 +83,7 @@ export default {
     const handleSearchClick = (line) => {
       switch (line.category) {
         case 'UNIV': {
-          router.push({name: 'schedule', query : {univName: line.name}});
+          router.push({name: 'schedule', query : {univId: line.id}});
           break;
         }
         case 'GROUP': {

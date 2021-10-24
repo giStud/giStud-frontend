@@ -468,7 +468,7 @@ const meta = {
 export default {
   name: "dSchedule",
   props: {
-    univName: {
+    univId: {
       type: String,
       default: null
     },
@@ -632,6 +632,7 @@ export default {
           }
           console.log(selectedGroup)
         } else {
+          console.log('removeGroup')
           title.value = '';
           localStorage.removeItem("lastLoadedGroupNew");
         }
@@ -741,6 +742,11 @@ export default {
             univId: selectedUnivId
           })
           localStorage.setItem('lastLoadedUniv', JSON.stringify(newValue));
+          if (groupSelectValue.value && groupSelectValue.value.univId !== selectedUnivId) {
+            console.log(groupSelectValue.value.univId)
+            console.log(selectedUnivId)
+            groupSelectValue.value = null;
+          }
         }
       } catch (e) {
         localStorage.removeItem("lastLoadedUniv");
@@ -785,14 +791,26 @@ export default {
       }
     });
 
-    const {grId} = toRefs(props);
+    const {univId, grId} = toRefs(props);
 
     const loadGroupByPropsId = async (grId) => {
       groupSelectValue.value = await GroupService.getGroupNameById(Number(grId));
     }
+    const loadUnivByPropsId = async (univId) => {
+      univSelectValue.value = await UniversityService.getUnivNameById(Number(univId));
+      if (univSelectValue.value && groupSelectValue.value) {
+        if (univSelectValue.value.univId !== groupSelectValue.value.univId) {
+          scheduleInfo.value = {};
+          localStorage.removeItem('lastLoadedGroupNew');
+        }
+      }
+    }
 
     watch(grId,async (newVal)=> {
       await loadGroupByPropsId(newVal);
+    });
+    watch(univId,async (newVal)=> {
+      await loadUnivByPropsId(newVal);
     });
 
 
@@ -828,23 +846,21 @@ export default {
         selectedDate.value = getDateOfMonday(new Date());
       }
 
-      if ((typeof lastLoadedUniv !== 'undefined') && lastLoadedUniv !== null) {
-        univSelectValue.value = await JSON.parse(lastLoadedUniv);
-      }
-
-      const univNameFromPath = props.univName;
-      if (univNameFromPath !== null) {
-        for (const univObject of univSelectOptions.value) {
-          if (univObject.univName === univNameFromPath) {
-            univSelectValue.value = univObject;
-          }
-        }
+      if (univId.value) {
+        await loadUnivByPropsId(univId.value);
+      } else if ((typeof lastLoadedUniv !== 'undefined') && lastLoadedUniv !== null) {
+        univSelectValue.value = JSON.parse(lastLoadedUniv);
       }
 
       if (grId.value) {
         await loadGroupByPropsId(grId.value);
       } else if ((typeof lastLoadedGroup !== 'undefined') && lastLoadedGroup !== null) {
-        groupSelectValue.value = JSON.parse(lastLoadedGroup);
+        const group = await JSON.parse(lastLoadedGroup);
+        if (group.univId === univSelectValue.value.univId) {
+          groupSelectValue.value = group;
+        } else {
+          localStorage.removeItem('lastLoadedGroupNew');
+        }
       }
 
       await updateCellHeight();
