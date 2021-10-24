@@ -2,19 +2,23 @@
   <input v-model="inputField" ref="searchInput" :class="theme('search-box-l', 'search-box-d')" autocomplete="off"
          type="text" name="search" placeholder="Поиск" class="q-pa-sm search-box gistud-dev"/>
   <q-menu v-model="isMenuShowed" :target="$refs.searchInput" no-focus :offset="[0, 11]" square>
-    <q-list style="width: 180px; max-width: 180px; max-height: 400px">
-      <q-item style="height: 50px; max-height: 50px;" clickable v-close-popup v-for="(line) of options" :key="line" @click="handleSearchClick(line)">
-        <q-item-section>
-          <q-item-label lines="1">{{line.name}}</q-item-label>
-          <q-item-label caption lines="1">{{ getCategoryString(line.category) }}</q-item-label>
-        </q-item-section>
-      </q-item>
+    <q-list style="width: 180px; max-width: 180px;">
+      <template v-for="(category, key, index) in groupingByCategories" :key="category">
+        <q-card-section style="font-size: 12px; color: gray" class="q-pb-sm q-pt-none q-px-md" >{{getCategoryString(key)}}</q-card-section>
+        <q-separator v-if="index !== 0"/>
+        <q-item style="height: 50px; max-height: 50px;" clickable v-close-popup v-for="(line) in category" :key="line" @click="handleSearchClick(line)">
+          <q-item-section>
+            <q-item-label lines="1">{{line.name}}</q-item-label>
+            <q-item-label caption lines="1">{{ line.description }}</q-item-label>
+          </q-item-section>
+        </q-item>
+      </template>
     </q-list>
   </q-menu>
 </template>
 
 <script>
-import {goUrl, theme} from "src/services/other/tools";
+import {goUrl, theme, debug} from "src/services/other/tools";
 import {onMounted, ref, watch} from "vue";
 import SearchService from "src/services/other/searchService"
 import {useRouter} from "vue-router";
@@ -56,6 +60,9 @@ export default {
     const inputField = ref('');
     const options = ref([]);
     const isMenuShowed = ref(false);
+
+    const groupingByCategories = ref({});
+
     watch(inputField,  async (newVal)=> {
       if (newVal !== '') {
         await getSearchResult(newVal);
@@ -66,6 +73,17 @@ export default {
 
     let getSearchResult =  async (stringToSearch) => {
       options.value = await SearchService.getResult(stringToSearch);
+
+      groupingByCategories.value = options.value.reduce((c, v) => {
+        if (v.category === 'UNIV') return (c['UNIV'] = [...(c['UNIV'] || []), v], c)
+        if (v.category === 'GROUP') return (c['GROUP'] = [...(c['GROUP'] || []), v], c)
+        if (v.category === 'AD') return (c['AD'] = [...(c['AD'] || []), v], c)
+        if (v.category === 'NEWS') return (c['NEWS'] = [...(c['NEWS'] || []), v], c)
+        if (v.category === 'OTHER') return (c['OTHER'] = [...(c['OTHER'] || []), v], c)
+      }, {})
+
+      console.log(groupingByCategories.value)
+
       if (options.value.length !== numberOfLines) {
         for (let link of staticLinks) {
           if (options.value.length !== numberOfLines && link.name.includes(inputField.value)) {
@@ -120,9 +138,11 @@ export default {
       inputField,
       options,
       isMenuShowed,
+      groupingByCategories,
       theme,
       getCategoryString,
-      handleSearchClick
+      handleSearchClick,
+      debug
     }
   }
 }
