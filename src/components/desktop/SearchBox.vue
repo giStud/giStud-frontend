@@ -1,7 +1,7 @@
 <template>
   <input v-model="inputField" ref="searchInput" :class="theme('search-box-l', 'search-box-d')" autocomplete="off"
          type="text" name="search" placeholder="Поиск" class="q-pa-sm search-box gistud-dev"/>
-  <q-menu :target="$refs.searchInput" no-focus :offset="[0, 11]" square>
+  <q-menu v-model="isMenuShowed" :target="$refs.searchInput" no-focus :offset="[0, 11]" square>
     <q-list style="width: 180px; max-width: 180px; max-height: 400px">
       <q-item style="height: 50px; max-height: 50px;" clickable v-close-popup v-for="(line) of options" :key="line" @click="handleSearchClick(line)">
         <q-item-section>
@@ -54,6 +54,7 @@ export default {
     const router = useRouter();
     const inputField = ref('');
     const options = ref([]);
+    const isMenuShowed = ref(false);
     watch(inputField, async (newVal)=> {
       if (newVal !== '') {
         options.value = await SearchService.getResult(newVal);
@@ -64,6 +65,7 @@ export default {
             }
           }
         }
+        isMenuShowed.value = true;
         console.log(options.value)
       } else {
         options.value = [];
@@ -109,6 +111,7 @@ export default {
     return {
       inputField,
       options,
+      isMenuShowed,
       theme,
       getCategoryString,
       handleSearchClick
