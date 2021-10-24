@@ -15,10 +15,11 @@
 
 <script>
 import {goUrl, theme} from "src/services/other/tools";
-import {ref, watch} from "vue";
+import {onMounted, ref, watch} from "vue";
 import SearchService from "src/services/other/searchService"
 import {useRouter} from "vue-router";
 import {useQuasar} from "quasar";
+import { debounce } from 'quasar'
 
 const numberOfLines = 8;
 const staticLinks = [
@@ -55,22 +56,25 @@ export default {
     const inputField = ref('');
     const options = ref([]);
     const isMenuShowed = ref(false);
-    watch(inputField, async (newVal)=> {
+    watch(inputField,  async (newVal)=> {
       if (newVal !== '') {
-        options.value = await SearchService.getResult(newVal);
-        if (options.value.length !== numberOfLines) {
-          for (let link of staticLinks) {
-            if (options.value.length !== numberOfLines && link.name.includes(inputField.value)) {
-              options.value.push(link);
-            }
-          }
-        }
-        isMenuShowed.value = true;
-        console.log(options.value)
+        await getSearchResult(newVal);
       } else {
         options.value = [];
       }
     })
+
+    let getSearchResult =  async (stringToSearch) => {
+      options.value = await SearchService.getResult(stringToSearch);
+      if (options.value.length !== numberOfLines) {
+        for (let link of staticLinks) {
+          if (options.value.length !== numberOfLines && link.name.includes(inputField.value)) {
+            options.value.push(link);
+          }
+        }
+      }
+      isMenuShowed.value = true;
+    }
 
     const getCategoryString = (category) => {
       switch (category) {
@@ -107,6 +111,10 @@ export default {
       }
 
     }
+
+    onMounted(()=> {
+      getSearchResult = debounce(getSearchResult, 500);
+    })
 
     return {
       inputField,
