@@ -1,25 +1,69 @@
-import Profile from "components/Profile"
+import {Platform} from "quasar";
+
+const mobile = [
+  {
+    path: '/',
+    component: () => import('layouts/MobileMainLayout.vue'),
+    children: [
+      {
+        path: '', component: () => import('pages/mobile/mHome.vue'), meta: {isAuth: false, isAdmin: false}
+      }, {
+        path: '/schedule',
+        name: 'schedule',
+        component: () => import('pages/mobile/mSchedule'),
+        props: (route) => ({univName: route.query.univName}),
+        meta: {isAuth: false, isAdmin: false}
+      }, {
+        path: '/profile',
+        name: 'profile',
+        component: () => import('pages/mobile/mProfile'),
+        props: (route) => ({univName: route.query.univName}),
+        meta: {isAuth: false, isAdmin: false}
+      }, {
+        path: '/news',
+        name: 'news',
+        component: () => import('pages/mobile/mNews'),
+        props: (route) => ({univName: route.query.univName}),
+        meta: {isAuth: false, isAdmin: false}
+      },
+    ]
+  }
+]
 
 
-const routes = [
+const desktop = [
+  // NEW REDESIGN ^^^
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      {path: '', component: () => import('pages/Index.vue'), meta: {isAuth: false, isAdmin: false}},
       {
+        path: '',
+        component: () => import('pages/desktop/dHome'),
+        meta: {isAuth: false, isAdmin: false}
+      }, {
         path: '/schedule',
         name: 'schedule',
-        component: () => import('pages/Schedule'),
-        props: (route) => ({univName: route.query.univName}),
+        component: () => import('pages/desktop/dSchedule'),
+        props: (route) => ({univId: route.query.univId, grId: route.query.grId}),
         meta: {isAuth: false, isAdmin: false}
-      },
-      {
+      }, {
         path: '/news',
         name: 'news',
-        component: () => import('pages/News.vue'),
+        component: () => import('pages/desktop/dNews.vue'),
         props: (route) => ({newsId: route.query.newsId}),
         meta: {isAuth: false, isAdmin: false}
+      }, {
+        path: '/about',
+        name: 'about',
+        component: () => import('pages/desktop/dAbout.vue'),
+        meta: {isAuth: false, isAdmin: false}
+      }
+      , {
+        path: '/test',
+        name: 'test',
+        component: () => import('pages/Test.vue'),
+        meta: {isAuth: true, isAdmin: true}
       }
     ]
   },
@@ -52,6 +96,16 @@ const routes = [
     component: () => import('pages/Error404.vue'),
     meta: {isAuth: false, isAdmin: false}
   }
-]
+];
+
+let routes = [];
+
+if (Platform.is.desktop) {
+  routes = desktop;
+}
+if (Platform.is.mobile) {
+  routes = mobile;
+}
+
 
 export default routes

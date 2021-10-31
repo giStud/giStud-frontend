@@ -7,19 +7,19 @@
       <q-card-section class="content-center">
         <div>
           <q-input square style="margin-bottom: 5px" filled type="text" v-model="requestDialogEmail"
-                   label="Email адрес *" lazy-rules
+                   label="Email адрес *" lazy-rules :color="theme('', 'white')"
                    :rules="[(val) => !!val || 'Поле не может быть пустым', isValidEmail]" autofocus/>
           <q-input square input-style="resize: none;" counter filled rows="10" type="textarea"
-                   v-model="requestDialogText" label="Текст *" lazy-rules
+                   v-model="requestDialogText" label="Текст *" lazy-rules :color="theme('', 'white')"
                    :rules="[(val) => (!!val && val.length >= 6 && val.length <= 500) || 'Текст сообщения не может быть меньше 6 символов или больше 500']"
                    autofocus/>
         </div>
       </q-card-section>
       <q-separator/>
       <q-card-actions align="right">
-        <q-btn v-close-popup flat color="primary" no-caps label="Отправить" :disable="sendButtonModel"
+        <q-btn v-close-popup flat :color="theme('primary', 'white')" no-caps label="Отправить" :disable="sendButtonModel"
                @click="sendUserMessage(requestDialogEmail, requestDialogText)"/>
-        <q-btn v-close-popup flat color="primary" no-caps label="Отмена"/>
+        <q-btn v-close-popup flat :color="theme('primary', 'white')" no-caps label="Отмена"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -30,6 +30,7 @@ import {ref, watch} from "vue";
 import UtilsService from "src/services/other/utilsService";
 import UnivRequestService from "src/services/other/userMessagesService";
 import {useQuasar} from "quasar";
+import {theme} from "src/services/other/tools";
 
 export default {
   name: "UserMessageDialog",
@@ -79,6 +80,7 @@ export default {
         return UtilsService.isValidEmail(val);
       },
       sendUserMessage,
+      theme
     }
   }
 }

@@ -1,28 +1,28 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <Header/>
+      <dHeader/>
     </q-header>
     <q-page-container>
       <router-view />
     </q-page-container>
     <q-footer elevated class="bg-grey-8 text-white">
-      <Footer/>
+      <dFooter/>
     </q-footer>
   </q-layout>
 </template>
 
 <script>
 import { defineComponent, ref } from 'vue'
-import Header from '../components/Header.vue'
-import Footer from '../components/Footer.vue'
+import dHeader from '../components/desktop/dHeader.vue'
+import dFooter from '../components/desktop/dFooter.vue'
 
 export default {
   name: 'AuthLayout',
 
   components: {
-    Header,
-    Footer
+    dHeader,
+    dFooter
   },
 
 

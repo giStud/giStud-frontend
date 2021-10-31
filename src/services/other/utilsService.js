@@ -11,6 +11,10 @@ class UtilsService {
     return (hours < 10 ? '0' + hours : hours) + ':' +
       (minutes < 10 ? '0' + minutes : minutes);
   }
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 }
 
 export default new UtilsService();

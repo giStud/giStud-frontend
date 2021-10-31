@@ -7,11 +7,15 @@ class GroupService {
     return data;
   }
 
+  async getGroupNameById(groupId) {
+    const {data} = await api.get("/groups/groupName?groupId=" + groupId)
+    return data;
+  }
+
   async getGroupNamesByUniv(univId) {
-    //TODO: check on SQL inject
     try {
       const {data} = await api.get("/groups/groupNames?univId=" + univId);
-      return data.groups;
+      return data;
     } catch (e) {
       throw e;
     }
@@ -21,6 +25,20 @@ class GroupService {
     try {
       const {data} = await api.get("/groups/" + grId)
       return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async createGroup(group, semester) {
+    try {
+      const {data} = await api.post("/groups/createEmptySchedule", {
+        university : group.univ,
+        facName : group.facName,
+        groupName : group.name,
+        timeArray : group.timeArray,
+        semester
+      }, {headers: authHeader()})
     } catch (e) {
       throw e;
     }
