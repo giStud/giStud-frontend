@@ -1,7 +1,9 @@
+const newsPagesMap = new Map();
+
 export default function () {
   return {
     mainPageNews : [],
-    news : [],
+    news : newsPagesMap,
     newsTypes : [],
   }
 }

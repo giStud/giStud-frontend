@@ -1,4 +1,4 @@
-export function getNews(state) {
+export function getNewsMap(state) {
   return state.news;
 }
 

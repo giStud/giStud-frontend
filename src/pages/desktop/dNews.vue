@@ -3,26 +3,29 @@
     <q-card id="MAIN-PAGE-NEWS" class="bg-none fix-ma" flat square>
       <q-card id="NEWS-CONTAINER-NEWS" class="center-all container-base bg-none row justify-center" flat>
         <q-card id="NEWS-PROJECT-NEWS" class="bg-none q-ma-none q-pa-none fix-mr">
-          <q-card v-for="itemNews in news" :key="itemNews.newsId" class="q-pa-none fix-pa fix-mb cursor-pointer" style="border-radius: 3px" @click="getNews(itemNews)">
+          <q-card v-for="itemNews in currentPage.content" :key="itemNews.newsId" class="q-pa-none fix-pa fix-mb cursor-pointer" style="border-radius: 3px" @click="openNewsReadDialog(itemNews)">
             <q-card-section class="q-pa-none">
               <span class="text-h6 q-pb-sm">{{ itemNews.title }}</span><br>
               <span class="text-caption" v-html="itemNews.shortText"></span><br><br>
-              <span class="text-caption cursor-pointer" @click="getNews(itemNews)">Читать подробнее...</span>
+              <span class="text-caption cursor-pointer" @click="openNewsReadDialog(itemNews)">Читать подробнее...</span>
             </q-card-section>
             <q-card-section v-if="itemNews.imgSrc" class="q-pa-none fix-mt" style="text-align: center">
               <q-img :src="itemNews.imgSrc" />
             </q-card-section>
           </q-card>
           <q-card flat class="bg-none">
-            <q-chip v-if="visibleLoadBtn && (news.length % 5 === 0) && (news.length !== 0)" clickable icon-right="arrow_drop_down" outline @click="loadNextPage">
-              Загрузить ещё
-            </q-chip>
+            <q-btn @click="pageNumber--" :disable="!currentPage">Предыдущая страница</q-btn>
+            <q-btn @click="pageNumber++" :disable="!currentPage">Следующая страница</q-btn>
           </q-card>
         </q-card>
-        <q-card id="NEWS-STUDENTS-NEWS" :style="'height:' + (31 + 11 + 31 * newsTypesOptions.length) + 'px'" class="q-ma-none q-pa-none fix-pa">
+        <q-card id="NEWS-STUDENTS-NEWS" :style="'height:' + (31 + 11 + 31 * (newsTypes.length + 1)) + 'px'" class="q-ma-none q-pa-none fix-pa">
           <q-list class="q-py-none" padding>
-            <template v-for="(type, id) in newsTypesOptions" :key="type.newsTypeId">
-              <q-item v-ripple :active="newsTypeValue === type" :active-class="theme('active-list active-list-l', 'active-list active-list-d')" class="select-type-news" clickable @click="newsTypeValue = type">
+            <q-item v-ripple :active="selectedNewsType === allTypeObj" :active-class="theme('active-list active-list-l', 'active-list active-list-d')" class="select-type-news" clickable @click="selectedNewsType = allTypeObj">
+              <q-item-section>{{ allTypeObj.type }}</q-item-section>
+            </q-item>
+            <q-separator v-if="id === 0" style="margin: 5px 0" />
+            <template v-for="(type, id) in newsTypes" :key="type.newsTypeId">
+              <q-item v-ripple :active="selectedNewsType === type" :active-class="theme('active-list active-list-l', 'active-list active-list-d')" class="select-type-news" clickable @click="selectedNewsType = type">
                 <q-item-section>{{ type.type }}</q-item-section>
               </q-item>
               <q-separator v-if="id === 0" style="margin: 5px 0" />
@@ -58,7 +61,7 @@
 </template>
 
 <script>
-import {computed, onMounted, ref, watch} from 'vue'
+import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import NewsService from '../../services/news/newsService.js'
 import {getDateString} from "src/composables/schedule/ScheduleTable";
 import {useStore} from "vuex";
@@ -100,22 +103,24 @@ export default {
   setup(props) {
     useMeta(() => meta);
     const store = useStore();
-    const news = ref([]);
+    const allTypeObj = {newsTypeId: -1, type: 'Все', iconName: 'apps'};
+    const selectedNewsType = ref(allTypeObj);
+    const pageNumber = ref(0);
+    const newsTypes = computed(() => store.getters['news/getNewsTypes']);
+    const currentPage = computed( () => {
+      const map = store.state.news.news;
+      return map.get(pageNumber.value);
+    });
     const newsTitle = ref("");
     const newsText = ref("");
     const newsDialog = ref(false);
     const src = ref("");
-    const allTypeObj = {newsTypeId: -1, type: 'Все', iconName: 'apps'}
-    const newsTypeValue = ref(allTypeObj);
-    const newsTypesOptions = ref([]);
     const img = ref("");
-
-    const visibleLoadBtn = ref(true);
 
     const checkerMouse = ref(false);
 
 
-    const getNews = (news) => {
+    const openNewsReadDialog = (news) => {
       newsDialog.value = true;
       newsTitle.value = news.title;
       newsText.value = news.fullText;
@@ -123,69 +128,62 @@ export default {
       img.value = news.imgSrc;
     };
 
-    const loadNextPage = async () => {
-      let idsOfExistingsNews = [];
-      let data;
-      for (let item of news.value) {
-        idsOfExistingsNews.push(item.newsId);
+    watch(pageNumber, async (newVal) => {
+      const map = store.getters['news/getNewsMap'];
+      const values = map.get(newVal);
+      if (!values) {
+        const typeId = getNewsTypeId();
+        await store.dispatch('news/loadNewsPage', {pageNumber: newVal, typeId});
       }
-      if (newsTypeValue.value.type === 'Все') {
-        data = await store.dispatch('news/getNewsPage', {
-          existingNews: idsOfExistingsNews
-        });
+    })
+
+    const getNewsTypeId = () => {
+      if (selectedNewsType.value.type !== 'Все') {
+        return selectedNewsType.value.newsTypeId;
       } else {
-        data = await store.dispatch('news/getNewsPageByType', {
-          existingNews: idsOfExistingsNews,
-          typeId: newsTypeValue.value.newsTypeId
-        })
-      }
-      visibleLoadBtn.value = !(data && data.length <= 0);
-    }
-
-    const filterByNewsType = async (type) => {
-      visibleLoadBtn.value = true;
-      if (type) {
-        store.commit('news/clearNews')
-        if (type.type === 'Все') {
-          await store.dispatch('news/getNewsPage', {existingNews: []})
-        } else {
-          await store.dispatch('news/getNewsPageByType', {existingNews: [], typeId: type.newsTypeId})
-        }
+        return null;
       }
     }
 
-    watch(newsTypeValue, filterByNewsType);
+    watch(selectedNewsType, async (val) => {
+      store.commit('news/clearNewsMap')
+      if (val.type === 'Все') {
+        await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value})
+      } else {
+        await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value, sectionId : val.newsTypeId})
+      }
+      pageNumber.value = 0;
+    })
+
 
     onMounted(async () => {
-      store.commit('news/clearNews')
-      await store.dispatch('news/getNewsPage', {existingNews: []})
-      await store.dispatch('news/getNewsTypes')
-      newsTypesOptions.value[0] = allTypeObj;
-      newsTypesOptions.value.push.apply(newsTypesOptions.value, store.getters['news/getNewsTypes']);
-      news.value = store.getters['news/getNews'];
+      await store.dispatch('news/loadNewsPage', {pageNumber: pageNumber.value});
+      await store.dispatch('news/getNewsTypes');
+      console.log(currentPage.value)
 
       const newsId = props.newsId;
       if (props.newsId !== null) {
         const selectedNewsItem = await NewsService.getNewsItemById(newsId);
-        getNews(selectedNewsItem);
+        openNewsReadDialog(selectedNewsItem);
       }
     });
 
+    onBeforeUnmount(()=> {
+      store.commit('news/clearNewsMap');
+    })
     return {
-      news,
+      currentPage,
+      allTypeObj,
+      newsTypes,
+      pageNumber,
+      selectedNewsType,
       newsDialog,
       newsTitle,
       newsText,
       src,
-      newsTypeValue,
-      newsTypesOptions,
-      visibleLoadBtn,
-      getNews,
-      customStyle,
+      openNewsReadDialog,
       customClass,
-      loadNextPage,
       goUrl,
-      getDateString,
       theme,
       checkerMouse, img
     }

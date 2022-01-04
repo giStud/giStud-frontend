@@ -1,3 +1,4 @@
+/*
 export function setNews (state, news) {
     state.news = news;
 }
@@ -33,4 +34,16 @@ export function editNews(state, {id, data}) {
       state.news[item] = data;
     }
   }
+}
+*/
+export function addNewsPage(state, {pageNumber, page}) {
+  state.news.set(pageNumber, page);
+}
+
+export function clearNewsMap(state) {
+  state.news.clear();
+}
+
+export function setNewsTypes (state, types) {
+  state.newsTypes = types;
 }

@@ -2,7 +2,44 @@ import {api} from "boot/axios";
 import authHeader from "src/services/auth/authHeader";
 
 class NewsService {
-  async saveNews(title, img, shortText, fullText, source, typeId) {
+  async getNewsPage(pageNumber) {
+    try {
+      const {data} = await api.get("/news", {
+        params: {
+          pageNumber,
+        },
+      })
+      return data
+    } catch (e) {
+      console.log(e)
+      return [];
+    }
+  }
+
+  async getNewsPageByType(pageNumber, typeId) {
+    try {
+      const {data} = await api.get("/news/filterByType", {
+        params: {
+          pageNumber,
+          typeId
+        },
+      })
+      return data
+    } catch (e) {
+      console.log(e)
+      return [];
+    }
+  }
+
+  async getNewsItemById(newsId) {
+    try {
+      const {data} = await api.get("/news/" + newsId)
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+  /*async saveNews(title, img, shortText, fullText, source, typeId) {
     try {
       return await api.post("/news/", {
         title,
@@ -82,7 +119,7 @@ class NewsService {
     } catch (e) {
       throw e;
     }
-  }
+  }*/
 }
 
 export default new NewsService();
