@@ -29,7 +29,7 @@ class AuthService {
 
   async loadUserInfo() {
     try {
-      const {data} = await api.get("/auth/info", {headers: await authHeader()})
+      const {data} = await api.get("/auth/info", {headers: authHeader()})
       return data;
     } catch (e) {
       throw e;
