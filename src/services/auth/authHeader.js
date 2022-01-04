@@ -1,10 +1,12 @@
-import TokenService from "./tokenService";
-
-export default function authHeader() {
-  const token = TokenService.getLocalAccessToken();
+export default async function authHeader() {
+  const token = await JSON.parse(localStorage.getItem('accessToken'));
+  const data = { Authorization: 'Bearer ' + token.token};
+  console.log(data);
   if (token) {
-    return { Authorization: 'Bearer ' + token};
+    console.log(1)
+    return data;
   } else {
+    console.log(2)
     return {};
   }
 }

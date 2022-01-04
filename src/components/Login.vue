@@ -65,8 +65,8 @@ export default {
     const router = useRouter();
     const $q = useQuasar();
 
-    const username = ref(null);
-    const password = ref(null);
+    const username = ref('');
+    const password = ref('');
     const message = ref(null);
     const loggedIn = ref(store.state.auth.loggedIn);
     if (loggedIn.value) {
@@ -101,8 +101,8 @@ export default {
       },
 
       onReset() {
-        username.value = null;
-        password.value = null;
+        username.value = '';
+        password.value = '';
       },
     };
   },

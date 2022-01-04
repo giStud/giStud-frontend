@@ -37,8 +37,8 @@
           <q-btn disable class="gistud-dev" :class="theme('two-btn-l', '')" flat icon="fas fa-bullhorn" round size="10px"></q-btn>
         </q-card-section>
 
-        <q-card-section :class="!isAdmin ? 'hidden' : ''" class="items-center q-pa-none q-pl-sm">
-          <q-btn-dropdown :disable="!isAdmin" class="gistud-dev" :style="isAdmin ? '' : theme('color: white', 'color: #2e2f31')" no-caps flat :label="currentUser === null ? 'Кто здесь a???' : currentUser.username">
+        <q-card-section class="items-center q-pa-none q-pl-sm">
+          <q-btn-dropdown no-caps flat :label="currentUser === null ? 'Кто здесь a???' : currentUser.username">
             <div class="row q-pa-md">
               <div class="column">
                 <div class="text-h6 q-mb-md">Настройки</div>
@@ -88,7 +88,7 @@ export default {
     const logout = () => {
       isAdmin.value = false;
       store.dispatch("auth/logoutAction");
-      router.push("/profile");
+      router.push("/auth/login");
     };
     const login = () => {
 
@@ -97,7 +97,7 @@ export default {
     const darkTheme = ref(false);
 
     onMounted(() => {
-      store.commit('globalState/changeCurrentPage','profile');
+      //store.commit('globalState/changeCurrentPage','profile');
       let user = store.getters["auth/getCurrentUser"];
       if (user !== null) {
         let roles = user.roles;

@@ -79,9 +79,9 @@ export default {
     const router = useRouter();
     const $q = useQuasar();
 
-    const username = ref(null);
-    const email = ref(null);
-    const password = ref(null);
+    const username = ref('');
+    const email = ref('');
+    const password = ref('');
     const message = ref(null);
     const loggedIn = ref(store.state.auth.loggedIn);
 
@@ -115,7 +115,7 @@ export default {
             icon: "cloud_done",
             message: "Успешная регистрация",
           });
-          router.push("/");
+          await router.push("/");
         } catch (e) {
           message.value = e.response.data.message;
           $q.notify({
@@ -128,9 +128,9 @@ export default {
       },
 
       onReset() {
-        username.value = null;
-        email.value = null;
-        password.value = null;
+        username.value = '';
+        email.value = '';
+        password.value = '';
       },
 
       isValidEmail(val) {
