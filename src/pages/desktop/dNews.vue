@@ -3,7 +3,7 @@
     <q-card id="MAIN-PAGE-NEWS" class="bg-none fix-ma" flat square>
       <q-card id="NEWS-CONTAINER-NEWS" class="center-all container-base bg-none row justify-center" flat>
         <q-card id="NEWS-PROJECT-NEWS" class="bg-none q-ma-none q-pa-none fix-mr">
-          <q-card v-for="itemNews in currentPage.content" :key="itemNews.newsId" class="q-pa-none fix-pa fix-mb cursor-pointer" style="border-radius: 3px" @click="openNewsReadDialog(itemNews)">
+          <q-card v-for="itemNews in news" :key="itemNews.newsId" class="q-pa-none fix-pa fix-mb cursor-pointer" style="border-radius: 3px" @click="openNewsReadDialog(itemNews)">
             <q-card-section class="q-pa-none">
               <span class="text-h6 q-pb-sm">{{ itemNews.title }}</span><br>
               <span class="text-caption" v-html="itemNews.shortText"></span><br><br>
@@ -14,8 +14,8 @@
             </q-card-section>
           </q-card>
           <q-card flat class="bg-none">
-            <q-btn @click="pageNumber--" :disable="!currentPage">Предыдущая страница</q-btn>
-            <q-btn @click="pageNumber++" :disable="!currentPage">Следующая страница</q-btn>
+            <q-btn @click="pageNumber--" :disable="currentPage ? currentPage.first : true">Предыдущая страница</q-btn>
+            <q-btn @click="pageNumber++" :disable="currentPage ? currentPage.last : true">Следующая страница</q-btn>
           </q-card>
         </q-card>
         <q-card id="NEWS-STUDENTS-NEWS" :style="'height:' + (31 + 11 + 31 * (newsTypes.length + 1)) + 'px'" class="q-ma-none q-pa-none fix-pa">
@@ -111,6 +111,13 @@ export default {
       const map = store.state.news.news;
       return map.get(pageNumber.value);
     });
+    const news = computed(()=> {
+      if (currentPage.value) {
+        return currentPage.value.content;
+      } else {
+        return [];
+      }
+    })
     const newsTitle = ref("");
     const newsText = ref("");
     const newsDialog = ref(false);
@@ -160,6 +167,7 @@ export default {
       await store.dispatch('news/loadNewsPage', {pageNumber: pageNumber.value});
       await store.dispatch('news/getNewsTypes');
       console.log(currentPage.value)
+      console.log(currentPage.value.content)
 
       const newsId = props.newsId;
       if (props.newsId !== null) {
@@ -173,6 +181,7 @@ export default {
     })
     return {
       currentPage,
+      news,
       allTypeObj,
       newsTypes,
       pageNumber,

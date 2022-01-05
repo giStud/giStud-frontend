@@ -3,6 +3,7 @@ import authHeader from "src/services/auth/authHeader";
 
 class NewsService {
   async getNewsPage(pageNumber) {
+    console.log(pageNumber)
     try {
       const {data} = await api.get("/news", {
         params: {
