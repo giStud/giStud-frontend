@@ -13,22 +13,21 @@
               <q-img :src="itemNews.imgSrc" />
             </q-card-section>
           </q-card>
-          <q-card flat class="bg-none">
-            <q-btn @click="pageNumber--" :disable="currentPage ? currentPage.first : true">Предыдущая страница</q-btn>
-            <q-btn @click="pageNumber++" :disable="currentPage ? currentPage.last : true">Следующая страница</q-btn>
+          <q-card flat class="bg-none row justify-between">
+            <q-btn no-caps @click="pageNumber--" :disable="currentPage ? currentPage.first : true">Предыдущая страница</q-btn>
+            <q-btn no-caps @click="pageNumber++" :disable="currentPage ? currentPage.last : true">Следующая страница</q-btn>
           </q-card>
         </q-card>
         <q-card id="NEWS-STUDENTS-NEWS" :style="'height:' + (31 + 11 + 31 * (newsTypes.length + 1)) + 'px'" class="q-ma-none q-pa-none fix-pa">
           <q-list class="q-py-none" padding>
-            <q-item v-ripple :active="selectedNewsType === allTypeObj" :active-class="theme('active-list active-list-l', 'active-list active-list-d')" class="select-type-news" clickable @click="selectedNewsType = allTypeObj">
-              <q-item-section>{{ allTypeObj.type }}</q-item-section>
+            <q-item v-ripple :active="selectedNewsType.type === 'Все'" :active-class="theme('active-list active-list-l', 'active-list active-list-d')" class="select-type-news" clickable @click="selectedNewsType = allTypeObj">
+              <q-item-section>Все</q-item-section>
             </q-item>
-            <q-separator v-if="id === 0" style="margin: 5px 0" />
-            <template v-for="(type, id) in newsTypes" :key="type.newsTypeId">
+            <q-separator style="margin: 5px 0" />
+            <template v-for="type in newsTypes" :key="type.newsTypeId">
               <q-item v-ripple :active="selectedNewsType === type" :active-class="theme('active-list active-list-l', 'active-list active-list-d')" class="select-type-news" clickable @click="selectedNewsType = type">
                 <q-item-section>{{ type.type }}</q-item-section>
               </q-item>
-              <q-separator v-if="id === 0" style="margin: 5px 0" />
             </template>
           </q-list>
         </q-card>
@@ -63,10 +62,9 @@
 <script>
 import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue'
 import NewsService from '../../services/news/newsService.js'
-import {getDateString} from "src/composables/schedule/ScheduleTable";
 import {useStore} from "vuex";
-import {customClass, customStyle, goUrl, theme} from "src/services/other/tools";
-import {debounce, useMeta} from "quasar";
+import {customClass, goUrl, theme} from "src/services/other/tools";
+import {useMeta} from "quasar";
 
 const meta = {
   title: 'Новости - GISTUD',
@@ -166,8 +164,6 @@ export default {
     onMounted(async () => {
       await store.dispatch('news/loadNewsPage', {pageNumber: pageNumber.value});
       await store.dispatch('news/getNewsTypes');
-      console.log(currentPage.value)
-      console.log(currentPage.value.content)
 
       const newsId = props.newsId;
       if (props.newsId !== null) {
@@ -190,11 +186,11 @@ export default {
       newsTitle,
       newsText,
       src,
+      checkerMouse, img,
       openNewsReadDialog,
       customClass,
       goUrl,
-      theme,
-      checkerMouse, img
+      theme
     }
   }
 }

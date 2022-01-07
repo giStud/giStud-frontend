@@ -18,11 +18,6 @@ export default boot(async ( { store, router } ) => {
   });
   Dark.set(localStorage.getItem("darkTheme") === "1");
 
-  /*let user = store.getters['auth/getCurrentUser'];
-  if (user !== null) {
-    await store.dispatch('auth/getUserRolesAction', {userId : user.id});
-  }*/
-
   const cancelRequest = async (cause) => {
     await EventBus.dispatch("logout");
     throw new axios.Cancel(cause);
@@ -30,9 +25,7 @@ export default boot(async ( { store, router } ) => {
 
   api.interceptors.request.use(
     async (config) => {
-      console.log(config)
       const authHeader = config.headers["Authorization"];
-      console.log(authHeader)
       if (authHeader) {
         let accessToken = store.getters['auth/getAccessToken'];
         let refreshToken = store.getters['auth/getRefreshToken'];
