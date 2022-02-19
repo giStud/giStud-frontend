@@ -14,8 +14,16 @@
             </q-card-section>
           </q-card>
           <q-card flat class="bg-none row justify-between">
-            <q-btn no-caps @click="pageNumber--" :disable="currentPage ? currentPage.first : true">Предыдущая страница</q-btn>
-            <q-btn no-caps @click="pageNumber++" :disable="currentPage ? currentPage.last : true">Следующая страница</q-btn>
+
+            <q-btn
+              :class="theme('btn-selected-schedule-l', 'btn-selected-schedule-d')"
+              class="btn-select-schedule" flat label="Предыдущая страница" no-caps
+              outline style="width: 185px" @click="pageNumber--" :disable="currentPage ? currentPage.first : true"/>
+
+            <q-btn
+              :class="theme('btn-selected-schedule-l', 'btn-selected-schedule-d')"
+              class="btn-select-schedule q-mx-sm" flat label="Следующая страница" no-caps
+              outline style="width: 185px"  @click="pageNumber++" :disable="currentPage ? currentPage.last : true"/>
           </q-card>
         </q-card>
         <q-card id="NEWS-STUDENTS-NEWS" :style="'height:' + (31 + 11 + 31 * (newsTypes.length + 1)) + 'px'" class="q-ma-none q-pa-none fix-pa">
@@ -266,6 +274,18 @@ export default {
 .scroll-hidden::-webkit-scrollbar {
   width: 0;
   height: 0;
+}
+
+.btn-select-schedule {
+  border-radius: 20px;
+}
+
+.btn-selected-schedule-l {
+  background: #f0f2f5;
+}
+
+.btn-selected-schedule-d {
+  background: #4a4f57;
 }
 
 </style>
