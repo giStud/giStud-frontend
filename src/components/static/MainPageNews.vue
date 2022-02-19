@@ -22,23 +22,28 @@
 <script>
 
 import {useStore} from "vuex";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {theme} from "src/services/other/tools";
 
 export default {
   name: "MainPageNews",
   setup() {
     const store = useStore();
-    const newsOptions = ref([]);
+    const firstPage = computed( () => {
+      const map = store.state.news.news;
+      return map.get(0);
+    });
+    const newsOptions = computed(()=> {
+      if (firstPage.value) {
+        return firstPage.value.content.slice(0,4);
+      } else {
+        return [];
+      }
+    })
 
     onMounted(async () => {
       store.commit('news/clearMainPageNews');
-      const data = await store.dispatch('news/getNewsPage', {existingNews: []});
-      store.commit('news/setMainPageNews', data);
-      let newsPage = store.getters['news/getMainPageNews'];
-      for (let i = 0; i < newsPage.length; i++) {
-        if (i < 4) newsOptions.value[i] = newsPage[i];
-      }
+      await store.dispatch('news/loadNewsPage', {pageNumber: 0});
     })
 
 
