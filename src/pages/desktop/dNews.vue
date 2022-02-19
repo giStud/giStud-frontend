@@ -14,7 +14,6 @@
             </q-card-section>
           </q-card>
           <q-card flat class="bg-none row justify-between">
-
             <q-btn
               :class="theme('btn-selected-schedule-l', 'btn-selected-schedule-d')"
               class="btn-select-schedule" flat label="Предыдущая страница" no-caps
@@ -60,7 +59,7 @@
           </q-card-section>
         </q-card>
         <q-card @mouseenter="checkerMouse = true" class="bg-none cursor-pointer" style="width: 100%;" v-close-popup >
-          <q-icon :color="checkerMouse?'white':''"  name="close" id="close-bt-dialog" size="lg" v-close-popup style="margin-left: 15px;color: rgba(255,255,255,0.5)" />
+          <q-icon :color="checkerMouse? 'white' : ''"  name="close" id="close-bt-dialog" size="lg" v-close-popup style="margin-left: 15px;color: rgba(255,255,255,0.5)" />
         </q-card>
       </q-card>
     </q-dialog>
@@ -160,12 +159,15 @@ export default {
 
     watch(selectedNewsType, async (val) => {
       store.commit('news/clearNewsMap')
-      if (val.type === 'Все') {
-        await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value})
+      if (pageNumber.value === 0) {
+        if (val.type === 'Все') {
+          await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value})
+        } else {
+          await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value, typeId : val.newsTypeId})
+        }
       } else {
-        await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value, sectionId : val.newsTypeId})
+        pageNumber.value = 0;
       }
-      pageNumber.value = 0;
     })
 
 

@@ -9,8 +9,11 @@
                   class="text-grey"
                   dense
                   inline-label narrow-indicator>
-            <template v-for="type in newsTypesOptions" :key="type.newsTypeId">
-              <q-tab :class="theme('color-l', 'color-d')" :name="type.type" class="q-px-sm top-nav tab-btn" flat no-caps swipable @click="newsTypeValue = type">
+            <q-tab :class="theme('color-l', 'color-d')" :name="'Все'" class="q-px-sm top-nav tab-btn" flat no-caps swipable @click="selectedNewsType = allTypeObj">
+              Все
+            </q-tab>
+            <template v-for="type in newsTypes" :key="type.newsTypeId">
+              <q-tab :class="theme('color-l', 'color-d')" :name="type.type" class="q-px-sm top-nav tab-btn" flat no-caps swipable @click="selectedNewsType = type">
                 {{ type.type }}
               </q-tab>
             </template>
@@ -19,7 +22,7 @@
         <q-separator v-if="!Dark.isActive"/>
         <q-card :class="theme('bg-none-l', 'bg-none-d')" class="q-mt-sm" flat square>
           <template v-for="itemNews in news" :key="itemNews">
-            <q-card class="q-mb-sm cursor-pointer" flat square @click="getNews(itemNews)">
+            <q-card class="q-mb-sm cursor-pointer" flat square @click="openNewsReadDialog(itemNews)">
               <q-separator v-if="!Dark.isActive"/>
               <q-card-section>
                 <p :class="theme('text-black', 'text-white')" class="text-justify" style="font-size: 15px; margin: 0 0 10px 0; font-weight: bold">
@@ -36,10 +39,19 @@
             </q-card>
           </template>
         </q-card>
-        <div style="text-align: center; margin-bottom: 30px; margin-top: 15px;">
-          <q-chip square clickable v-if="visibleLoadBtn && (news.length % 5 === 0) && (news.length !== 0)" @click="loadNextPage" outline :color="theme('primary', 'white')" text-color="white" icon-right="arrow_drop_down">
-            Загрузить ещё
-          </q-chip>
+        <div class="justify-between" >
+          <q-card flat class="bg-none row justify-between" :class="theme('bg-none-l', 'bg-none')" style="margin-bottom: 30px; margin-top: 15px; background: none">
+            <q-btn
+              :class="theme('btn-selected-schedule-l', 'btn-selected-schedule-d')"
+              class="btn-select-schedule" icon="west" no-caps
+              :color="theme('primary', 'white')"
+              outline rounded style="width: 60px; margin-left: 15px" @click="pageNumber--" :disable="currentPage ? currentPage.first : true"/>
+            <q-btn
+              :class="theme('btn-selected-schedule-l', 'btn-selected-schedule-d')"
+              class="btn-select-schedule q-mx-sm" icon="east" no-caps
+              :color="theme('primary', 'white')"
+              outline rounded style="width: 60px; margin-right: 15px"  @click="pageNumber++" :disable="currentPage ? currentPage.last : true"/>
+          </q-card>
         </div>
 
         <div style="height: 40px;"></div>
@@ -66,39 +78,101 @@
 </template>
 
 <script>
-import {debug, goUrl, theme} from "src/services/other/tools";
-import {onMounted, ref, watch} from "vue";
-import {Dark, useQuasar} from "quasar";
+import {customClass, debug, goUrl, theme} from "src/services/other/tools";
+import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {Dark, useMeta, useQuasar} from "quasar";
 import texts from "src/info/texts";
 import {useStore} from "vuex";
+import NewsService from "src/services/news/newsService";
 
 export default {
   name: "mNews",
 
   setup() {
-    const $q = useQuasar();
     const store = useStore();
-    const news = ref([]);
+    const allTypeObj = {newsTypeId: -1, type: 'Все', iconName: 'apps'};
+    const selectedNewsType = ref(allTypeObj);
+    const pageNumber = ref(0);
+    const newsTypes = computed(() => store.getters['news/getNewsTypes']);
+    const currentPage = computed( () => {
+      const map = store.state.news.news;
+      return map.get(pageNumber.value);
+    });
+    const news = computed(()=> {
+      if (currentPage.value) {
+        return currentPage.value.content;
+      } else {
+        return [];
+      }
+    })
     const newsTitle = ref("");
     const newsText = ref("");
     const newsDialog = ref(false);
     const newsSrc = ref("");
-    const allTypeObj = {newsTypeId: -1, type: 'Все', iconName: 'apps'}
     const newsTabPanel = ref(allTypeObj.type);
-    const newsTypeValue = ref(allTypeObj);
-    const newsTypesOptions = ref([]);
-    const dialogModel = ref(false);
-    const currentNewsTypeIndex = ref(0);
-    const visibleLoadBtn = ref(true);
 
-    const getNews = (newsObject) => {
+    const openNewsReadDialog = (news) => {
       newsDialog.value = true;
-      newsTitle.value = newsObject.title;
-      newsText.value = newsObject.fullText;
-      newsSrc.value = newsObject.source;
+      newsTitle.value = news.title;
+      newsText.value = news.fullText;
+      newsSrc.value = news.source;
     };
 
-    const loadNextPage = async () => {
+    watch(pageNumber, async (newVal) => {
+      const map = store.getters['news/getNewsMap'];
+      const values = map.get(newVal);
+      if (!values) {
+        const typeId = getNewsTypeId();
+        await store.dispatch('news/loadNewsPage', {pageNumber: newVal, typeId});
+      }
+    })
+
+    const getNewsTypeId = () => {
+      if (selectedNewsType.value.type !== 'Все') {
+        return selectedNewsType.value.newsTypeId;
+      } else {
+        return null;
+      }
+    }
+
+    watch(selectedNewsType, async (val) => {
+      store.commit('news/clearNewsMap')
+      if (pageNumber.value === 0) {
+        if (val.type === 'Все') {
+          await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value})
+        } else {
+          await store.dispatch('news/loadNewsPage', {pageNumber : pageNumber.value, typeId : val.newsTypeId})
+        }
+      } else {
+        pageNumber.value = 0;
+      }
+    })
+
+
+    onMounted(async () => {
+      store.commit('globalState/changeCurrentPage','news');
+      await store.dispatch('news/loadNewsPage', {pageNumber: pageNumber.value});
+      await store.dispatch('news/getNewsTypes');
+    });
+
+    onBeforeUnmount(()=> {
+      store.commit('news/clearNewsMap');
+    })
+
+    /*
+      const newsTypeValue = ref(allTypeObj);
+      const newsTypesOptions = ref([]);
+      const currentNewsTypeIndex = ref(0);
+      const visibleLoadBtn = ref(true);
+
+      const getNews = (newsObject) => {
+        newsDialog.value = true;
+        newsTitle.value = newsObject.title;
+        newsText.value = newsObject.fullText;
+        newsSrc.value = newsObject.source;
+      };
+
+      const loadNextPage = async () => {
       let idsOfExistingsNews = [];
       let data;
       for (let item of news.value) {
@@ -158,25 +232,22 @@ export default {
       newsTypeValue.value = allTypeObj;
     });
 
-    watch(newsTypeValue, filterByNewsType);
+    watch(newsTypeValue, filterByNewsType);*/
 
     return {
+      currentPage,
+      allTypeObj,
+      pageNumber,
+      selectedNewsType,
+      newsSrc,
       newsTabPanel,
-      texts,
       news,
       newsDialog,
       newsTitle,
       newsText,
-      newsSrc,
-      newsTypeValue,
-      newsTypesOptions,
-      dialogModel,
-      currentNewsTypeIndex,
-      visibleLoadBtn,
-      scaleNewsTypeIndex,
-      filterByNewsType,
-      loadNextPage,
-      getNews,
+      newsTypes,
+      openNewsReadDialog,
+      customClass,
       goUrl,
       theme,
       debug,
@@ -186,6 +257,18 @@ export default {
 }
 </script>
 <style scoped>
+.btn-select-schedule {
+  border-radius: 20px;
+}
+
+.btn-selected-schedule-l {
+  background: #f0f2f5;
+}
+
+.btn-selected-schedule-d {
+  background: #4a4f57;
+}
+
 .alodaun span {
   color: white;
 }
