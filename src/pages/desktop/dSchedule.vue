@@ -491,7 +491,7 @@ export default {
     const editLessonFinishTime = ref('');
     const editLessonType = ref(null);
     const editLessonAudience = ref('');
-    const editLessonNumerator = ref('');
+    const editLessonNumerator = ref('FULL');
     const editLessonDay = ref('');
     const editLessonSelectedWeeks = ref([]);
     const editLessonWeeksOptions = ref([]);
@@ -557,6 +557,7 @@ export default {
     }
 
     watch(editLessonSemesterType, (newVal) => {
+      editLessonNumerator.value = getLessonNumeratorByWeeks(lessonsToEditArray.value, editLessonSemesterType.value);
       fillEditLessonWeeksOptByLessons(newVal);
       editLessonSelectedWeeks.value = [];
     })

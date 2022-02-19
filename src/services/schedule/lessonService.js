@@ -36,10 +36,9 @@ class LessonService {
       const lessonsNumerator = getLessonNumeratorByWeeks(lessonsToChange);
       let newNumerator = newValuesObj.editLessonNumerator !== lessonsNumerator ? newValuesObj.editLessonNumerator : null;
 
-      const lessonsWeeks = getWeeksArrayByLessons(lessonsToChange);
-      const newWeeks = !arraysEqual(lessonsWeeks,newValuesObj.editLessonSelectedWeeks) ? newValuesObj.editLessonSelectedWeeks : null;
-
-      if (newWeeks !== null) {
+      let newWeeks = null;
+      if (newValuesObj.editLessonSelectedWeeks && newValuesObj.editLessonSelectedWeeks.length !== 0) {
+        newWeeks = newValuesObj.editLessonSelectedWeeks;
         newNumerator = 'CUSTOM';
       }
 
