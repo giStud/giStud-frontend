@@ -1,9 +1,10 @@
 import {api} from "boot/axios";
+import authHeader from "src/services/auth/authHeader";
 
 class NewsService {
   async getNewsPage(pageNumber) {
     try {
-      const {data} = await api.get("/news", {
+      const {data} = await api.get("/news/page", {
         params: {
           pageNumber,
         },
@@ -17,7 +18,7 @@ class NewsService {
 
   async getNewsPageByType(pageNumber, typeId) {
     try {
-      const {data} = await api.get("/news/filterByType", {
+      const {data} = await api.get("/news/page/filterByType", {
         params: {
           pageNumber,
           typeId
@@ -33,6 +34,15 @@ class NewsService {
   async getNewsItemById(newsId) {
     try {
       const {data} = await api.get("/news/" + newsId)
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getAllNews() {
+    try {
+      const {data} = await api.get("/news/all",{headers: authHeader()})
       return data;
     } catch (e) {
       throw e;

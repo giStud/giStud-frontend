@@ -9,3 +9,7 @@ export function clearNewsMap(state) {
 export function setNewsTypes (state, types) {
   state.newsTypes = types;
 }
+
+export function setAdminNews(state, news) {
+  state.adminNews = news;
+}

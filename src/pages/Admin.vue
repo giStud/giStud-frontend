@@ -595,9 +595,10 @@ export default {
       newsProperty.value = localStorage.getItem("adminNewsCurrentTab");
       univRequestsRows.value = await UserMessagesService.getUserMessages();
 
-      await store.dispatch('news/downloadAllNews');
-      newsRows.value = store.getters['news/getNews'];
-      newsTypesOptions.value = await NewsTypeService.getNewsTypes();
+      await store.dispatch('news/fillNewsForAdmin');
+      await store.dispatch('news/getNewsTypes');
+      newsRows.value = store.getters['news/getAdminNews'];
+      newsTypesOptions.value = store.getters['news/getNewsTypes'];
 
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
     })

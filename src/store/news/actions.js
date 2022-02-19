@@ -20,3 +20,12 @@ export async function getNewsTypes({commit}) {
     throw e;
   }
 }
+
+export async function fillNewsForAdmin({commit}) {
+  try {
+    const data = await NewsService.getAllNews();
+    commit('setAdminNews', data);
+  } catch (e) {
+    throw e;
+  }
+}

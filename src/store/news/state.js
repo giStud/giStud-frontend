@@ -2,7 +2,7 @@ const newsPagesMap = new Map();
 
 export default function () {
   return {
-    mainPageNews : [],
+    adminNews : [],
     news : newsPagesMap,
     newsTypes : [],
   }
