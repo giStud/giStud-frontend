@@ -24,11 +24,6 @@
     <q-card-section class="q-pa-none">
       <q-card flat square class="row items-center bg-none">
         <q-card-section class="q-pa-none q-px-sm">
-<!--          <q-select rounded outlined style="width: 180px;"  dense use-input hide-selected  v-model="search" :options="options" hide-dropdown-icon>
-            <template v-slot:append>
-              <q-icon name="search" style="padding-bottom: 7px"/>
-            </template>
-          </q-select>-->
           <SearchBox/>
         </q-card-section>
 
@@ -37,8 +32,10 @@
           <q-btn disable class="gistud-dev" :class="theme('two-btn-l', '')" flat icon="fas fa-bullhorn" round size="10px"></q-btn>
         </q-card-section>
 
-        <q-card-section class="items-center q-pa-none q-pl-sm">
-          <q-btn-dropdown no-caps flat :label="currentUser === null ? 'Кто здесь a???' : currentUser.username">
+        <!--        <q-card-section class="items-center q-pa-none q-pl-sm">
+                  <q-btn-dropdown no-caps flat :label="currentUser === null ? 'Кто здесь a???' : currentUser.username">-->
+        <q-card-section :class="!isAdmin ? 'hidden' : ''" class="items-center q-pa-none q-pl-sm">
+          <q-btn-dropdown :disable="!isAdmin" class="gistud-dev" :style="isAdmin ? '' : theme('color: white', 'color: #2e2f31')" no-caps flat :label="currentUser === null ? 'Кто здесь a???' : currentUser.username">
             <div class="row q-pa-md">
               <div class="column">
                 <div class="text-h6 q-mb-md">Настройки</div>

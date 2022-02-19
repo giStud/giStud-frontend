@@ -1,5 +1,5 @@
 <template>
-  <input v-model="inputField" ref="searchInput" :class="theme('search-box-l', 'search-box-d')" autocomplete="off"
+  <input :disabled="true" v-model="inputField" ref="searchInput" :class="theme('search-box-l', 'search-box-d')" autocomplete="off"
          type="text" name="search" placeholder="Поиск" class="q-pa-sm search-box gistud-dev"/>
   <q-menu v-model="isMenuShowed" :target="$refs.searchInput" no-focus :offset="[0, 11]" square>
     <q-list style="width: 180px; max-width: 180px;">
