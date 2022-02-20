@@ -416,25 +416,6 @@ const dayMap = [
   }
 ]
 
-const numeratorMap = [
-  {
-    label: 'Числитель',
-    value: 'NUMERATOR',
-  },
-  {
-    label: 'Знаменатель',
-    value: 'DENOMINATOR',
-  },
-  {
-    label: 'Каждую неделю',
-    value: 'FULL',
-  },
-  {
-    label: 'По неделям',
-    value: 'CUSTOM',
-  }
-]
-
 const semestersMap = [
   {
     label: 'Осенний семестр',
@@ -538,6 +519,9 @@ export default {
         lessonsToEditArray.value = await LessonService.getLessonEditInfoById(lessonInfoObject.lessonId)
         if (lessonsToEditArray.value.length !== 0) {
           const lessonExample = lessonsToEditArray.value[0];
+          if (selectedWeek.value) {
+            editLessonSemesterType.value = selectedWeek.value < 23 ? 'AUTUMN' : 'SPRING';
+          }
           editLessonName.value = lessonExample.name;
           editRawLessonString.value = lessonExample.rawLessonString;
           editLessonStartTime.value = lessonExample.startTime.substr(0, 5);
@@ -925,6 +909,27 @@ export default {
         return 'Числитель';
       }
       return 'Знаменатель';
+    });
+
+    const numeratorMap = computed(() => {
+      return [
+        {
+          label: isSelectedUnivEgu(univSelectValue.value) ? 'Знаменатель' : 'Числитель',
+          value: 'NUMERATOR',
+        },
+        {
+          label: isSelectedUnivEgu(univSelectValue.value) ? 'Числитель' : 'Знаменатель',
+          value: 'DENOMINATOR',
+        },
+        {
+          label: 'Каждую неделю',
+          value: 'FULL',
+        },
+        {
+          label: 'По неделям',
+          value: 'CUSTOM',
+        }
+      ]
     });
 
     return {
