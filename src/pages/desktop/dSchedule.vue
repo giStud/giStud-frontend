@@ -230,7 +230,7 @@
                 </template>
                 <q-card-section>
                   <span>День: {{ lessonInfoObject.day }}, {{ lessonInfoObject.dateString }}, {{ selectedWeek }} неделя, {{
-                      currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель'
+                      weekTypeText
                     }}</span>
                 </q-card-section>
                 <q-card-section :style="theme('background-color: rgb(240,242,245)','background-color: rgb(74,79,87')">
