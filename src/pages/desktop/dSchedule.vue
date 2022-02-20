@@ -60,7 +60,7 @@
       </q-card>
       <q-card id="SCHEDULE-NAVIGATION" class="center-all justify-center items-center page-width fix-pa">
         <q-card class="t-center" style="font-size: 16px; margin-top: -25px">{{ selectedWeek }} неделя,
-          {{ currentWeekType === 'NUMERATOR' ? 'числитель' : 'знаменатель' }}
+          {{ weekTypeText }}
         </q-card>
 
         <q-card id="schedule-nav-btn" class="row center-all justify-between items-center fix-pa">
@@ -86,12 +86,12 @@
             </q-btn>
             <q-btn
               :class="currentWeekType === 'NUMERATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')"
-              class="btn-select-schedule" flat label="Числитель" no-caps
+              class="btn-select-schedule" flat :label="firstWeekButtonToggleName" no-caps
               outline style="width: 120px" @click="toggleWeekBtn('NUMERATOR')"/>
 
             <q-btn
               :class="currentWeekType === 'DENOMINATOR' ? theme('btn-selected-schedule-l', 'btn-selected-schedule-d') : theme('text-grey', 'text-grey')"
-              class="btn-select-schedule q-mx-sm" flat label="Знаменатель" no-caps
+              class="btn-select-schedule q-mx-sm" flat :label="secondWeekButtonToggleName" no-caps
               outline style="width: 120px" @click="toggleWeekBtn('DENOMINATOR')"/>
 
             <q-btn id="calendar" class="buttons-date" flat icon="today" no-caps rounded>
@@ -366,7 +366,8 @@ import {
   getTypeColorByValue,
   getTypeNameByValue,
   getLessonNumeratorByWeeks,
-  getWeeksArrayByLessons, getMonthStringByDate
+  getWeeksArrayByLessons, getMonthStringByDate,
+  isSelectedUnivEgu
 } from "src/composables/schedule/ScheduleTable";
 import LessonService from 'src/services/schedule/lessonService'
 import GroupService from 'src/services/schedule/groupsService'
@@ -501,7 +502,6 @@ export default {
 
 
     const openLessonInfo = (lesson, time, lessonDate, numberOfLesson) => {
-      console.log(lessonDate)
       if ((lesson && lesson.name !== '' && time) || isAdmin.value) {
         lessonInfoDialog.value = true;
         const audienceValue = lesson.audienceEntity.audience;
@@ -575,6 +575,8 @@ export default {
       const data = await LessonService.changeLessonsByNewValues(lessonsToEditArray.value, newValuesObj);
       console.log(data)
       await loadGroupSchedule(groupSelectValue.value);
+      editMode.value = false
+      lessonInfoDialog.value = false;
     }
 
     const handleLessonDeleting = async () => {
@@ -904,6 +906,27 @@ export default {
       }
     }
 
+    const weekTypeText = computed(() => {
+      if (isSelectedUnivEgu(univSelectValue.value)) {
+        return currentWeekType.value === 'NUMERATOR' ? 'знаменатель' : 'числитель';
+      }
+      return currentWeekType.value === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+    });
+
+    const firstWeekButtonToggleName = computed(() => {
+      if (isSelectedUnivEgu(univSelectValue.value)) {
+        return 'Знаменатель';
+      }
+      return 'Числитель';
+    });
+
+    const secondWeekButtonToggleName = computed(() => {
+      if (isSelectedUnivEgu(univSelectValue.value)) {
+        return 'Числитель';
+      }
+      return 'Знаменатель';
+    });
+
     return {
       isAdmin,
       editMode,
@@ -936,6 +959,9 @@ export default {
       selectedWeek,
       datePickerDate,
       columnWidth,
+      weekTypeText,
+      firstWeekButtonToggleName,
+      secondWeekButtonToggleName,
       openEditModeDialog,
       handleLessonChanging,
       handleLessonDeleting,

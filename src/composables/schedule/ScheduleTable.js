@@ -445,10 +445,18 @@ export function isCurrentLessonGoes(selectedWeek, lesson, lessonBeginTime, lesso
   }
 }
 
+export function isSelectedUnivEgu(univObj) {
+  if (univObj && univObj.univName) {
+    const univName = univObj.univName;
+    return univName === 'ЕГУ'
+  }
+  return false;
+}
+
 export function getLessonNumeratorByWeeks(lessons, semester) {
   if (lessons.length !== 0) {
     const weeksArray = getWeeksArrayByLessons(lessons);
-    return getNumeratorByWeeksArray(weeksArray, semester === 'AUTUMN' ? autumnLimit : springLimit);
+    return getNumeratorByWeeksArray(weeksArray, semester);
   }
 }
 
@@ -460,7 +468,8 @@ export function getWeeksArrayByLessons(lessons) {
   return weeksArray.sort((a, b) => a - b);
 }
 
-function getNumeratorByWeeksArray(weeks, limit) {
+export function getNumeratorByWeeksArray(weeks, semester) {
+  const limit = semester === 'AUTUMN' ? autumnLimit : springLimit;
   let weeksToCompare = [];
   for (let i = limit === autumnLimit ? 1 : autumnLimit; i < limit; i += 2) {
     weeksToCompare.push(i);

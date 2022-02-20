@@ -1,6 +1,10 @@
 import {api} from "boot/axios"
 import authHeader from "../auth/authHeader";
-import {getLessonNumeratorByWeeks, getWeeksArrayByLessons} from "src/composables/schedule/ScheduleTable";
+import {
+  getLessonNumeratorByWeeks,
+  getNumeratorByWeeksArray,
+  getWeeksArrayByLessons
+} from "src/composables/schedule/ScheduleTable";
 import {arraysEqual} from "src/services/other/tools";
 
 class LessonService {
@@ -24,6 +28,7 @@ class LessonService {
 
   async changeLessonsByNewValues(lessonsToChange, newValuesObj) {
     if (lessonsToChange.length !== 0) {
+      console.log(newValuesObj)
       const lessonToExample = lessonsToChange[0];
       const newLessonName = newValuesObj.editLessonName !== lessonToExample.name ? newValuesObj.editLessonName : null;
       const newRawLessonString = newValuesObj.editRawLessonString !== lessonToExample.rawLessonString ? newValuesObj.editRawLessonString : null;
@@ -33,12 +38,13 @@ class LessonService {
       const newAudience = newValuesObj.editLessonAudience !== lessonToExample.audienceEntity.audience ? newValuesObj.editLessonAudience : null;
       const newType = newValuesObj.editLessonType.typeName !== lessonToExample.typeEntity.typeName ? newValuesObj.editLessonType : null;
 
-      const lessonsNumerator = getLessonNumeratorByWeeks(lessonsToChange);
+      const semester = newValuesObj.editLessonSemesterType;
+      const lessonsNumerator = getLessonNumeratorByWeeks(lessonsToChange, semester);
       let newNumerator = newValuesObj.editLessonNumerator !== lessonsNumerator ? newValuesObj.editLessonNumerator : null;
 
-      let newWeeks = null;
-      if (newValuesObj.editLessonSelectedWeeks && newValuesObj.editLessonSelectedWeeks.length !== 0) {
-        newWeeks = newValuesObj.editLessonSelectedWeeks;
+      const lessonsWeeks = getWeeksArrayByLessons(lessonsToChange);
+      const newWeeks = !arraysEqual(lessonsWeeks,newValuesObj.editLessonSelectedWeeks) ? newValuesObj.editLessonSelectedWeeks : null;
+      if (newWeeks !== null) {
         newNumerator = 'CUSTOM';
       }
 

@@ -21,7 +21,7 @@
         <q-card-section :class="theme('', 'bg-dark')" class="row justify-between fix-px fix-pb" style="padding-top: 8px">
           <q-card class="q-py-sm" flat square>
             <q-card-section class="q-pa-none" style="font-size: 12px">
-              Неделя: {{currentWeek}}, {{currentWeekType}}
+              Неделя: {{currentWeek}}, {{weekTypeText}}
             </q-card-section>
             <q-card-section class="q-pa-none" style="font-size: 12px">
               День: {{selectedDate.getDate() + ' ' + getMonthStringByDate(selectedDate) }}
@@ -212,7 +212,7 @@
 </template>
 
 <script>
-import {onMounted, ref, watch} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import {useStore} from "vuex";
 import {
   getDateOfMonday,
@@ -220,7 +220,7 @@ import {
   getMonthStringByDate,
   getNumberOfWeek,
   getScheduleCellColor,
-  getTypeOfWeek
+  getTypeOfWeek, isSelectedUnivEgu
 } from "src/composables/schedule/ScheduleTable";
 import {useMeta, useQuasar} from "quasar";
 import ScheduleWeekButtons from "components/mobile/schedule/ScheduleWeekButtons";
@@ -465,7 +465,7 @@ export default {
         currentWeek.value = getNumberOfWeek(getDateOfMonday(val));
         if (currentWeek.value !== oldWeek) {
           updateButtonsDataString();
-          currentWeekType.value = getTypeOfWeek(getNumberOfWeek(getDateOfMonday(val))) === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+          currentWeekType.value = getTypeOfWeek(getNumberOfWeek(getDateOfMonday(val)));
         }
 
         const selectedGroup = store.getters['schedule/getSelectedGroup'];
@@ -474,6 +474,13 @@ export default {
         }
       }
     })
+
+    const weekTypeText = computed(() => {
+      if (isSelectedUnivEgu(univSelectValue.value)) {
+        return currentWeekType.value === 'NUMERATOR' ? 'знаменатель' : 'числитель';
+      }
+      return currentWeekType.value === 'NUMERATOR' ? 'числитель' : 'знаменатель';
+    });
 
     onMounted(async () => {
       store.commit('globalState/changeCurrentPage','schedule');
@@ -532,6 +539,7 @@ export default {
       groupSelectDialog,
       settingsDialog,
       helpDialog,
+      weekTypeText,
       filterUniversitiesFn,
       filterGroupsFn,
       getScheduleCellColor,
