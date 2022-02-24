@@ -21,6 +21,12 @@ export async function getNewsTypes({commit}) {
   }
 }
 
+export async function updateNewsEntity({commit}, {id, newValue}) {
+  const data = await NewsService.updateNewsEntity(id, newValue);
+  commit('editNews', {id, data});
+  return data;
+}
+
 export async function fillNewsForAdmin({commit}) {
   try {
     const data = await NewsService.getAllNews();

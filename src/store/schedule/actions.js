@@ -1,6 +1,8 @@
 import LessonsService from '../../services/schedule/lessonService';
 import GroupService from '../../services/schedule/groupsService';
 import UniversityService from '../../services/schedule/universityService';
+import FacultyService from '../../services/schedule/facultyService'
+import {setFaculties} from "src/store/schedule/mutations";
 
 export async function getGroupById({commit}, {grId}) {
   try {
@@ -25,6 +27,12 @@ export async function createUniversityAction({commit}, {name, cityName}) {
   return data;
 }
 
+export async function createFacultyAction({commit}, payload) {
+  const data = await FacultyService.createFaculty(payload);
+  commit('addFacultyName', data);
+  return data;
+}
+
 export async function getGroupNamesByUnivAction({commit}, {univId}) {
   try {
     const data = await GroupService.getGroupNamesByUniv(univId)
@@ -37,8 +45,8 @@ export async function getGroupNamesByUnivAction({commit}, {univId}) {
 
 export async function getFacNamesByUnivAction({commit}, {univId}) {
   try {
-    const data = await UniversityService.getFacNames(univId)
-    commit('setFacNames', data)
+    const data = await FacultyService.getFacultiesByUniv(univId)
+    commit('setFaculties', data)
     return data;
   } catch (e) {
     throw e;

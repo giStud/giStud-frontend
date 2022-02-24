@@ -485,16 +485,14 @@ export default {
     const openLessonInfo = (lesson, time, lessonDate, numberOfLesson) => {
       if ((lesson && lesson.name !== '' && time) || isAdmin.value) {
         lessonInfoDialog.value = true;
-        const audienceValue = lesson.audienceEntity.audience;
+        const audience = lesson.audience ? lesson.audience : '';
         const typeValue = lesson.typeEntity.typeName;
-        const audience = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
         const type = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
         const lessonText = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
         const timeString = time.lessonBeginTime + '-' + time.lessonFinishTime;
         const day = getFullDayWeekString(lesson.day);
         const dateArray = lessonDate.split('.');
         const date = new Date(dateArray[1] + '.' + dateArray[0] + '.' + dateArray[2]);
-        console.log(date)
         const dateString = date.getDate().toString() + ' ' + getMonthStringByDate(date);
         const isGoingNow = isCurrentLessonGoes(selectedWeek.value, lesson, time.lessonBeginTime, time.lessonFinishTime);
 
@@ -527,7 +525,7 @@ export default {
           editLessonStartTime.value = lessonExample.startTime.substr(0, 5);
           editLessonFinishTime.value = lessonExample.finishTime.substr(0, 5);
           editLessonDay.value = lessonExample.day;
-          editLessonAudience.value = lessonExample.audienceEntity.audience;
+          editLessonAudience.value = lessonExample.audience;
           editLessonType.value = lessonExample.typeEntity;
           editLessonNumerator.value = getLessonNumeratorByWeeks(lessonsToEditArray.value, editLessonSemesterType.value);
           editLessonSelectedWeeks.value = getWeeksArrayByLessons(lessonsToEditArray.value);
@@ -543,7 +541,7 @@ export default {
     watch(editLessonSemesterType, (newVal) => {
       editLessonNumerator.value = getLessonNumeratorByWeeks(lessonsToEditArray.value, editLessonSemesterType.value);
       fillEditLessonWeeksOptByLessons(newVal);
-      editLessonSelectedWeeks.value = [];
+      //editLessonSelectedWeeks.value = [];
     })
 
     const fillEditLessonWeeksOptByLessons = (semester) => {
@@ -557,7 +555,6 @@ export default {
 
     const handleLessonChanging = async (newValuesObj) => {
       const data = await LessonService.changeLessonsByNewValues(lessonsToEditArray.value, newValuesObj);
-      console.log(data)
       await loadGroupSchedule(groupSelectValue.value);
       editMode.value = false
       lessonInfoDialog.value = false;
@@ -610,14 +607,12 @@ export default {
           const selectedGroup = await store.dispatch('schedule/getGroupById', {
             grId: selectedGroupId,
           });
-          console.log(selectedGroup)
           const univ = selectedGroup.facultyEntity.universityEntity;
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, selectedWeek.value);
           if (univ && univSelectValue.value && univ.univId !== univSelectValue.value.univId) {
             univSelectValue.value = await UniversityService.getUnivNameById(univ.univId);
           }
-          console.log(selectedGroup)
         } else {
           console.log('removeGroup')
           localStorage.removeItem("lastLoadedGroupNew");
@@ -728,8 +723,6 @@ export default {
           })
           localStorage.setItem('lastLoadedUniv', JSON.stringify(newValue));
           if (groupSelectValue.value && groupSelectValue.value.univId !== selectedUnivId) {
-            console.log(groupSelectValue.value.univId)
-            console.log(selectedUnivId)
             groupSelectValue.value = null;
           }
         }
@@ -739,7 +732,6 @@ export default {
     })
 
     watch(groupSelectValue, async (newValue) => {
-      console.log(groupSelectValue.value);
       await loadGroupSchedule(newValue)
       await updateCellHeight();
     });

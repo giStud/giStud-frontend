@@ -2,7 +2,7 @@ export default function () {
   return {
     groupNames : [],
     univNames : [],
-    facNames : [],
+    faculties : [],
     lessonTypes : [],
     selectedGroup : {},
   }

@@ -162,9 +162,8 @@ export default {
     const openLessonInfoDialog = (lesson, time) => {
       if (lesson.name && lesson.name !== '' && time) {
         lessonInfoDialog.value = true;
-        const audienceValue = lesson.audienceEntity.audience;
         const typeValue = lesson.typeEntity.typeName;
-        lessonInfoAudience.value = audienceValue !== 'UNKNOWN' && audienceValue !== '' ? audienceValue : null;
+        lessonInfoAudience.value = lesson.audience;
         lessonInfoType.value = typeValue !== 'UNKNOWN' && typeValue !== '' ? typeValue : null;
         lessonInfoText.value = rawLessonStringMode.value ? lesson.rawLessonString : lesson.name;
         lessonInfoTimeString.value = time.lessonBeginTime + '-' + time.lessonFinishTime;
