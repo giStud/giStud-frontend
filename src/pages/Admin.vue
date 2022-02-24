@@ -154,6 +154,7 @@
                       align="justify"
                       narrow-indicator>
                 <q-tab name="universityCreate" label="Добавление университета"/>
+                <q-tab name="facultyCreate" label="Добавление факультета"/>
                 <q-tab name="groupCreate" label="Добавление группы"/>
               </q-tabs>
 
@@ -176,6 +177,50 @@
                     </q-card-actions>
                   </q-card>
                 </q-tab-panel>
+                <q-tab-panel class="bg-none" name="facultyCreate">
+                  <q-card flat square class="bg-none">
+                    <q-card-section class="text-h4 q-mb-md">Добавление нового факультета</q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingFacultyName" label="Имя факультета"/>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-input v-model="creatingFacultyLink" label="Ссылка на сайт с расписанием (не обязательно)"/>
+                    </q-card-section>
+                    <q-card-section>
+                      <q-select v-model="univSelectValue" :options="univFilteredOptions" borderless bottom-slots
+                                class="select-ug"
+                                fill-input hide-selected
+                                label="Выберите университет"
+                                option-label="univName"
+                                outlined transition-hide="jump-up" transition-show="jump-up"
+                                use-input @filter="filterUniversitiesFn">
+                        <template v-slot:option="scope">
+                          <q-item v-bind="scope.itemProps">
+                            <q-item-section>
+                              <q-item-label v-html="scope.opt.univName"/>
+                              <q-item-label caption>{{ scope.opt.city }}</q-item-label>
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">Не найдено</q-item-section>
+                          </q-item>
+                        </template>
+                        <template v-slot:append>
+                          <q-icon name="search"/>
+                        </template>
+                      </q-select>
+                    </q-card-section>
+                    <q-card-actions>
+                      <q-btn color="primary"
+                             @click="handleFacultyCreating(creatingFacultyName, creatingFacultyLink, univSelectValue)"
+                             no-caps label="Добавить"/>
+                    </q-card-actions>
+                  </q-card>
+                </q-tab-panel>
+
+
                 <q-tab-panel class="bg-none" name="groupCreate">
                   <q-card flat square class="bg-none">
                     <q-card-section class="text-h4 q-mb-md">Создание расписания группы</q-card-section>
@@ -216,10 +261,11 @@
                     <q-card-section>
                       <q-select v-model="facultySelectValue" :options="facultyFilteredOptions" borderless bottom-slots
                                 class="select-ug" fill-input hide-selected
+                                option-label="faculty"
                                 label="Выберите факультет"
                                 outlined transition-hide="jump-up" transition-show="jump-up"
                                 use-input @filter="filterFacultiesFn"
-                                @update:model-value="facultyNameInput = ''">
+                                >
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">Не найдено</q-item-section>
@@ -229,9 +275,6 @@
                           <q-icon name="search"/>
                         </template>
                       </q-select>
-                    </q-card-section>
-                    <q-card-section>
-                      <q-input v-model="facultyNameInput" label="Имя факультета" @update:model-value="facultySelectValue = null"/>
                     </q-card-section>
                     <q-card-section>
                       <q-input v-model="creatingGroupName" label="Имя группы"/>
@@ -254,7 +297,7 @@
                     </q-card-section>
                     <q-card-actions>
                       <q-btn color="primary"
-                             @click="handleGroupCreating({univ : univSelectValue, facName : facultySelectValue != null ? facultySelectValue : facultyNameInput, name : creatingGroupName, timeArray : groupTimeArray}, groupCreatingSemester)"
+                             @click="handleGroupCreating({faculty : facultySelectValue, name : creatingGroupName, timeArray : groupTimeArray}, groupCreatingSemester)"
                              no-caps label="Добавить"/>
                     </q-card-actions>
                   </q-card>
@@ -430,20 +473,36 @@ export default {
         univRequestsRows.value = await UserMessagesService.getUserMessages();
       }
     }
-
+    const creatingFacultyName = ref('');
+    const creatingFacultyLink = ref('');
     const univSelectValue = ref(null);
     const facultySelectValue = ref('');
     const univSelectOptions = ref([]);
     const univFilteredOptions = ref(univSelectOptions.value);
     const facultySelectOptions = ref([]);
     const facultyFilteredOptions = ref(facultySelectOptions.value);
-    const facultyNameInput = ref('');
     const creatingGroupName = ref('');
     const groupCreatingSemester = ref('AUTUMN');
     const groupTimeArray = ref(['08:00', '09:45', '11:30', '13:30', '15:15', '17:00', '', '']);
 
     const handleGroupCreating = async (group, semester) => {
-      await GroupService.createGroup(group, semester);
+      try {
+        await GroupService.createGroup(group, semester);
+        $q.notify({
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Новый группа успешно добавлена",
+        });
+      } catch (e) {
+        $q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message : 'Ошибка при добавлении новой группы',
+        });
+        console.log(e)
+      }
     }
 
     const filterUniversitiesFn = (val, update, abort) => {
@@ -545,7 +604,7 @@ export default {
         for (let selected of selectedNewsRows.value) {
           await NewsService.deleteNewsEntityById(selected.newsId)
         }
-        newsRows.value = await NewsService.getNews();
+        newsRows.value = await NewsService.getAllNews();
       }
     }
 
@@ -586,7 +645,43 @@ export default {
     const creatingUniversityCityName = ref('');
 
     const handleUnivCreating = async (name, cityName) => {
-       await store.dispatch('schedule/createUniversityAction', {name, cityName});
+      try {
+        await store.dispatch('schedule/createUniversityAction', {name, cityName});
+        $q.notify({
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Новый университет успешно добавлен",
+        });
+      } catch (e) {
+        $q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message : 'Ошибка при добавлении нового университета',
+        });
+        console.log(e)
+      }
+    }
+
+    const handleFacultyCreating = async (name, link, univ) => {
+      try {
+        await store.dispatch('schedule/createFacultyAction', {name, link, univ});
+        $q.notify({
+          color: "green-4",
+          textColor: "white",
+          icon: "cloud_done",
+          message: "Новый факультет успешно добавлен",
+        });
+      } catch (e) {
+        $q.notify({
+          color: "red-5",
+          textColor: "white",
+          icon: "warning",
+          message : 'Ошибка при добавлении нового факультета',
+        });
+        console.log(e)
+      }
     }
 
     onMounted(async () => {
@@ -724,8 +819,10 @@ export default {
       scheduleCreatingTab,
       creatingUniversityName,
       creatingUniversityCityName,
-      facultyNameInput,
+      creatingFacultyLink,
+      creatingFacultyName,
       handleUnivCreating,
+      handleFacultyCreating,
       handleGroupCreating,
       filterUniversitiesFn,
       filterFacultiesFn,

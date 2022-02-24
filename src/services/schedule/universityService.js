@@ -16,15 +16,6 @@ class UniversityService {
     const {data} = await api.get("/universities/universitiesNames")
     return data;
   }
-
-  async getFacNames(univId) {
-    try {
-      const {data} = await api.get("/universities/facNames/" + univId);
-      return data;
-    } catch (e) {
-      throw e;
-    }
-  }
 }
 
 export default new UniversityService;

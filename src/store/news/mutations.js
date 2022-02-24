@@ -13,3 +13,12 @@ export function setNewsTypes (state, types) {
 export function setAdminNews(state, news) {
   state.adminNews = news;
 }
+
+export function editNews(state, {id, data}) {
+  for (let item in state.adminNews) {
+    let val = state.adminNews[item];
+    if (val.newsId === id) {
+      state.adminNews[item] = data;
+    }
+  }
+}

@@ -33,8 +33,7 @@ class GroupService {
   async createGroup(group, semester) {
     try {
       const {data} = await api.post("/groups/createEmptySchedule", {
-        university : group.univ,
-        facName : group.facName,
+        facId : group.faculty.facId,
         groupName : group.name,
         timeArray : group.timeArray,
         semester
