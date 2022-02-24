@@ -15,6 +15,8 @@
           <q-tab name="schedule" icon="schedule" label="Загрузка расписания"/>
           <q-separator/>
           <q-tab name="groupCreating" icon="group" label="Создание расписания"/>
+          <q-separator/>
+          <q-tab name="autoScheduleUpdating" icon="group" label="Авто-обновление расписания"/>
 
         </q-tabs>
       </template>
@@ -305,7 +307,9 @@
               </q-tab-panels>
             </q-card>
           </q-tab-panel>
-
+          <q-tab-panel class="bg-none" name="autoScheduleUpdating">
+            <SchedulesTasksCreating/>
+          </q-tab-panel>
         </q-tab-panels>
       </template>
 
@@ -327,6 +331,7 @@ import GroupService from "src/services/schedule/groupsService"
 import {useQuasar} from "quasar";
 import {useStore} from "vuex";
 import authHeader from "src/services/auth/authHeader";
+import SchedulesTasksCreating from "../components/desktop/admin/SchedulesTasksCreating"
 
 const newsEditorFonts = {
   arial: 'Arial',
@@ -447,6 +452,9 @@ const semestersMap = [
 
 export default {
   name: "Admin",
+  components: {
+    SchedulesTasksCreating,
+  },
   setup() {
     const store = useStore();
     const onFailed = ((info) => {
@@ -455,7 +463,6 @@ export default {
         store.dispatch('auth/refreshTokensAction', accessToken, refreshToken);
       }
     })
-
     const getHeaders = () => {
       return Object.entries(authHeader()).map(([key, value]) => {
         return {name: key, value}
