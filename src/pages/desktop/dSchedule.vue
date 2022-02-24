@@ -610,17 +610,16 @@ export default {
           const selectedGroup = await store.dispatch('schedule/getGroupById', {
             grId: selectedGroupId,
           });
-          title.value = 'Расписание группы ' + selectedGroup.name + " (" + selectedGroup.universityEntity.name + ")";
+          console.log(selectedGroup)
+          const univ = selectedGroup.facultyEntity.universityEntity;
           localStorage.setItem('lastLoadedGroupNew', JSON.stringify(val));
           scheduleInfo.value = getScheduleInfoByWeekDesktop(selectedGroup.lessons, selectedWeek.value);
-          const univ = selectedGroup.universityEntity;
           if (univ && univSelectValue.value && univ.univId !== univSelectValue.value.univId) {
             univSelectValue.value = await UniversityService.getUnivNameById(univ.univId);
           }
           console.log(selectedGroup)
         } else {
           console.log('removeGroup')
-          title.value = '';
           localStorage.removeItem("lastLoadedGroupNew");
         }
       } catch (e) {
@@ -633,7 +632,6 @@ export default {
     //schedule table start
     const rawLessonStringMode = ref(true)
     const scheduleInfo = ref({});
-    const title = ref('');
     const selectedDate = ref(null);
     const selectedWeek = ref(null);
     const datesArray = ref([]);
