@@ -647,3 +647,13 @@ export function getTypeColorByValue(type) {
     return Dark.isActive ? 'background-color: gray' : '';
   }
 }
+export const semestersMap = [
+  {
+    label: 'Осенний семестр',
+    value: 'AUTUMN'
+  },
+  {
+    label: 'Весенний семестр',
+    value: 'SPRING'
+  }
+]

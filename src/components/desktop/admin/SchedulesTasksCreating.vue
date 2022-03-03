@@ -47,6 +47,21 @@
         </template>
       </q-select>
     </q-card-section>
+    <q-card-section>
+      <q-input outlined v-model="year" label="Год"  />
+    </q-card-section>
+    <q-card-section>
+      <q-input outlined v-model="period" label="Период в секундах" />
+    </q-card-section>
+    <q-card-section>
+      <q-input outlined v-model="offset" label="Оффсет"  />
+    </q-card-section>
+    <q-card-section>
+      <q-select map-options emit-value :options="semestersMap" v-model="semester"/>
+    </q-card-section>
+    <q-card-actions class="justify">
+      <q-btn @click="createNewScheduleTask({year,period,offset,semester,facultySelectValue})" label="Создать"/>
+    </q-card-actions>
   </q-card>
 </template>
 
@@ -54,7 +69,7 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {useQuasar} from "quasar";
 import {useStore} from "vuex";
-
+import {semestersMap} from "../../../composables/schedule/ScheduleTable"
 
 export default {
   name: "SchedulesTasksCreating",
@@ -68,6 +83,10 @@ export default {
     const univFilteredOptions = ref(univSelectOptions.value);
     const facultySelectOptions = ref([]);
     const facultyFilteredOptions = ref(facultySelectOptions.value);
+    const year = ref(new Date().getFullYear());
+    const period = ref(0);
+    const offset = ref(0);
+    const semester = ref('Осенний семестр')
 
     const filterUniversitiesFn = (val, update, abort) => {
       update(() => {
@@ -97,6 +116,15 @@ export default {
       });
     }
 
+    const createNewScheduleTask = async (task) => {
+      let facIds = [];
+      for (let faculty of task.facultySelectValue) {
+        facIds.push(faculty.facId);
+      }
+      task.facIds = facIds;
+      await store.dispatch('schedule/createNewScheduleTask', task);
+    }
+
     watch(univSelectValue, async (newValue) => {
       try {
         let selectedUnivId;
@@ -115,6 +143,7 @@ export default {
     }))
 
     onMounted(async () => {
+      console.log(semestersMap)
       univSelectOptions.value = await store.dispatch('schedule/getUniversitiesNamesAction');
     })
 
@@ -123,6 +152,12 @@ export default {
       facultySelectValue,
       facultyFilteredOptions,
       univFilteredOptions,
+      semestersMap,
+      year,
+      period,
+      offset,
+      semester,
+      createNewScheduleTask,
       filterUniversitiesFn,
       filterFacultiesFn
     }

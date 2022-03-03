@@ -2,6 +2,7 @@ import LessonsService from '../../services/schedule/lessonService';
 import GroupService from '../../services/schedule/groupsService';
 import UniversityService from '../../services/schedule/universityService';
 import FacultyService from '../../services/schedule/facultyService'
+import TaskService from '../../services/schedule/taskService';
 import {setFaculties} from "src/store/schedule/mutations";
 
 export async function getGroupById({commit}, {grId}) {
@@ -57,4 +58,9 @@ export async function getLessonTypes({commit}) {
   const data = await LessonsService.getLessonTypes();
   commit('setLessonTypes', data);
   return data;
+}
+
+export async function createNewScheduleTask({commit}, task) {
+  const data = await TaskService.createScheduleTask(task);
+  console.log(data);
 }
