@@ -1,10 +1,11 @@
 import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
-import schedule from './schedule'
+import board from './board'
 import auth from './auth'
 import news from './news'
 import globalState from './globalState'
+import schedule from './schedule'
 
 /*
  * If not building with SSR mode, you can
@@ -21,7 +22,8 @@ export default store(function (/* { ssrContext } */) {
       auth,
       schedule,
       news,
-      globalState
+      globalState,
+      board
     },
 
     // enable strict mode (adds overhead!)

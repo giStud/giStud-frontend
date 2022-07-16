@@ -1,56 +1,51 @@
 <template>
   <q-page>
-    <q-select input-style="25px" style="width: 120px" v-model="search" :options="options" hide-dropdown-icon>
-    </q-select>
-    <q-input v-model="input" >
-      <q-menu :target="true">
-        <q-list style="min-width: 100px">
-          <q-item clickable v-close-popup>
-            <q-item-section>New tab</q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup>
-            <q-item-section>New incognito tab</q-item-section>
-          </q-item>
-          <q-separator />
-          <q-item clickable v-close-popup>
-            <q-item-section>Recent tabs</q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup>
-            <q-item-section>History</q-item-section>
-          </q-item>
-          <q-item clickable v-close-popup>
-            <q-item-section>Downloads</q-item-section>
-          </q-item>
-          <q-separator />
-          <q-item clickable v-close-popup>
-            <q-item-section>Settings</q-item-section>
-          </q-item>
-          <q-separator />
-          <q-item clickable v-close-popup>
-            <q-item-section>Help &amp; Feedback</q-item-section>
-          </q-item>
-        </q-list>
-      </q-menu>
-    </q-input>
+    <q-input v-model="id" label="Идентификатор вложения"/>
+    <q-btn class="btr-square" color="primary" no-caps label="Загрузить"
+           @click="loadImage(id)"/>
+    <q-img :src="dataUrl" width="400px">
+
+    </q-img>
   </q-page>
 </template>
 
 <script>
-import {ref} from "vue";
+import {ref, defineComponent, onMounted, computed} from "vue";
+import {useStore} from "vuex";
+import UserMessagesService from "src/services/other/userMessagesService";
 
-export default {
+export default defineComponent({
   name: "Test",
   setup() {
-    const search = ref('string1');
-    const options = ref(['string2', 'string3']);
-    const input = ref('');
+    const store = useStore();
+    const id = ref(0);
+    const image = computed(()=> store.getters['board/getImage'])
+    const dataUrl = computed(()=> {
+      if (image.value != null) {
+
+        return 'data:image/png;base64,' + btoa(
+          new Uint8Array(image.value)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+      } else {
+        return null;
+      }
+    })
+    const loadImage = async (id) => {
+      await store.dispatch('board/downloadAttachmentByIdAction', id);
+      console.log(image.value)
+    }
+
+    /*onMounted(async () => {
+    })*/
+
     return {
-      input,
-      search,
-      options
+      id,
+      loadImage,
+      dataUrl
     }
   }
-}
+})
 </script>
 
 <style scoped lang="css">
