@@ -13,12 +13,15 @@ export default boot(async ({store, router} ) => {
     }
 
     const loggedIn = store.getters['auth/isLogged'];
-
-    if (auth && !loggedIn) {
-      next('/auth/login');
-    }
-
     const user = store.getters['auth/getCurrentUser'];
+
+    if (auth) {
+      if (!loggedIn) {
+        next('/auth/login');
+      } else if (!admin){
+        next();
+      }
+    }
 
     if (auth && loggedIn && admin && user !== null) {
       const userRoles = user.roles;

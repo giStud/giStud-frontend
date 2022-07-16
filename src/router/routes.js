@@ -53,7 +53,14 @@ const desktop = [
         component: () => import('pages/desktop/dNews.vue'),
         props: (route) => ({newsId: route.query.newsId}),
         meta: {isAuth: false, isAdmin: false}
-      }, {
+      }
+      , {
+        path: '/create-card',
+        name: 'create-card',
+        component: () => import('pages/desktop/dCardView'),
+        meta: {isAuth: true, isAdmin: false}
+      }
+      , {
         path: '/about',
         name: 'about',
         component: () => import('pages/desktop/dAbout.vue'),
