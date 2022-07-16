@@ -665,18 +665,20 @@ export default {
       }
     }
 
-    const incrementWeek = (incrementValue) => {
+    const incrementWeek = async (incrementValue) => {
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() + (7 * incrementValue));
       //selected date watcher setting the week value after updating date
       selectedDate.value = tempDate;
+      await updateCellHeight();
     }
 
-    const decrementWeek = (decrementValue) => {
+    const decrementWeek = async (decrementValue) => {
       let tempDate = new Date(selectedDate.value);
       tempDate.setDate(tempDate.getDate() - (7 * decrementValue));
       //selected date watcher setting the week value after updating date
       selectedDate.value = tempDate;
+      await updateCellHeight();
     }
 
     const loadNextWeekLessons = () => {
