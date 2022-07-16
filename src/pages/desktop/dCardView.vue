@@ -128,7 +128,18 @@
       </template>
       <template v-else>
         <q-btn class="btr-square" color="primary" no-caps label="Добавить"
-               @click="createCard()"/>
+               @click="createCard({
+                 title,
+                 category,
+                 description,
+                 dateTo,
+                 dateFrom,
+                 logoFile,
+                 attachments,
+                 tags,
+                 contactPhone,
+                 contactMail
+               })"/>
       </template>
 
     </div>
@@ -218,8 +229,8 @@ export default {
 
     }
 
-    const createCard = () => {
-
+    const createCard = async (cardPayload) => {
+      await store.dispatch('board/createCard', cardPayload);
     }
 
     onMounted(async ()=> {
