@@ -44,7 +44,9 @@ class CardService {
 
   async updateStatus(id, newStatus) {
     try {
-      const {data} = await api.put(`${API_URL}/${id}/update-status`, newStatus, {
+      const {data} = await api.put(`${API_URL}/${id}/update-status`, {
+        newStatus
+      }, {
         headers: authHeader()
       });
       return data;

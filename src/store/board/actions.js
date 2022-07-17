@@ -15,7 +15,6 @@ export async function getCardCategories({ commit }) {
 export async function createCard({commit}, payload) {
   try {
     const card = await CardService.create(payload);
-    console.log(payload)
     if (payload.attachments) {
       const attachments = await CardAttachmentService.addAttachmentsToCard(card.id, payload.attachments,
         ATTACHMENT_TYPE.CARD_ATTACHMENT)

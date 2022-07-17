@@ -230,7 +230,11 @@ export default {
     }
 
     const createCard = async (cardPayload) => {
-      await store.dispatch('board/createCard', cardPayload);
+      try {
+        const createdCard = await store.dispatch('board/createCard', cardPayload);
+      } catch (e)  {
+        console.log(e)
+      }
     }
 
     onMounted(async ()=> {
