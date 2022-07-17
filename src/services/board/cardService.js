@@ -3,6 +3,13 @@ import authHeader from "src/services/auth/authHeader";
 
 const API_URL = '/v1/cards';
 
+export const CARD_STATUS = {
+  CREATING : 'CREATING',
+  WAITING_APPROVAL : 'WAITING_APPROVAL',
+  APPROVED : 'APPROVED',
+  BANNED : 'BANNED'
+}
+
 class CardService {
   async create({title, category, description, dateTo, dateFrom, logoFile,
                  tags, contactPhone, contactMail}) {
@@ -24,7 +31,6 @@ class CardService {
       });
       formData.append("card", blob);
       formData.append("logo", logoFile);
-      console.log(formData)
       const headers = authHeader();
       headers['Content-Type'] = 'multipart/form-data';
       const {data} = await api.post(`${API_URL}`, formData, {
@@ -36,6 +42,16 @@ class CardService {
     }
   }
 
+  async updateStatus(id, newStatus) {
+    try {
+      const {data} = await api.put(`${API_URL}/${id}/update-status`, newStatus, {
+        headers: authHeader()
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 export default new CardService();
