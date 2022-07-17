@@ -11,20 +11,20 @@ export const CARD_STATUS = {
 }
 
 class CardService {
-  async create({title, category, description, dateTo, dateFrom, logoFile,
-                 tags, contactPhone, contactMail}) {
+  async create({card, logoFile}) {
     try {
       let formData = new FormData();
-      const card = {
-        name: title,
+      /*const card = {
+        name: name,
         description: description,
-        startDate: dateFrom ? `${dateFrom}:00` : null,
-        finishDate: dateTo ? `${dateTo}:00` : null,
+        startDate: startDate,
+        finishDate: finishDate,
         contactMail: contactMail,
         contactPhone: contactPhone,
         category: category,
         tags: tags
-      }
+      }*/
+      console.log(card)
       const json = JSON.stringify(card);
       const blob = new Blob([json], {
         type: 'application/json'
@@ -60,6 +60,15 @@ class CardService {
       const {data} = await api.get(`${API_URL}/page`, {
         params: payload
       });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getCardById(id) {
+    try {
+      const {data} = await api.get(`${API_URL}/${id}`);
       return data;
     } catch (e) {
       throw e;

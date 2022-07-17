@@ -4,7 +4,7 @@
     <div class="q-pa-md">
       <div class="text-h5 q-mb-md">Добавить новость</div>
       <div class="row justify-evenly">
-        <q-input class="q-my-sm" square outlined filled v-model="title" label="Заголовок"/>
+        <q-input class="q-my-sm" square outlined filled v-model="card.name" label="Заголовок"/>
         <q-file outlined v-model="logoFile" use-chips :filter="checkFileFilters" @rejected="onRejected">
           <template v-slot:prepend>
             <q-icon name="attach_file" />
@@ -13,7 +13,7 @@
       </div>
       <q-select
         filled
-        v-model="category"
+        v-model="card.category"
         :options="categoryOptions"
         label="Standard"
         color="teal"
@@ -32,11 +32,11 @@
         </template>
       </q-select>
 
-      <q-input filled v-model="dateFrom">
+      <q-input filled v-model="card.startDate">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="dateFrom" mask="YYYY-MM-DD HH:mm">
+              <q-date v-model="card.startDate" mask="YYYY-MM-DD HH:mm:ss">
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -47,7 +47,7 @@
         <template v-slot:append>
           <q-icon name="access_time" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-time v-model="dateFrom" mask="YYYY-MM-DD HH:mm" format24h>
+              <q-time v-model="card.startDate" mask="YYYY-MM-DD HH:mm:ss" format24h>
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -57,11 +57,11 @@
         </template>
       </q-input>
 
-      <q-input filled v-model="dateTo">
+      <q-input filled v-model="card.finishDate">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="dateTo" mask="YYYY-MM-DD HH:mm">
+              <q-date v-model="card.finishDate" mask="YYYY-MM-DD HH:mm:ss">
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -72,7 +72,7 @@
         <template v-slot:append>
           <q-icon name="access_time" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-time v-model="dateTo" mask="YYYY-MM-DD HH:mm" format24h>
+              <q-time v-model="card.finishDate" mask="YYYY-MM-DD HH:mm:ss" format24h>
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat />
                 </div>
@@ -82,9 +82,9 @@
         </template>
       </q-input>
       <div class="text-h6">Описание</div>
-      <q-editor square v-model="description" :dense="$q.screen.lt.md" :toolbar="editorToolBar"
+      <q-editor square v-model="card.description" :dense="$q.screen.lt.md" :toolbar="editorToolBar"
                 :fonts="editorFonts"/>
-      <template v-for="tag in tags" :key="tag.title">
+      <template v-for="tag in card.tags" :key="tag.title">
         <q-chip removable @remove="onTagRemove(tag.title)" outline color="primary" text-color="white" icon="tag">
           {{ tag.title }}
         </q-chip>
@@ -101,8 +101,8 @@
         <q-checkbox keep-color v-model="showContactMail" label="Почта" color="cyan" />
         <q-checkbox keep-color v-model="contactByChat" disable label="Чат" color="cyan" />
       </div>
-      <q-input v-if="showContactPhone" class="q-my-sm" square outlined filled v-model="contactPhone" label="Контактный номер" />
-      <q-input v-if="showContactMail" class="q-my-sm" square outlined filled v-model="contactMail" label="Контактная почта"/>
+      <q-input v-if="showContactPhone" class="q-my-sm" square outlined filled v-model="card.contactPhone" label="Контактный номер" />
+      <q-input v-if="showContactMail" class="q-my-sm" square outlined filled v-model="card.contactMail" label="Контактная почта"/>
 
 
       <q-file
@@ -129,16 +129,9 @@
       <template v-else>
         <q-btn class="btr-square" color="primary" no-caps label="Добавить"
                @click="createCard({
-                 title,
-                 category,
-                 description,
-                 dateTo,
-                 dateFrom,
+                 card,
                  logoFile,
-                 attachments,
-                 tags,
-                 contactPhone,
-                 contactMail
+                 attachments
                })"/>
       </template>
 
@@ -160,19 +153,31 @@ const categoryIconMap = {
 
 export default {
   name: "dCardView",
-  setup() {
+  props: {
+    id: {
+      type: Number,
+      default: null
+    }
+  },
+  setup(props) {
     const store = useStore();
     const $q = useQuasar();
 
-    const title = ref('');
-    const category = ref(null);
-    const description = ref('');
-    const dateFrom = ref('');
-    const dateTo = ref('');
-    const tags = ref([]);
+    const editMode = ref(false);
+    const readMode = ref(false);
+
+    const card = ref({
+      name: '',
+      category: null,
+      description: '',
+      startDate: '',
+      finishDate: '',
+      tags : [],
+      logoFile : null,
+      contactPhone : '',
+      contactMail : ''
+    });
     const logoFile = ref(null);
-    const contactPhone = ref('');
-    const contactMail = ref('');
     const attachments = ref([]);
     const tagName = ref('');
 
@@ -180,15 +185,14 @@ export default {
     const categoryOptions = ref([]);
     const editorToolBar = getEditorToolBar($q);
     const editorFonts = getEditorFonts();
-    const editMode = ref(false);
     const showContactPhone = ref(false);
     const showContactMail = ref(false);
     const contactByChat = ref(true);
 
     const addTag = (tag) => {
       if (tag && tag !== '') {
-        if (!tags.value.map(tag => tag.title).includes(tag)) {
-          tags.value.push({
+        if (!card.value.tags.map(tag => tag.title).includes(tag)) {
+          card.value.tags.push({
             id: null,
             title : tag
           })
@@ -198,11 +202,10 @@ export default {
     }
 
     const onTagRemove = (tag) => {
-      const index = tags.value.map(tag => tag.title).indexOf(tag);
+      const index = card.value.tags.map(tag => tag.title).indexOf(tag);
       if (index > -1) {
-        tags.value.splice(index, 1);
+        card.value.tags.splice(index, 1);
       }
-      console.log(tags.value)
     }
 
     const getCategoryIcon = (name) => {
@@ -238,19 +241,17 @@ export default {
     }
 
     onMounted(async ()=> {
+      if (props.id) {
+        card.value = await store.dispatch('board/getCardById', props.id);
+        readMode.value = true;
+      }
+
       categoryOptions.value = await store.dispatch('board/getCardCategories');
     })
 
     return {
-      title,
-      category,
-      description,
-      dateFrom,
-      dateTo,
-      tags,
+      card,
       logoFile,
-      contactPhone,
-      contactMail,
       attachments,
       categoryOptions,
       editorToolBar,
@@ -260,6 +261,7 @@ export default {
       showContactPhone,
       showContactMail,
       contactByChat,
+      readMode,
       getCategoryIcon,
       updateCard,
       createCard,

@@ -41,13 +41,15 @@ const desktop = [
         path: '',
         component: () => import('pages/desktop/dHome'),
         meta: {isAuth: false, isAdmin: false}
-      }, {
+      },
+      {
         path: '/schedule',
         name: 'schedule',
         component: () => import('pages/desktop/dSchedule'),
         props: (route) => ({univId: route.query.univId, grId: route.query.grId}),
         meta: {isAuth: false, isAdmin: false}
-      }, {
+      },
+      {
         path: '/news',
         name: 'news',
         component: () => import('pages/desktop/dNews.vue'),
@@ -57,8 +59,22 @@ const desktop = [
       {
         path: "/board",
         children: [
-          {path: 'list', component: () => import('pages/desktop/dBoardList.vue'), meta: {isAuth: false, isAdmin: false}},
-          {path: 'create', component: () => import('pages/desktop/dCardView'), meta: {isAuth: true, isAdmin: false}}
+          {
+            path: 'list',
+            component: () => import('pages/desktop/dBoardList.vue'),
+            meta: {isAuth: false, isAdmin: false}
+          },
+          {
+            path: 'create',
+            component: () => import('pages/desktop/dCardView'),
+            meta: {isAuth: true, isAdmin: false}
+          },
+          {
+            path: '/',
+            component: () => import('pages/desktop/dCardView'),
+            meta: {isAuth: true, isAdmin: false},
+            props: (route) => ({id: route.query.id}),
+          }
         ]
       },
       {
@@ -66,8 +82,8 @@ const desktop = [
         name: 'about',
         component: () => import('pages/desktop/dAbout.vue'),
         meta: {isAuth: false, isAdmin: false}
-      }
-      , {
+      },
+      {
         path: '/test',
         name: 'test',
         component: () => import('pages/Test.vue'),

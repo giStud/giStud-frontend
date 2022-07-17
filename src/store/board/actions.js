@@ -7,6 +7,10 @@ export async function downloadAttachmentByIdAction({ commit }, id) {
   return await CardAttachmentService.downloadAttachmentById(id);
 }
 
+export async function getCardById({ commit }, id) {
+  return await CardService.getCardById(id);
+}
+
 export async function getCardCategories({ commit }) {
   return await CardCategoryService.findAll();
 }
