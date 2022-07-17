@@ -6,9 +6,10 @@ const API_URL = '/v1/card-attachments';
 class CardAttachmentService {
   async downloadAttachmentById(id) {
     try {
-      return await api.get(`${API_URL}/${id}/download`, {
+      const {data} = await api.get(`${API_URL}/${id}/download`, {
         responseType: "arraybuffer"
-      })
+      });
+      return data;
     } catch (e) {
       throw e;
     }

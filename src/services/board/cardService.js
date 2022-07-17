@@ -54,6 +54,17 @@ class CardService {
       throw e;
     }
   }
+
+  async getCardPage(payload) {
+    try {
+      const {data} = await api.get(`${API_URL}/page`, {
+        params: payload
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 export default new CardService();

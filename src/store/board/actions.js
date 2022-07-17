@@ -4,8 +4,7 @@ import CardService, {CARD_STATUS} from '../../services/board/cardService'
 import {ATTACHMENT_TYPE} from "src/services/other/attachmentService";
 
 export async function downloadAttachmentByIdAction({ commit }, id) {
-  const {data} = await CardAttachmentService.downloadAttachmentById(id);
-  commit('setImage', data)
+  return await CardAttachmentService.downloadAttachmentById(id);
 }
 
 export async function getCardCategories({ commit }) {
@@ -26,3 +25,6 @@ export async function createCard({commit}, payload) {
   }
 }
 
+export async function getCardsPage({commit}, payload) {
+  return await CardService.getCardPage(payload);
+}
