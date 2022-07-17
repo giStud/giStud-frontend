@@ -1,7 +1,7 @@
 <template>
   <q-card style="width: 200px; height: 300px">
     <q-card-section>
-      <q-img></q-img>
+      <q-img :src="imgUrl"></q-img>
     </q-card-section>
     <q-card-section>{{title}}</q-card-section>
     <q-card-section>{{category ? category.title : ''}}</q-card-section>
@@ -41,17 +41,33 @@ export default {
     const dateTo = ref('');
     const tags = ref([]);
     const views = ref('');
-    const imgUrl = ref('');
 
-    onMounted(()=> {
-      console.log(props.card)
+    const logo = ref(null);
+    const imgUrl = computed(()=> {
+      if (logo.value != null) {
+        console.log('test')
+        console.log(logo.value)
+        return 'data:image/png;base64,' + btoa(
+          new Uint8Array(logo.value)
+            .reduce((data, byte) => data + String.fromCharCode(byte), '')
+        );
+      } else {
+        return null;
+      }
+    })
+
+    onMounted(async ()=> {
       title.value = props.card.name;
       category.value = props.card.category;
       dateFrom.value = props.card.startDate;
       dateTo.value = props.card.finishDate;
       tags.value = props.card.tags;
-
       views.value = props.card.views;
+
+      const logoImage = props.card.logoImage;
+      if (logoImage) {
+        logo.value = await store.dispatch('board/downloadAttachmentByIdAction', logoImage.id);
+      }
     })
 
     return {

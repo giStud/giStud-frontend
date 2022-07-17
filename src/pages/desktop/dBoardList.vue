@@ -1,6 +1,11 @@
 <template>
   <q-card>
-    <d-card-item v-for="card in cards" :key="card.id" :card="card"></d-card-item>
+    <div class="row q-gutter-md">
+      <template v-for="card in cards" :key="card.id" >
+        <d-card-item :card="card" class="col-3"></d-card-item>
+      </template>
+    </div>
+
   </q-card>
 </template>
 
