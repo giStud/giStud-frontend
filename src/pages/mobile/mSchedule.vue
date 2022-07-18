@@ -430,7 +430,6 @@ export default {
         changeSelectedDateByOffset(index - indexOfSelectedDate)
       } else if (index < indexOfSelectedDate) {
         changeSelectedDateByOffset(-(indexOfSelectedDate - index))
-        console.log(-(indexOfSelectedDate - index))
       }
     }
 

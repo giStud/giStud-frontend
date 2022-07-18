@@ -11,20 +11,13 @@ export const CARD_STATUS = {
 }
 
 class CardService {
+  async update({card, newLogo, newAttachments, attachmentsToDelete}) {
+
+  }
+
   async create({card, logoFile}) {
     try {
       let formData = new FormData();
-      /*const card = {
-        name: name,
-        description: description,
-        startDate: startDate,
-        finishDate: finishDate,
-        contactMail: contactMail,
-        contactPhone: contactPhone,
-        category: category,
-        tags: tags
-      }*/
-      console.log(card)
       const json = JSON.stringify(card);
       const blob = new Blob([json], {
         type: 'application/json'

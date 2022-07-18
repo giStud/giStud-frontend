@@ -42,11 +42,8 @@ class LessonService {
       let newNumerator = newValuesObj.editLessonNumerator !== lessonsNumerator ? newValuesObj.editLessonNumerator : null;
       const lessonsWeeks = getWeeksArrayByLessons(lessonsToChange);
       //newValuesObj.editLessonSelectedWeeks = [];
-      console.log(lessonsWeeks)
-      console.log(newValuesObj.editLessonSelectedWeeks)
       const newWeeks = !arraysEqual(lessonsWeeks,newValuesObj.editLessonSelectedWeeks) ? newValuesObj.editLessonSelectedWeeks : null;
       if (newWeeks !== null) {
-        console.log('gavno')
         newNumerator = 'CUSTOM';
       }
 

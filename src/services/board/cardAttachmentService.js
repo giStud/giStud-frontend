@@ -6,10 +6,12 @@ const API_URL = '/v1/card-attachments';
 class CardAttachmentService {
   async downloadAttachmentById(id) {
     try {
-      const {data} = await api.get(`${API_URL}/${id}/download`, {
+      const {data, headers} = await api.get(`${API_URL}/${id}/download`, {
         responseType: "arraybuffer"
       });
-      return data;
+      const contentDisposition = headers['content-disposition'];
+      const fileName = contentDisposition.split(';')[1].trim().split('=')[1].replaceAll('\'', '');
+      return {byteArray : data, fileName};
     } catch (e) {
       throw e;
     }
@@ -36,7 +38,6 @@ class CardAttachmentService {
 
   async addAttachmentsToCard(id, files, type) {
     try {
-      console.log(files)
       let formData = new FormData();
       const blob = new Blob([type], {
         type: 'text/plain'
@@ -47,6 +48,17 @@ class CardAttachmentService {
       headers['Content-Type'] = 'multipart/form-data';
       const {data} = await api.post(`${API_URL}/${id}/upload-attachments`, formData, {
         headers: headers
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  async getCardAttachments(id) {
+    try {
+      const {data} = await api.get(`${API_URL}/card/${id}`, {
+        headers: authHeader(),
       });
       return data;
     } catch (e) {

@@ -20,7 +20,6 @@ class UserMessagesService {
 
   async deleteUserMessageById(univId) {
     try {
-      console.log(univId)
       const {data} = await api.delete("/userMessages/" + univId, {headers: authHeader()})
       return data;
     } catch (e) {

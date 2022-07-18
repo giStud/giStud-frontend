@@ -11,7 +11,6 @@ class FacultyService {
 
   async getFacultiesByUniv(univId) {
     const {data} = await api.get("/faculties/filterByUniv/" + univId, {headers: authHeader()});
-    console.log(data)
     return data;
   }
 }

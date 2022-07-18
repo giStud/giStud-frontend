@@ -5,9 +5,31 @@
       <div class="text-h5 q-mb-md">Добавить новость</div>
       <div class="row justify-evenly">
         <q-input class="q-my-sm" square outlined filled v-model="card.name" label="Заголовок"/>
-        <q-file outlined v-model="logoFile" use-chips :filter="checkFileFilters" @rejected="onRejected">
+        <q-file
+          outlined
+          v-model="logoFile"
+          use-chips
+          :filter="checkFileFilters"
+          @rejected="onRejected"
+          accept=".jpg, image/*">
+          <template v-slot:file="{ file }">
+            <q-chip
+              class="full-width q-my-xs"
+              removable
+              square
+              @remove="onLogoCancel(file)"
+            >
+              <div class="ellipsis relative-position">
+                {{ file.name }}
+              </div>
+
+              <q-tooltip>
+                {{ file.name }}
+              </q-tooltip>
+            </q-chip>
+          </template>
           <template v-slot:prepend>
-            <q-icon name="attach_file" />
+            <q-icon name="attach_file"/>
           </template>
         </q-file>
       </div>
@@ -23,7 +45,7 @@
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">
             <q-item-section avatar>
-              <q-icon :name="getCategoryIcon(scope.opt.title)" />
+              <q-icon :name="getCategoryIcon(scope.opt.title)"/>
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ scope.opt.title }}</q-item-label>
@@ -38,7 +60,7 @@
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
               <q-date v-model="card.startDate" mask="YYYY-MM-DD HH:mm:ss">
                 <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
+                  <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
               </q-date>
             </q-popup-proxy>
@@ -49,7 +71,7 @@
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
               <q-time v-model="card.startDate" mask="YYYY-MM-DD HH:mm:ss" format24h>
                 <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
+                  <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
               </q-time>
             </q-popup-proxy>
@@ -63,7 +85,7 @@
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
               <q-date v-model="card.finishDate" mask="YYYY-MM-DD HH:mm:ss">
                 <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
+                  <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
               </q-date>
             </q-popup-proxy>
@@ -74,7 +96,7 @@
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
               <q-time v-model="card.finishDate" mask="YYYY-MM-DD HH:mm:ss" format24h>
                 <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat />
+                  <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
               </q-time>
             </q-popup-proxy>
@@ -90,19 +112,22 @@
         </q-chip>
       </template>
 
-      <q-input class="q-my-sm" square outlined filled v-model="tagName" label="Добавить хештег" @focusout="addTag(tagName)">
+      <q-input class="q-my-sm" square outlined filled v-model="tagName" label="Добавить хештег"
+               @focusout="addTag(tagName)">
         <template v-slot:after>
           <q-btn round dense flat icon="check_small" @click="addTag(tagName)"/>
         </template>
       </q-input>
       <div>Как с вами связаться?</div>
       <div class="q-gutter-sm">
-        <q-checkbox keep-color v-model="showContactPhone" label="Телефон" color="cyan" />
-        <q-checkbox keep-color v-model="showContactMail" label="Почта" color="cyan" />
-        <q-checkbox keep-color v-model="contactByChat" disable label="Чат" color="cyan" />
+        <q-checkbox keep-color v-model="showContactPhone" label="Телефон" color="cyan"/>
+        <q-checkbox keep-color v-model="showContactMail" label="Почта" color="cyan"/>
+        <q-checkbox keep-color v-model="contactByChat" disable label="Чат" color="cyan"/>
       </div>
-      <q-input v-if="showContactPhone" class="q-my-sm" square outlined filled v-model="card.contactPhone" label="Контактный номер" />
-      <q-input v-if="showContactMail" class="q-my-sm" square outlined filled v-model="card.contactMail" label="Контактная почта"/>
+      <q-input v-if="showContactPhone" class="q-my-sm" square outlined filled v-model="card.contactPhone"
+               label="Контактный номер"/>
+      <q-input v-if="showContactMail" class="q-my-sm" square outlined filled v-model="card.contactMail"
+               label="Контактная почта"/>
 
 
       <q-file
@@ -112,30 +137,58 @@
         use-chips
         counter
         max-files="3"
+        append
+        accept=".jpg, image/*"
         :filter="checkFileFilters"
         :counter-label="attachmentsCounterLabelFn"
         @rejected="onRejected"
-        >
+      >
+        <template v-slot:file="{ index, file }">
+          <q-chip
+            class="full-width q-my-xs"
+            removable
+            square
+            @remove="onAttachmentCancel(index, file)"
+          >
+            <div class="ellipsis relative-position">
+              {{ file.name }}
+            </div>
+
+            <q-tooltip>
+              {{ file.name }}
+            </q-tooltip>
+          </q-chip>
+        </template>
+
         <template v-slot:prepend>
-          <q-icon name="attach_file" />
+          <q-icon name="attach_file"/>
         </template>
       </q-file>
     </div>
     <div class="q-pa-md">
-      <template v-if="editMode">
-        <q-btn class="btr-square" color="primary" no-caps label="Изменить"
-               @click="updateCard()"/>
-      </template>
-      <template v-else>
-        <q-btn class="btr-square" color="primary" no-caps label="Добавить"
-               @click="createCard({
+      <q-btn class="btr-square" color="primary" no-caps label="Изменить"
+             @click="updateCard({
+                  card,
+                  logo : logoFile,
+                  attachments
+               })"/>
+      <q-btn class="btr-square" color="primary" no-caps label="Добавить"
+             @click="createCard({
                  card,
                  logoFile,
                  attachments
                })"/>
+<!--      <template v-if="editMode">
+
       </template>
+      <template v-else>
+
+      </template>-->
 
     </div>
+    <q-img :src="viewLogoImgUrl"> LOGO</q-img>
+    <div>attaches</div>
+    <q-img v-for="(attachmentUrl) of viewAttachmentsImgUrls" :key="attachmentUrl" :src="attachmentUrl"></q-img>
   </q-card>
 </template>
 
@@ -143,12 +196,12 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {useQuasar} from "quasar";
 import {useStore} from "vuex";
-import authHeader from "src/services/auth/authHeader";
+import {getImageUrlByByteArray, getFileAndDataUrlByByteArray} from "src/composables/board/boardUtils";
 import {getEditorToolBar, getEditorFonts} from 'src/services/other/tools';
 
 const categoryIconMap = {
-  "SPORT" : "sport",
-  "LOVE" : "heart"
+  "SPORT": "sport",
+  "LOVE": "heart"
 }
 
 export default {
@@ -172,10 +225,10 @@ export default {
       description: '',
       startDate: '',
       finishDate: '',
-      tags : [],
-      logoFile : null,
-      contactPhone : '',
-      contactMail : ''
+      tags: [],
+      logoImage: null,
+      contactPhone: '',
+      contactMail: ''
     });
     const logoFile = ref(null);
     const attachments = ref([]);
@@ -194,7 +247,7 @@ export default {
         if (!card.value.tags.map(tag => tag.title).includes(tag)) {
           card.value.tags.push({
             id: null,
-            title : tag
+            title: tag
           })
         }
         tagName.value = '';
@@ -217,32 +270,96 @@ export default {
         files.filter(file => file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg');
     }
 
-    const attachmentsCounterLabelFn = ({ totalSize, filesNumber, maxFiles }) => {
+    const attachmentsCounterLabelFn = ({totalSize, filesNumber, maxFiles}) => {
       return `${filesNumber} из ${maxFiles} | ${totalSize}`
     }
 
     const onRejected = (rejectedEntries) => {
       $q.notify({
         type: 'negative',
-        message: `Убедитесь, что файл(ы) имеет формат jpg,jpeg,png и не весит больше 10 МБайт`
+        message: `Убедитесь, что файл(ы) имеет формат jpg, jpeg, png и не весит больше 10 МБайт`
       })
     }
 
-    const updateCard = () => {
+    const viewLogoImgUrl = ref('');
+    const viewAttachmentsImgUrls = ref([]);
+    const downloadedFilesFromServer = ref({});
+    const attachmentsToDelete = ref([]);
+
+    const checkCanceledFile = (file) => {
+      const attachment = downloadedFilesFromServer[file.name];
+      if (attachment && attachment.size === file.size) {
+        attachmentsToDelete.value.push(attachment);
+      }
+    }
+
+    const onLogoCancel = (file) => {
+      logoFile.value = null;
+      checkCanceledFile(file);
+    }
+
+    const onAttachmentCancel = (index, file) => {
+      attachments.value.splice(index, 1);
+      checkCanceledFile(file);
+    }
+
+    const updateCard = async ({card, logo, attachments}) => {
+      const logoAttachment = downloadedFilesFromServer[logo.name];
+      const updatedLogo = !logoAttachment || logoAttachment.size !== logo.size ? logo : null;
+
+      let newAttachments = [];
+      for (let attachment of attachments) {
+        const downloadedFile = downloadedFilesFromServer[attachment.name];
+        if (!downloadedFile || downloadedFile.size !== attachment.size) {
+          newAttachments.push(attachment);
+        }
+      }
+      if (newAttachments.length === 0) newAttachments = null;
+
+      const updatedCard = await store.dispatch('board/updateCard', {
+        card,
+        newLogo : updatedLogo,
+        newAttachments,
+        attachmentsToDelete : attachmentsToDelete
+      })
 
     }
 
     const createCard = async (cardPayload) => {
       try {
         const createdCard = await store.dispatch('board/createCard', cardPayload);
-      } catch (e)  {
+      } catch (e) {
         console.log(e)
       }
     }
 
-    onMounted(async ()=> {
+    const fillCardViewByData = async (data) => {
+      card.value = data;
+
+      if (data.logoImage) {
+        const {byteArray, fileName} = await store.dispatch('board/downloadAttachmentByIdAction', data.logoImage.id);
+        const {dataUrl, file} = await getFileAndDataUrlByByteArray(byteArray, fileName);
+        viewLogoImgUrl.value = dataUrl;
+        logoFile.value = file;
+        downloadedFilesFromServer[fileName] = data.logoImage;
+      }
+
+      const cardAttachments = await store.dispatch('board/getCardAttachments', data.id);
+      if (cardAttachments && cardAttachments.length !== 0) {
+        for (let attachment of cardAttachments) {
+          const {byteArray, fileName} = await store.dispatch('board/downloadAttachmentByIdAction', attachment.id);
+          const {dataUrl, file} = await getFileAndDataUrlByByteArray(byteArray, fileName);
+          viewAttachmentsImgUrls.value.push(dataUrl);
+          attachments.value.push(file);
+          downloadedFilesFromServer[fileName] = attachment;
+        }
+      }
+    }
+
+    onMounted(async () => {
       if (props.id) {
-        card.value = await store.dispatch('board/getCardById', props.id);
+        const data = await store.dispatch('board/getCardById', props.id);
+        await fillCardViewByData(data);
         readMode.value = true;
       }
 
@@ -262,6 +379,10 @@ export default {
       showContactMail,
       contactByChat,
       readMode,
+      viewLogoImgUrl,
+      viewAttachmentsImgUrls,
+      onAttachmentCancel,
+      onLogoCancel,
       getCategoryIcon,
       updateCard,
       createCard,

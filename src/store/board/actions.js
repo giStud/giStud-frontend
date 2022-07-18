@@ -15,6 +15,18 @@ export async function getCardCategories({ commit }) {
   return await CardCategoryService.findAll();
 }
 
+export async function getCardAttachments({commit}, id) {
+  return await CardAttachmentService.getCardAttachments(id);
+}
+
+export async function updateCard({commit}, payload) {
+  try {
+    return await CardService.update(payload);
+  } catch (e) {
+    throw e;
+  }
+}
+
 export async function createCard({commit}, payload) {
   try {
     const card = await CardService.create(payload);

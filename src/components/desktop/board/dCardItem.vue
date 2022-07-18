@@ -45,8 +45,6 @@ export default {
     const logo = ref(null);
     const imgUrl = computed(()=> {
       if (logo.value != null) {
-        console.log('test')
-        console.log(logo.value)
         return 'data:image/png;base64,' + btoa(
           new Uint8Array(logo.value)
             .reduce((data, byte) => data + String.fromCharCode(byte), '')
@@ -66,7 +64,8 @@ export default {
 
       const logoImage = props.card.logoImage;
       if (logoImage) {
-        logo.value = await store.dispatch('board/downloadAttachmentByIdAction', logoImage.id);
+        const {byteArray, fileName} = await store.dispatch('board/downloadAttachmentByIdAction', logoImage.id);
+        logo.value = byteArray;
       }
     })
 

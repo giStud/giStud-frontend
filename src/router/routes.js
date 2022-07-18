@@ -65,16 +65,21 @@ const desktop = [
             meta: {isAuth: false, isAdmin: false}
           },
           {
-            path: 'create',
-            component: () => import('pages/desktop/dCardView'),
-            meta: {isAuth: true, isAdmin: false}
+            path: "card",
+            children: [
+              {
+                path: 'create',
+                component: () => import('pages/desktop/dCardView'),
+                meta: {isAuth: true, isAdmin: false}
+              },
+              {
+                path: ':id',
+                component: () => import('pages/desktop/dCardView'),
+                meta: {isAuth: true, isAdmin: false},
+                props: true
+              }
+            ]
           },
-          {
-            path: '/',
-            component: () => import('pages/desktop/dCardView'),
-            meta: {isAuth: true, isAdmin: false},
-            props: (route) => ({id: route.query.id}),
-          }
         ]
       },
       {
