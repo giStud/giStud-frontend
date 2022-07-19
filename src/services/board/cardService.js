@@ -15,19 +15,30 @@ class CardService {
 
   }
 
-  async create({card, logoFile}) {
+  async create({card, logoFile, attachments}) {
     try {
       let formData = new FormData();
-      const json = JSON.stringify(card);
+      const payload = {...card};
+      if (payload.startDate) {
+        payload.startDate = payload.startDate + ":00";
+      }
+      if (payload.finishDate) {
+        payload.finishDate = payload.finishDate + ":00";
+      }
+      const json = JSON.stringify(payload);
       const blob = new Blob([json], {
         type: 'application/json'
       });
       formData.append("card", blob);
       formData.append("logo", logoFile);
-      const headers = authHeader();
-      headers['Content-Type'] = 'multipart/form-data';
+      if (attachments && attachments.length !== 0) {
+        Array.from(attachments).forEach(file => formData.append(`attachments`, file))
+      }
       const {data} = await api.post(`${API_URL}`, formData, {
-        headers: headers
+        headers: {
+          "Content-Type":"multipart/form-data",
+          ...authHeader()
+        }
       });
       return data;
     } catch (e) {

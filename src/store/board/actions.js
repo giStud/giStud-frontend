@@ -15,8 +15,8 @@ export async function getCardCategories({ commit }) {
   return await CardCategoryService.findAll();
 }
 
-export async function getCardAttachments({commit}, id) {
-  return await CardAttachmentService.getCardAttachments(id);
+export async function getCardAttachments({commit}, {id, type}) {
+  return await CardAttachmentService.getCardAttachments(id, type);
 }
 
 export async function updateCard({commit}, payload) {
@@ -29,13 +29,7 @@ export async function updateCard({commit}, payload) {
 
 export async function createCard({commit}, payload) {
   try {
-    const card = await CardService.create(payload);
-    if (payload.attachments) {
-      const attachments = await CardAttachmentService.addAttachmentsToCard(card.id, payload.attachments,
-        ATTACHMENT_TYPE.CARD_ATTACHMENT)
-    }
-    const result = await CardService.updateStatus(card.id, CARD_STATUS.WAITING_APPROVAL);
-    return card;
+    return await CardService.create(payload);
   } catch (e) {
     throw e;
   }

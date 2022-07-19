@@ -58,7 +58,7 @@
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="card.startDate" mask="YYYY-MM-DD HH:mm:ss">
+              <q-date v-model="card.startDate" mask="YYYY-MM-DD HH:mm">
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
@@ -69,7 +69,7 @@
         <template v-slot:append>
           <q-icon name="access_time" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-time v-model="card.startDate" mask="YYYY-MM-DD HH:mm:ss" format24h>
+              <q-time v-model="card.startDate" mask="YYYY-MM-DD HH:mm" format24h>
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
@@ -83,7 +83,7 @@
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="card.finishDate" mask="YYYY-MM-DD HH:mm:ss">
+              <q-date v-model="card.finishDate" mask="YYYY-MM-DD HH:mm">
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
@@ -94,7 +94,7 @@
         <template v-slot:append>
           <q-icon name="access_time" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-time v-model="card.finishDate" mask="YYYY-MM-DD HH:mm:ss" format24h>
+              <q-time v-model="card.finishDate" mask="YYYY-MM-DD HH:mm" format24h>
                 <div class="row items-center justify-end">
                   <q-btn v-close-popup label="Close" color="primary" flat/>
                 </div>
@@ -198,6 +198,7 @@ import {useQuasar} from "quasar";
 import {useStore} from "vuex";
 import {getImageUrlByByteArray, getFileAndDataUrlByByteArray} from "src/composables/board/boardUtils";
 import {getEditorToolBar, getEditorFonts} from 'src/services/other/tools';
+import {ATTACHMENT_TYPE} from "src/services/other/attachmentService";
 
 const categoryIconMap = {
   "SPORT": "sport",
@@ -344,7 +345,10 @@ export default {
         downloadedFilesFromServer[fileName] = data.logoImage;
       }
 
-      const cardAttachments = await store.dispatch('board/getCardAttachments', data.id);
+      const cardAttachments = await store.dispatch('board/getCardAttachments', {
+        id : data.id,
+        type : ATTACHMENT_TYPE.CARD_ATTACHMENT
+      });
       if (cardAttachments && cardAttachments.length !== 0) {
         for (let attachment of cardAttachments) {
           const {byteArray, fileName} = await store.dispatch('board/downloadAttachmentByIdAction', attachment.id);

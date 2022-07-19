@@ -55,10 +55,13 @@ class CardAttachmentService {
     }
   }
 
-  async getCardAttachments(id) {
+  async getCardAttachments(id, type) {
     try {
       const {data} = await api.get(`${API_URL}/card/${id}`, {
         headers: authHeader(),
+        params: {
+          type
+        }
       });
       return data;
     } catch (e) {
