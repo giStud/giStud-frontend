@@ -1,5 +1,6 @@
 import {api} from "boot/axios";
 import authHeader from "src/services/auth/authHeader";
+import {date} from "quasar";
 
 const API_URL = '/v1/cards';
 
@@ -12,19 +13,41 @@ export const CARD_STATUS = {
 
 class CardService {
   async update({card, newLogo, newAttachments, attachmentsToDelete}) {
-
+    try {
+      let formData = new FormData();
+      const payload = {...card};
+      formatCardDates(payload, 'YYYY-MM-DD HH:mm:ss');
+      const cardBlob = new Blob([JSON.stringify(payload)], {
+        type: 'application/json'
+      });
+      if (attachmentsToDelete && attachmentsToDelete.length !== 0) {
+        const attachmentsToDeleteBlob = new Blob([JSON.stringify(attachmentsToDelete)], {
+          type: 'application/json'
+        });
+        formData.append("attachmentsToDelete", attachmentsToDeleteBlob)
+      }
+      formData.append("card", cardBlob);
+      formData.append("newLogo", newLogo);
+      if (newAttachments && newAttachments.length !== 0) {
+        Array.from(newAttachments).forEach(file => formData.append(`newAttachments`, file))
+      }
+      const {data} = await api.put(`${API_URL}`, formData, {
+        headers: {
+          "Content-Type":"multipart/form-data",
+          ...authHeader()
+        }
+      });
+      return data;
+    } catch (e) {
+      throw e;
+    }
   }
 
   async create({card, logoFile, attachments}) {
     try {
       let formData = new FormData();
       const payload = {...card};
-      if (payload.startDate) {
-        payload.startDate = payload.startDate + ":00";
-      }
-      if (payload.finishDate) {
-        payload.finishDate = payload.finishDate + ":00";
-      }
+      formatCardDates(payload, 'YYYY-MM-DD HH:mm:ss');
       const json = JSON.stringify(payload);
       const blob = new Blob([json], {
         type: 'application/json'
@@ -73,11 +96,18 @@ class CardService {
   async getCardById(id) {
     try {
       const {data} = await api.get(`${API_URL}/${id}`);
+      formatCardDates(data, 'YYYY-MM-DD HH:mm');
       return data;
     } catch (e) {
       throw e;
     }
   }
+}
+
+export function formatCardDates(card, pattern) {
+  card.startDate = card.startDate ? date.formatDate(card.startDate, pattern) : null;
+  card.finishDate = card.finishDate ? date.formatDate(card.finishDate, pattern) : null;
+  card.createdDate = card.createdDate ? date.formatDate(card.createdDate, pattern) : null;
 }
 
 export default new CardService();

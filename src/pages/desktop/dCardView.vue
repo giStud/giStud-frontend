@@ -278,7 +278,7 @@ export default {
     const onRejected = (rejectedEntries) => {
       $q.notify({
         type: 'negative',
-        message: `Убедитесь, что файл(ы) имеет формат jpg, jpeg, png и не весит больше 10 МБайт`
+        message: `Убедитесь, что файл(ы) имеет формат jpg, jpeg, png и их размер не превышает 10 МБайт`
       })
     }
 
@@ -305,7 +305,7 @@ export default {
     }
 
     const updateCard = async ({card, logo, attachments}) => {
-      const logoAttachment = downloadedFilesFromServer[logo.name];
+      const logoAttachment = logo ? downloadedFilesFromServer[logo.name] : null;
       const updatedLogo = !logoAttachment || logoAttachment.size !== logo.size ? logo : null;
 
       let newAttachments = [];
@@ -321,7 +321,7 @@ export default {
         card,
         newLogo : updatedLogo,
         newAttachments,
-        attachmentsToDelete : attachmentsToDelete
+        attachmentsToDelete : attachmentsToDelete.value
       })
 
     }
