@@ -102,6 +102,18 @@ class CardService {
       throw e;
     }
   }
+
+  async deleteCardById(id) {
+    try {
+      await api.delete(`${API_URL}/${id}`, {
+        headers: {
+          ...authHeader()
+        }
+      });
+    } catch (e) {
+      throw e;
+    }
+  }
 }
 
 export function formatCardDates(card, pattern) {

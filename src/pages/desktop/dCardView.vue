@@ -1,38 +1,44 @@
 <template>
   <q-card flat square style="text-align: center;"
-          class="row justify-evenly q-px-sm">
-    <div class="q-pa-md">
-      <div class="text-h5 q-mb-md">Добавить новость</div>
-      <div class="row justify-evenly">
-        <q-input class="q-my-sm" square outlined filled v-model="card.name" label="Заголовок"/>
-        <q-file
-          outlined
-          v-model="logoFile"
-          use-chips
-          :filter="checkFileFilters"
-          @rejected="onRejected"
-          accept=".jpg, image/*">
-          <template v-slot:file="{ file }">
-            <q-chip
-              class="full-width q-my-xs"
-              removable
-              square
-              @remove="onLogoCancel(file)"
-            >
-              <div class="ellipsis relative-position">
-                {{ file.name }}
-              </div>
+          class="q-px-sm q-py-md">
+    <q-card-section class="row justify-end">
+      <q-btn v-if="showEditButton" flat color="grey" icon="edit" class="q-pa-sm q-ma-none" @click="editMode=!editMode" />
+      <q-btn v-if="showDeleteButton" flat color="red-5" icon="delete" class="q-pa-sm q-ma-none" @click="deleteCard(card.id)"/>
+    </q-card-section>
+    <q-card-section class="row justify-evenly">
+      <q-input class="q-my-sm" square outlined :readonly="!editMode" filled v-model="card.name" label="Заголовок"/>
+      <q-file v-if="editMode"
+              outlined
+              v-model="logoFile"
+              use-chips
+              :filter="checkFileFilters"
+              @rejected="onRejected"
+              accept=".jpg, image/*">
+        <template v-slot:file="{ file }">
+          <q-chip
+            class="full-width q-my-xs"
+            removable
+            square
+            @remove="onLogoCancel(file)"
+          >
+            <div class="ellipsis relative-position">
+              {{ file.name }}
+            </div>
 
-              <q-tooltip>
-                {{ file.name }}
-              </q-tooltip>
-            </q-chip>
-          </template>
-          <template v-slot:prepend>
-            <q-icon name="attach_file"/>
-          </template>
-        </q-file>
-      </div>
+            <q-tooltip>
+              {{ file.name }}
+            </q-tooltip>
+          </q-chip>
+        </template>
+        <template v-slot:prepend>
+          <q-icon name="attach_file"/>
+        </template>
+      </q-file>
+    </q-card-section>
+    <q-card-section v-if="!editMode">
+      <q-img :src="viewLogoImgUrl"> LOGO</q-img>
+    </q-card-section>
+    <q-card-section>
       <q-select
         filled
         v-model="card.category"
@@ -41,6 +47,7 @@
         color="teal"
         clearable
         options-selected-class="text-deep-orange"
+        :readonly="!editMode"
       >
         <template v-slot:option="scope">
           <q-item v-bind="scope.itemProps">
@@ -53,8 +60,9 @@
           </q-item>
         </template>
       </q-select>
-
-      <q-input filled v-model="card.startDate">
+    </q-card-section>
+    <q-card-section class="row justify-evenly">
+      <q-input filled v-model="card.startDate" :readonly="!editMode">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -79,7 +87,7 @@
         </template>
       </q-input>
 
-      <q-input filled v-model="card.finishDate">
+      <q-input filled v-model="card.finishDate" :readonly="!editMode">
         <template v-slot:prepend>
           <q-icon name="event" class="cursor-pointer">
             <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -103,92 +111,111 @@
           </q-icon>
         </template>
       </q-input>
-      <div class="text-h6">Описание</div>
-      <q-editor square v-model="card.description" :dense="$q.screen.lt.md" :toolbar="editorToolBar"
-                :fonts="editorFonts"/>
+    </q-card-section>
+    <q-card-section>
+      <template v-if="editMode">
+        <q-editor v-if="editMode" square v-model="card.description" :dense="$q.screen.lt.md" :toolbar="editorToolBar"
+                  :fonts="editorFonts"/>
+      </template>
+      <template v-else>
+        <div v-html="card.description"></div>
+      </template>
+    </q-card-section>
+    <q-card-section>
       <template v-for="tag in card.tags" :key="tag.title">
-        <q-chip removable @remove="onTagRemove(tag.title)" outline color="primary" text-color="white" icon="tag">
+        <q-chip :removable="editMode" @remove="onTagRemove(tag.title)" outline color="primary" text-color="white" icon="tag">
           {{ tag.title }}
         </q-chip>
       </template>
-
-      <q-input class="q-my-sm" square outlined filled v-model="tagName" label="Добавить хештег"
+    </q-card-section>
+    <q-card-section>
+      <q-input v-if="editMode" class="q-my-sm" square outlined filled v-model="tagName" label="Добавить хештег"
                @focusout="addTag(tagName)">
         <template v-slot:after>
           <q-btn round dense flat icon="check_small" @click="addTag(tagName)"/>
         </template>
       </q-input>
+    </q-card-section>
+    <q-card-section>
       <div>Как с вами связаться?</div>
       <div class="q-gutter-sm">
-        <q-checkbox keep-color v-model="showContactPhone" label="Телефон" color="cyan"/>
-        <q-checkbox keep-color v-model="showContactMail" label="Почта" color="cyan"/>
+        <q-checkbox keep-color v-model="showContactPhone" label="Телефон" color="cyan" :disable="!editMode"/>
+        <q-checkbox keep-color v-model="showContactMail" label="Почта" color="cyan" :disable="!editMode"/>
         <q-checkbox keep-color v-model="contactByChat" disable label="Чат" color="cyan"/>
       </div>
       <q-input v-if="showContactPhone" class="q-my-sm" square outlined filled v-model="card.contactPhone"
-               label="Контактный номер"/>
+               label="Контактный номер" :readonly="!editMode"/>
       <q-input v-if="showContactMail" class="q-my-sm" square outlined filled v-model="card.contactMail"
-               label="Контактная почта"/>
+               label="Контактная почта" :readonly="!editMode"/>
+    </q-card-section>
+    <q-card-section>
+      <template v-if="editMode">
+        <q-file
+          v-model="attachments"
+          outlined
+          multiple
+          use-chips
+          counter
+          max-files="3"
+          append
+          accept=".jpg, image/*"
+          :filter="checkFileFilters"
+          :counter-label="attachmentsCounterLabelFn"
+          @rejected="onRejected"
+        >
+          <template v-slot:file="{ index, file }">
+            <q-chip
+              class="full-width q-my-xs"
+              removable
+              square
+              @remove="onAttachmentCancel(index, file)"
+            >
+              <div class="ellipsis relative-position">
+                {{ file.name }}
+              </div>
 
+              <q-tooltip>
+                {{ file.name }}
+              </q-tooltip>
+            </q-chip>
+          </template>
 
-      <q-file
-        v-model="attachments"
-        outlined
-        multiple
-        use-chips
-        counter
-        max-files="3"
-        append
-        accept=".jpg, image/*"
-        :filter="checkFileFilters"
-        :counter-label="attachmentsCounterLabelFn"
-        @rejected="onRejected"
-      >
-        <template v-slot:file="{ index, file }">
-          <q-chip
-            class="full-width q-my-xs"
-            removable
-            square
-            @remove="onAttachmentCancel(index, file)"
-          >
-            <div class="ellipsis relative-position">
-              {{ file.name }}
-            </div>
-
-            <q-tooltip>
-              {{ file.name }}
-            </q-tooltip>
-          </q-chip>
-        </template>
-
-        <template v-slot:prepend>
-          <q-icon name="attach_file"/>
-        </template>
-      </q-file>
-    </div>
-    <div class="q-pa-md">
-      <q-btn class="btr-square" color="primary" no-caps label="Изменить"
-             @click="updateCard({
+          <template v-slot:prepend>
+            <q-icon name="attach_file"/>
+          </template>
+        </q-file>
+      </template>
+      <template v-else>
+        <q-carousel v-model="attachmentsSlide" animated arrows class="q-pa-none" infinite  height="270px">
+          <template v-for="(index, attachmentUrl) of viewAttachmentsImgUrls" :key="attachmentUrl">
+            <q-carousel-slide
+              :name="index"
+              :img-src="attachmentUrl"
+            />
+          </template>
+        </q-carousel>
+      </template>
+    </q-card-section>
+    <q-card-section>
+      <div v-if="editMode && !showCreateButton">
+        <q-btn class="btr-square" color="primary" no-caps label="Сохранить"
+               @click="updateCard({
                   card,
                   logo : logoFile,
                   attachments
                })"/>
-      <q-btn class="btr-square" color="primary" no-caps label="Добавить"
-             @click="createCard({
+        <q-btn class="btr-square" color="red" no-caps label="Отмена"
+               @click="editMode = false"/>
+      </div>
+      <div v-if="showCreateButton">
+        <q-btn class="btr-square" color="primary" no-caps label="Добавить"
+               @click="createCard({
                  card,
                  logoFile,
                  attachments
                })"/>
-<!--      <template v-if="editMode">
-
-      </template>
-      <template v-else>
-
-      </template>-->
-
-    </div>
-    <q-img :src="viewLogoImgUrl"> LOGO</q-img>
-    <div>attaches</div>
-    <q-img v-for="(attachmentUrl) of viewAttachmentsImgUrls" :key="attachmentUrl" :src="attachmentUrl"></q-img>
+      </div>
+    </q-card-section>
   </q-card>
 </template>
 
@@ -217,10 +244,13 @@ export default {
     const store = useStore();
     const $q = useQuasar();
 
+    const showEditButton = ref(false);
+    const showDeleteButton = ref(false);
+    const showCreateButton = ref(true);
     const editMode = ref(false);
-    const readMode = ref(false);
 
     const card = ref({
+      id: null,
       name: '',
       category: null,
       description: '',
@@ -229,12 +259,13 @@ export default {
       tags: [],
       logoImage: null,
       contactPhone: '',
-      contactMail: ''
+      contactMail: '',
+      createdByUser : null
     });
     const logoFile = ref(null);
     const attachments = ref([]);
     const tagName = ref('');
-
+    const attachmentsSlide = ref(0);
 
     const categoryOptions = ref([]);
     const editorToolBar = getEditorToolBar($q);
@@ -319,11 +350,20 @@ export default {
 
       const updatedCard = await store.dispatch('board/updateCard', {
         card,
-        newLogo : updatedLogo,
+        newLogo: updatedLogo,
         newAttachments,
-        attachmentsToDelete : attachmentsToDelete.value
+        attachmentsToDelete: attachmentsToDelete.value
       })
+      editMode.value = false;
+      await fillCardViewByData(updatedCard);
+    }
 
+    const deleteCard = async (id) => {
+      try {
+        await store.dispatch('board/deleteCardById', id);
+      } catch (e) {
+        console.log(e)
+      }
     }
 
     const createCard = async (cardPayload) => {
@@ -337,6 +377,13 @@ export default {
     const fillCardViewByData = async (data) => {
       card.value = data;
 
+      if (data.contactMail) {
+        showContactMail.value = true;
+      }
+      if (data.contactPhone) {
+        showContactPhone.value = true;
+      }
+
       if (data.logoImage) {
         const {byteArray, fileName} = await store.dispatch('board/downloadAttachmentByIdAction', data.logoImage.id);
         const {dataUrl, file} = await getFileAndDataUrlByByteArray(byteArray, fileName);
@@ -346,8 +393,8 @@ export default {
       }
 
       const cardAttachments = await store.dispatch('board/getCardAttachments', {
-        id : data.id,
-        type : ATTACHMENT_TYPE.CARD_ATTACHMENT
+        id: data.id,
+        type: ATTACHMENT_TYPE.CARD_ATTACHMENT
       });
       if (cardAttachments && cardAttachments.length !== 0) {
         for (let attachment of cardAttachments) {
@@ -363,8 +410,18 @@ export default {
     onMounted(async () => {
       if (props.id) {
         const data = await store.dispatch('board/getCardById', props.id);
+        const currentUser = store.getters['auth/getCurrentUser'];
+        const isAdmin = store.getters['auth/isAdmin'];
+        if (currentUser && currentUser.username === data.createdByUser.username
+          || isAdmin) {
+          showEditButton.value = true;
+          showDeleteButton.value = true;
+        }
+        showCreateButton.value = false;
         await fillCardViewByData(data);
-        readMode.value = true;
+      } else {
+        editMode.value = true;
+        showCreateButton.value = true;
       }
 
       categoryOptions.value = await store.dispatch('board/getCardCategories');
@@ -382,14 +439,18 @@ export default {
       showContactPhone,
       showContactMail,
       contactByChat,
-      readMode,
       viewLogoImgUrl,
       viewAttachmentsImgUrls,
+      showEditButton,
+      showDeleteButton,
+      showCreateButton,
+      attachmentsSlide,
       onAttachmentCancel,
       onLogoCancel,
       getCategoryIcon,
       updateCard,
       createCard,
+      deleteCard,
       checkFileFilters,
       onRejected,
       attachmentsCounterLabelFn,

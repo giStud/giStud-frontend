@@ -75,7 +75,7 @@ const desktop = [
               {
                 path: ':id',
                 component: () => import('pages/desktop/dCardView'),
-                meta: {isAuth: true, isAdmin: false},
+                meta: {isAuth: false, isAdmin: false},
                 props: true
               }
             ]

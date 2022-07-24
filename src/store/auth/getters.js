@@ -1,5 +1,5 @@
 export function getCurrentUser (state) {
-    return state.user;
+  return state.user;
 }
 
 export function isLogged (state) {
