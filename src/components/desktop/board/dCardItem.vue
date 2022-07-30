@@ -1,5 +1,5 @@
 <template>
-  <q-card style="width: 200px; height: 300px">
+  <q-card style="width: 200px; height: 300px" @click="navigateToCard(data.id)">
     <q-card-section>
       <q-img height="200px" width="165px" :src="logoViewUrl"></q-img>
     </q-card-section>
@@ -27,6 +27,7 @@ import {computed, onMounted, ref, watch} from "vue";
 import {date, useQuasar} from "quasar";
 import {useStore} from "vuex";
 import {getFileAndDataUrlByByteArray} from "src/composables/board/boardUtils";
+import {useRouter} from "vue-router";
 
 export default {
   name: "dCardItem",
@@ -35,6 +36,7 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    const router = useRouter();
     const $q = useQuasar();
 
     const data = ref({
@@ -54,6 +56,10 @@ export default {
 
     const logoViewUrl = ref(null);
 
+    const navigateToCard = (id) => {
+      router.push(`/board/card/${id}`)
+    }
+
     onMounted(async ()=> {
       data.value = props.card;
       data.value.createdDate = date.formatDate(data.value.createdDate, 'YYYY-MM-DD HH:mm');
@@ -67,7 +73,8 @@ export default {
 
     return {
       data,
-      logoViewUrl
+      logoViewUrl,
+      navigateToCard
     }
   }
 }

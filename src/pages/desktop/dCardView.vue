@@ -35,9 +35,6 @@
         </template>
       </q-file>
     </q-card-section>
-    <q-card-section v-if="!editMode">
-      <q-img :src="viewLogoImgUrl"> LOGO</q-img>
-    </q-card-section>
     <q-card-section>
       <q-select
         filled
@@ -147,7 +144,7 @@
         </q-file>
       </template>
       <template v-else>
-        <q-carousel v-model="attachmentsSlide" animated arrows class="q-pa-none" infinite  height="270px">
+        <q-carousel v-if="viewAttachmentsImgUrls.length !== 0" v-model="attachmentsSlide" animated arrows class="q-pa-none" infinite  height="270px">
           <template v-for="(attachmentUrl, index) of viewAttachmentsImgUrls" :key="index">
             <q-carousel-slide
               :name="index"
