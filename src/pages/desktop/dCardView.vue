@@ -61,57 +61,6 @@
         </template>
       </q-select>
     </q-card-section>
-    <q-card-section class="row justify-evenly">
-      <q-input filled v-model="card.startDate" :readonly="!editMode">
-        <template v-slot:prepend>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="card.startDate" mask="YYYY-MM-DD HH:mm">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat/>
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-        <template v-slot:append>
-          <q-icon name="access_time" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-time v-model="card.startDate" mask="YYYY-MM-DD HH:mm" format24h>
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat/>
-                </div>
-              </q-time>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-
-      <q-input filled v-model="card.finishDate" :readonly="!editMode">
-        <template v-slot:prepend>
-          <q-icon name="event" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-date v-model="card.finishDate" mask="YYYY-MM-DD HH:mm">
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat/>
-                </div>
-              </q-date>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-        <template v-slot:append>
-          <q-icon name="access_time" class="cursor-pointer">
-            <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-              <q-time v-model="card.finishDate" mask="YYYY-MM-DD HH:mm" format24h>
-                <div class="row items-center justify-end">
-                  <q-btn v-close-popup label="Close" color="primary" flat/>
-                </div>
-              </q-time>
-            </q-popup-proxy>
-          </q-icon>
-        </template>
-      </q-input>
-    </q-card-section>
     <q-card-section>
       <template v-if="editMode">
         <q-editor v-if="editMode" square v-model="card.description" :dense="$q.screen.lt.md" :toolbar="editorToolBar"
@@ -134,6 +83,18 @@
         <template v-slot:after>
           <q-btn round dense flat icon="check_small" @click="addTag(tagName)"/>
         </template>
+      </q-input>
+    </q-card-section>
+    <q-card-section v-if="editMode">
+      <q-checkbox keep-color v-model="showPrice" label="Указать цену?" color="cyan"/>
+    </q-card-section>
+    <q-card-section v-if="showPrice">
+      <q-input
+        v-model="card.price"
+        mask="#.##"
+        fill-mask="0"
+        reverse-fill-mask
+      >
       </q-input>
     </q-card-section>
     <q-card-section>
@@ -187,11 +148,12 @@
       </template>
       <template v-else>
         <q-carousel v-model="attachmentsSlide" animated arrows class="q-pa-none" infinite  height="270px">
-          <template v-for="(index, attachmentUrl) of viewAttachmentsImgUrls" :key="attachmentUrl">
+          <template v-for="(attachmentUrl, index) of viewAttachmentsImgUrls" :key="index">
             <q-carousel-slide
               :name="index"
               :img-src="attachmentUrl"
-            />
+            >
+            </q-carousel-slide>
           </template>
         </q-carousel>
       </template>
@@ -254,13 +216,12 @@ export default {
       name: '',
       category: null,
       description: '',
-      startDate: '',
-      finishDate: '',
       tags: [],
       logoImage: null,
-      contactPhone: '',
-      contactMail: '',
-      createdByUser : null
+      contactPhone: null,
+      contactMail: null,
+      createdByUser : null,
+      price : null
     });
     const logoFile = ref(null);
     const attachments = ref([]);
@@ -272,7 +233,18 @@ export default {
     const editorFonts = getEditorFonts();
     const showContactPhone = ref(false);
     const showContactMail = ref(false);
+    const showPrice = ref(false);
     const contactByChat = ref(true);
+
+    const clearCardFieldAfterHide = (show, card, fieldName) => {
+      if (!show) {
+        card[fieldName] = null;
+      }
+    }
+
+    watch(showContactPhone, val => clearCardFieldAfterHide(val, card.value, 'contactPhone'));
+    watch(showContactMail, val => clearCardFieldAfterHide(val, card.value, 'contactMail'));
+    watch(showPrice, val => clearCardFieldAfterHide(val, card.value, 'price'));
 
     const addTag = (tag) => {
       if (tag && tag !== '') {
@@ -377,12 +349,9 @@ export default {
     const fillCardViewByData = async (data) => {
       card.value = data;
 
-      if (data.contactMail) {
-        showContactMail.value = true;
-      }
-      if (data.contactPhone) {
-        showContactPhone.value = true;
-      }
+      showContactMail.value = !!data.contactMail;
+      showContactPhone.value = !!data.contactPhone;
+      showPrice.value = !!data.price;
 
       if (data.logoImage) {
         const {byteArray, fileName} = await store.dispatch('board/downloadAttachmentByIdAction', data.logoImage.id);
@@ -438,6 +407,7 @@ export default {
       tagName,
       showContactPhone,
       showContactMail,
+      showPrice,
       contactByChat,
       viewLogoImgUrl,
       viewAttachmentsImgUrls,
@@ -455,7 +425,10 @@ export default {
       onRejected,
       attachmentsCounterLabelFn,
       addTag,
-      onTagRemove
+      onTagRemove,
+      debugLog(v) {
+        console.log(v)
+      }
     }
   }
 }

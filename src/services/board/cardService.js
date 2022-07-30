@@ -16,7 +16,7 @@ class CardService {
     try {
       let formData = new FormData();
       const payload = {...card};
-      formatCardDates(payload, 'YYYY-MM-DD HH:mm:ss');
+      date.formatDate(payload.createdDate, 'YYYY-MM-DD HH:mm:ss');
       const cardBlob = new Blob([JSON.stringify(payload)], {
         type: 'application/json'
       });
@@ -47,7 +47,6 @@ class CardService {
     try {
       let formData = new FormData();
       const payload = {...card};
-      formatCardDates(payload, 'YYYY-MM-DD HH:mm:ss');
       const json = JSON.stringify(payload);
       const blob = new Blob([json], {
         type: 'application/json'
@@ -96,7 +95,6 @@ class CardService {
   async getCardById(id) {
     try {
       const {data} = await api.get(`${API_URL}/${id}`);
-      formatCardDates(data, 'YYYY-MM-DD HH:mm');
       return data;
     } catch (e) {
       throw e;
@@ -114,12 +112,6 @@ class CardService {
       throw e;
     }
   }
-}
-
-export function formatCardDates(card, pattern) {
-  card.startDate = card.startDate ? date.formatDate(card.startDate, pattern) : null;
-  card.finishDate = card.finishDate ? date.formatDate(card.finishDate, pattern) : null;
-  card.createdDate = card.createdDate ? date.formatDate(card.createdDate, pattern) : null;
 }
 
 export default new CardService();
