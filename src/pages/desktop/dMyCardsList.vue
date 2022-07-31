@@ -23,15 +23,14 @@
 </template>
 
 <script>
-import {computed, onMounted, ref, watch} from "vue";
-import {useQuasar} from "quasar";
-import {useStore} from "vuex";
-import {CARD_STATUS} from "src/services/board/cardService";
 import dCardItem from "components/desktop/board/dCardItem";
 import dCardFilter from "components/desktop/board/dCardFilter";
+import {useStore} from "vuex";
+import {useQuasar} from "quasar";
+import {computed, onMounted, ref} from "vue";
 
 export default {
-  name: "dBoard",
+  name: "dMyCardsList",
   components: {
     dCardItem,
     dCardFilter
@@ -43,8 +42,10 @@ export default {
     const lastLoadedPage = ref(null);
     const loadedCards = ref([]);
     const cardFilters = ref(null);
+    const currentUser = computed(()=> store.getters['auth/getCurrentUser'])
 
     const onFiltersChanged = async (filters) => {
+      filters.createdByUser = currentUser.value.username;
       cardFilters.value = filters;
       lastLoadedPage.value = await findCardPage(0, filters);
       loadedCards.value = lastLoadedPage.value.content;
@@ -83,6 +84,5 @@ export default {
 </script>
 
 <style scoped>
-
 
 </style>

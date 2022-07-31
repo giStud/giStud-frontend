@@ -65,6 +65,11 @@ const desktop = [
             meta: {isAuth: false, isAdmin: false}
           },
           {
+            path: 'my',
+            component: () => import('pages/desktop/dMyCardsList'),
+            meta: {isAuth: true, isAdmin: false}
+          },
+          {
             path: "card",
             children: [
               {
