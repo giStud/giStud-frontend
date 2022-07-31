@@ -131,6 +131,21 @@
             </template>
           </q-input>
         </q-card-section>
+        <q-card-section>
+          <q-input class="q-my-sm" square outlined filled v-model="tagInputFilter" label="Фильтрация по хештегам"
+                   @focusout="addTagToFilters(tagInputFilter)">
+            <template v-slot:after>
+              <q-btn round dense flat icon="check_small" @click="addTagToFilters(tagInputFilter)"/>
+            </template>
+          </q-input>
+        </q-card-section>
+        <q-card-section>
+          <template v-for="tag in cardFilters.tagsIn" :key="tag">
+            <q-chip removable @remove="onTagFiltersRemove(tag)" outline color="primary" text-color="white" icon="tag">
+              {{ tag }}
+            </q-chip>
+          </template>
+        </q-card-section>
         <q-card-actions class="q-mx-md q-pb-md row">
           <q-btn size="md" style="width: 110px" no-caps
                  color="primary" label="Поиск"
@@ -261,7 +276,24 @@ export default {
     const lastLoadedPage = ref(null);
     const loadedCards = ref([]);
     const cardFilters = ref(getEmptyCardFilters());
+    const tagInputFilter = ref('');
     const filtersDialog = ref(false);
+
+    const addTagToFilters = (tag) => {
+      if (tag && tag !== '') {
+        if (!cardFilters.value.tagsIn.includes(tag)) {
+          cardFilters.value.tagsIn.push(tag)
+        }
+        tagInputFilter.value = '';
+      }
+    }
+
+    const onTagFiltersRemove = (tag) => {
+      const index = cardFilters.value.tagsIn.indexOf(tag);
+      if (index > -1) {
+        cardFilters.value.tagsIn.splice(index, 1);
+      }
+    }
 
     const onFiltersChanged = async () => {
       lastLoadedPage.value = await findCardPage(0, cardFilters.value);
@@ -335,10 +367,13 @@ export default {
       cardFilters,
       filtersDialog,
       isAdmin,
+      tagInputFilter,
       CATEGORIES_DATA,
       SORT_PROPERTIES,
       SORT_DIRECTIONS,
       STATUS_OPTIONS,
+      addTagToFilters,
+      onTagFiltersRemove,
       animateScrollCategories,
       toggleCardCategory,
       isCategoryActive,

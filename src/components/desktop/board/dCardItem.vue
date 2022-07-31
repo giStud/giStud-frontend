@@ -4,23 +4,14 @@
     <q-card-section class="q-pa-none">
       <q-img height="156px" width="228px" :src="logoViewUrl"></q-img>
     </q-card-section>
-    <q-card-section class="q-pt-none q-pb-sm">{{data.name}}</q-card-section>
+    <q-card-section class="q-py-sm">{{data.name}}</q-card-section>
     <q-card-section class="q-pt-none q-pb-sm" v-if="data.price">{{data.price}} Р.</q-card-section>
-    <q-card-section class="row q-py-none q-col-gutter-x-sm">
-      <div v-for="tag in data.tags" :key="tag.title">
-        <q-chip dense outline color="primary" text-color="white" icon="tag">
-          {{ tag.title }}
-        </q-chip>
-      </div>
-    </q-card-section>
     <q-card-section class="q-pt-none q-pb-sm row justify-between">
       <div>{{data.createdDate}}</div>
       <div class="col-3">
         {{data.views}}
         <q-icon name="visibility" size="sm"/>
       </div>
-
-
     </q-card-section>
   </q-card>
 </template>
