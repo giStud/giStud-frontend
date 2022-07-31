@@ -33,7 +33,7 @@
       </q-card-section>
       <q-card-section class="row q-pt-md q-col-gutter-x-xl q-col-gutter-y-md">
         <div class="col-6 col-md-3">
-          <q-select v-model="cardFilters.sortProperty" @update:model-value="onFiltersChanged" options-dense :options="SORT_PROPERTIES"
+          <q-select v-model="cardFilters.sortProperty" @update:model-value="onSortPropertyChanged" options-dense :options="SORT_PROPERTIES"
                     map-options emit-value dense label="Сортировать по"/>
         </div>
         <div class="col-6 col-md-3">
@@ -273,6 +273,13 @@ export default {
       await onFiltersChanged();
     }
 
+    const onSortPropertyChanged = () => {
+      if (!cardFilters.value.sortDirection) {
+        cardFilters.value.sortDirection = "ASC";
+      }
+      onFiltersChanged();
+    }
+
     const loadNewCardsPage = async (index, done) => {
       if (!lastLoadedPage.value || lastLoadedPage.value.last) {
         done();
@@ -337,7 +344,8 @@ export default {
       isCategoryActive,
       loadNewCardsPage,
       onFiltersChanged,
-      onFiltersClear
+      onFiltersClear,
+      onSortPropertyChanged
     }
   }
 }

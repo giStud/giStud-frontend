@@ -16,7 +16,7 @@ class CardService {
     try {
       let formData = new FormData();
       const payload = {...card};
-      date.formatDate(payload.createdDate, 'YYYY-MM-DD HH:mm:ss');
+      payload.createdDate = date.formatDate(payload.createdDate, 'YYYY-MM-DD HH:mm:ss');
       const cardBlob = new Blob([JSON.stringify(payload)], {
         type: 'application/json'
       });

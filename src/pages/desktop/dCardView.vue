@@ -218,7 +218,8 @@ export default {
       contactPhone: null,
       contactMail: null,
       createdByUser : null,
-      price : null
+      price : null,
+      priority : 0
     });
     const logoFile = ref(null);
     const attachments = ref([]);
