@@ -16,7 +16,25 @@
         <q-btn flat no-caps :to="'/'" class="btn-menu text-size-menu">Главная</q-btn>
         <q-btn flat no-caps :to="'/schedule'" class="btn-menu text-size-menu">Расписание</q-btn>
         <q-btn flat no-caps :to="'/news'" class="btn-menu text-size-menu">Новости</q-btn>
-        <q-btn disable flat no-caps :to="''"  class="btn-menu gistud-dev text-size-menu">Доска объявлений</q-btn>
+        <q-btn-dropdown flat no-caps :to="''"  class="btn-menu gistud-dev text-size-menu" label="Доска объявлений">
+          <q-list>
+            <q-item clickable v-close-popup :to="'/board/list'">
+              <q-item-section>
+                <q-item-label>Все</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item v-if="loggedIn" clickable v-close-popup :to="'/board/my'">
+              <q-item-section>
+                <q-item-label>Мои</q-item-label>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup :to="'/board/card/create'">
+              <q-item-section>
+                <q-item-label>Создать</q-item-label>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
         <q-btn flat no-caps @click="goUrl('https://boosty.to/gistud.info')" class="btn-menu text-size-menu">Поддержать проект</q-btn>
       </q-list>
     </q-card-section>
@@ -94,7 +112,6 @@ export default {
     const darkTheme = ref(false);
 
     onMounted(() => {
-      //store.commit('globalState/changeCurrentPage','profile');
       let user = store.getters["auth/getCurrentUser"];
       if (user !== null) {
         let roles = user.roles;
@@ -115,6 +132,7 @@ export default {
     return {
       darkTheme,
       isAdmin,
+      loggedIn,
       currentUser: computed(() => store.getters['auth/getCurrentUser']),
       ph: ref(''),
       dense: ref(true),
