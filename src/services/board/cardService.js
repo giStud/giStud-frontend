@@ -1,11 +1,11 @@
 import {api} from "boot/axios";
 import authHeader from "src/services/auth/authHeader";
 import {date} from "quasar";
+import qs from "qs";
 
 const API_URL = '/v1/cards';
 
 export const CARD_STATUS = {
-  CREATING : 'CREATING',
   WAITING_APPROVAL : 'WAITING_APPROVAL',
   APPROVED : 'APPROVED',
   BANNED : 'BANNED'
@@ -84,7 +84,10 @@ class CardService {
   async getCardPage(payload) {
     try {
       const {data} = await api.get(`${API_URL}/page`, {
-        params: payload
+        params: payload,
+        paramsSerializer: params => {
+          return qs.stringify(params)
+        }
       });
       return data;
     } catch (e) {

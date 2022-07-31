@@ -31,8 +31,21 @@
           <q-btn label=">" round flat class="col-1" @click="animateScrollCategories(600)"/>
         </div>
       </q-card-section>
-      <q-card-section>
-
+      <q-card-section class="row q-pt-md q-col-gutter-x-xl q-col-gutter-y-md">
+        <div class="col-6 col-md-3">
+          <q-select v-model="cardFilters.sortProperty" @update:model-value="onFiltersChanged" options-dense :options="SORT_PROPERTIES"
+                    map-options emit-value dense label="Сортировать по"/>
+        </div>
+        <div class="col-6 col-md-3">
+          <q-select v-model="cardFilters.sortDirection" @update:model-value="onFiltersChanged" options-dense :options="SORT_DIRECTIONS"
+                    map-options emit-value dense label="В порядке"/>
+        </div>
+        <div class="col-6 col-md-3">
+        </div>
+        <div class="col-6 col-md-3 row">
+          <q-space/>
+          <q-btn round color="primary" glossy icon="filter_alt" @click="filtersDialog = true"/>
+        </div>
       </q-card-section>
       <q-card-section>
         <q-infinite-scroll @load="loadNewCardsPage" :offset="250" debounce="500">
@@ -51,6 +64,86 @@
       </q-card-section>
 
     </q-card>
+    <q-dialog v-model="filtersDialog">
+      <q-card class="q-pa-sm" style="min-width: 600px">
+        <q-card-section class="q-px-md q-pb-md q-mx-sm q-mt-lg q-ma-none items-center">
+          <q-input dense filled v-model="cardFilters.titleLike" label="Фильтрация по заголовку"></q-input>
+        </q-card-section>
+        <q-card-section class="q-px-md q-pb-md q-mx-sm q-mt-lg q-ma-none items-center">
+          <q-input dense filled v-model="cardFilters.descriptionLike" label="Фильтрация по описанию"></q-input>
+        </q-card-section>
+        <q-card-section v-if="isAdmin">
+          <q-select v-model="cardFilters.statusIn" multiple options-dense :options="STATUS_OPTIONS" dense
+                    map-options emit-value
+                    label="Фильтрация по статусу"/>
+        </q-card-section>
+        <q-card-section class="q-mx-sm q-pb-md row justify-between">
+          <q-input style="min-width: 242px" mask="#.##" reverse-fill-mask dense filled v-model="cardFilters.minPrice" label="Цена От"/>
+          <q-input style="min-width: 242px" mask="#.##" reverse-fill-mask dense filled v-model="cardFilters.maxPrice" label="Цена До"/>
+        </q-card-section>
+        <q-card-section class="q-mx-sm q-pb-md row justify-between">
+          <q-input dense filled v-model="cardFilters.createdDateMin">
+            <template v-slot:prepend>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="cardFilters.createdDateMin" mask="YYYY-MM-DD HH:mm:ss">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-time v-model="cardFilters.createdDateMin" mask="YYYY-MM-DD HH:mm:ss" format24h>
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-input dense filled v-model="cardFilters.createdDateMax">
+            <template v-slot:prepend>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="cardFilters.createdDateMax" mask="YYYY-MM-DD HH:mm:ss">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+            <template v-slot:append>
+              <q-icon name="access_time" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-time v-model="cardFilters.createdDateMax" mask="YYYY-MM-DD HH:mm:ss" format24h>
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-time>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </q-card-section>
+        <q-card-actions class="q-mx-md q-pb-md row">
+          <q-btn size="md" style="width: 110px" no-caps
+                 color="primary" label="Поиск"
+                 @click="onFiltersChanged" v-close-popup/>
+          <q-btn size="md" style="width: 110px" no-caps
+                 label="Сбросить"
+                 @click = "onFiltersClear"
+                 v-close-popup/>
+          <q-space/>
+          <q-btn size="md" style="width: 110px;" color="red-5" no-caps label="Отмена" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -58,6 +151,7 @@
 import {computed, onMounted, ref, watch} from "vue";
 import {useQuasar} from "quasar";
 import {useStore} from "vuex";
+import {CARD_STATUS} from "src/services/board/cardService";
 import dCardItem from "components/desktop/board/dCardItem";
 
 const CATEGORIES_DATA = [
@@ -97,6 +191,44 @@ const CATEGORIES_DATA = [
     icon: "view_comfy"
   }
 ]
+const SORT_PROPERTIES = [
+  {
+    label: 'Популярности',
+    value: 'views'
+  },
+  {
+    label: 'Дате создания',
+    value: 'createdDate'
+  },
+  {
+    label: 'Цене',
+    value: 'price'
+  },
+]
+const SORT_DIRECTIONS = [
+  {
+    label: 'Возрастания',
+    value: 'ASC'
+  },
+  {
+    label: 'Убывания',
+    value: 'DESC'
+  },
+]
+const STATUS_OPTIONS = [
+  {
+    label: 'Ожидание проверки',
+    value: 'WAITING_APPROVAL'
+  },
+  {
+    label: 'Проверено',
+    value: 'APPROVED'
+  },
+  {
+    label: 'Заблокировано',
+    value: 'BANNED'
+  }
+]
 
 export default {
   name: "dBoard",
@@ -106,37 +238,65 @@ export default {
   setup() {
     const store = useStore();
     const $q = useQuasar();
+    const isAdmin = computed(() => store.getters['auth/isAdmin']);
+
+    const getEmptyCardFilters = () => {
+      return {
+        pageSize: 24,
+        sortDirection : null,
+        sortProperty : null,
+        categoriesIn : CATEGORIES_DATA.map(c => c.name),
+        minPrice : null,
+        maxPrice : null,
+        titleLike : null,
+        descriptionLike : null,
+        createdDateMin : null,
+        createdDateMax : null,
+        createdByUser : null,
+        statusIn : [CARD_STATUS.APPROVED],
+        tagsIn : [],
+      };
+    }
+
     const lastLoadedPage = ref(null);
     const loadedCards = ref([]);
+    const cardFilters = ref(getEmptyCardFilters());
+    const filtersDialog = ref(false);
+
+    const onFiltersChanged = async () => {
+      lastLoadedPage.value = await findCardPage(0, cardFilters.value);
+      loadedCards.value = lastLoadedPage.value.content;
+    }
+
+    const onFiltersClear = async () => {
+      cardFilters.value = getEmptyCardFilters();
+      await onFiltersChanged();
+    }
 
     const loadNewCardsPage = async (index, done) => {
       if (!lastLoadedPage.value || lastLoadedPage.value.last) {
         done();
       } else {
-        lastLoadedPage.value = await store.dispatch('board/getCardsPage', {
-          pageNumber: lastLoadedPage.value.pageNumber + 1,
-          pageSize: 24
-        });
+        lastLoadedPage.value = await findCardPage(lastLoadedPage.value.pageNumber + 1, cardFilters.value);
         loadedCards.value.push(...lastLoadedPage.value.content);
         done();
       }
     }
 
-    const selectedCategories = ref(CATEGORIES_DATA.map(c => c.name));
     const categoriesScrollAreaPosition = ref(300)
     const categoriesScrollAreaRef = ref(null);
 
     const toggleCardCategory = (category) => {
-      const index = selectedCategories.value.indexOf(category);
+      const index = cardFilters.value.categoriesIn.indexOf(category);
       if (index > -1) {
-        selectedCategories.value.splice(index, 1);
+        cardFilters.value.categoriesIn.splice(index, 1);
       } else {
-        selectedCategories.value.push(category);
+        cardFilters.value.categoriesIn.push(category);
       }
     }
 
     const isCategoryActive = (category) => {
-      return selectedCategories.value.indexOf(category) !== -1;
+      return cardFilters.value.categoriesIn.indexOf(category) !== -1;
     }
 
     const animateScrollCategories = async (val) => {
@@ -147,11 +307,17 @@ export default {
       }
     }
 
+    const findCardPage = async (pageNumber, filters) => {
+      return await store.dispatch('board/getCardsPage', {
+        pageNumber,
+        ...filters
+      });
+    }
+
+    watch(cardFilters.value.categoriesIn, onFiltersChanged)
+
     onMounted(async () => {
-      lastLoadedPage.value = await store.dispatch('board/getCardsPage', {
-        pageNumber: 0,
-        pageSize: 24
-      })
+      lastLoadedPage.value = await findCardPage(0, cardFilters.value);
       loadedCards.value = lastLoadedPage.value.content;
     })
 
@@ -159,11 +325,19 @@ export default {
       loadedCards,
       categoriesScrollAreaRef,
       categoriesScrollAreaPosition,
+      cardFilters,
+      filtersDialog,
+      isAdmin,
       CATEGORIES_DATA,
+      SORT_PROPERTIES,
+      SORT_DIRECTIONS,
+      STATUS_OPTIONS,
       animateScrollCategories,
       toggleCardCategory,
       isCategoryActive,
-      loadNewCardsPage
+      loadNewCardsPage,
+      onFiltersChanged,
+      onFiltersClear
     }
   }
 }
